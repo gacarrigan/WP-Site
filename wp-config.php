@@ -87,6 +87,10 @@ $wpe_netdna_push_domains=array ();
 $wpe_domain_mappings=array ();
 
 $memcached_servers=array ();
+
+define('WPE_RO_FILESYSTEM',false);
+
+define('DISALLOW_FILE_MODS',FALSE);
 define('WPLANG','');
 
 # WP Engine ID

@@ -4,8 +4,8 @@ var warning = "Before taking this action, we at WP Engine recommend that you cre
 
 jQuery(document).ready(function($) {    	    			
 //apprise implementation
-console.log(wpe.popup_disabled);
-  if(filename == 'update-core.php' && $('form.upgrade').length > 0 && wpe.popup_disabled == undefined ) {
+
+  if(filename == 'update-core.php' && $('form.upgrade').length > 0 && wpe.popup_disabled != 1 ) {
   	$('form[name="upgrade"] input[type=submit]').click(function(e) { e.preventDefault(); });
   	$('form[name="upgrade"] input[type=submit]').attr('onclick','wpe_validate_upgrade("upgrade");');
 
@@ -14,7 +14,7 @@ console.log(wpe.popup_disabled);
   	
   	$('form[name="upgrade-themes"] input[type=submit]').click(function(e) { e.preventDefault(); });
   	$('form[name="upgrade-themes"] input[type=submit]').attr('onclick','wpe_validate_upgrade("upgrade-themes");');  	
-  } else if(filename == 'plugins.php' && wpe.popup_disabled == undefined) {
+  } else if(filename == 'plugins.php' && wpe.popup_disabled !=  1) {
   	
   	if($('.update-message').length > 0 ) {
 	  	$('.update-message a').each(function(i,obj) {
@@ -29,7 +29,7 @@ console.log(wpe.popup_disabled);
 		$('#doaction').click(function(e) { e.preventDefault(); });
 		$('#doaction').attr('onclick','wpe_validate_bulk_form();');
 		
-  } else if( filename == 'plugin-install.php' && wpe.popup_disabled == undefined) {
+  } else if( filename == 'plugin-install.php' && wpe.popup_disabled != 1) {
   	
 		$('a.install-now').each(function() { 
 			$(this).click(function(e) { e.preventDefault(); });

@@ -1,13 +1,16 @@
 <?php
 
 // Case-insensitive regex for whether a path is a static file
-$regex_path_static_suffix = "\\.(?:jpe?g|gif|png|css|js|ico|zip|7z|tgz|gz|rar|bz2|doc|xls|exe|pdf|ppt|txt|tar|midi?|wav|bmp|rtf|avi|mp\\d|mpg|iso|mov|djvu|dmg|flac|r70|mdf|chm|sisx|sis|flv|thm|bin|swf|cert|otf|ttf|eot|svgx?|woff)";
+$regex_path_static_suffix = "\\.(?:jpe?g|gif|png|css|js|ico|zip|7z|tgz|gz|rar|bz2|doc|xls|exe|pdf|ppt|txt|tar|midi?|wav|bmp|rtf|avi|mp\\d|mpg|iso|mov|djvu|dmg|flac|r70|mdf|chm|sisx|sis|flv|thm|bin|swf|cert|otf|ttf|eot|svgx?|woff|jar|class)";
 
 // Case-insensitive regex for whether a user-agent is a bot
 $regex_is_user_agent_bot = 'bot|facebook|crawler|feed|flipboard|slurp|re(?:e|a)der|spider|scoutjet|ssowl|site24|google|news|pubsub|^expo9|^tzogeoagent|jakarta';
 
 // Case-insensitive regex for whether a user-agent is something we don't cache if it's dynamic content
 $regex_is_user_agent_nodyncache = 'acer\ s100|archos5|cupcake|docomo\ ht\-03a|dream|htc\ hero|htc\ magic|htc_dream|htc_magic|incognito|lg\-gw620|liquid\ build|maemo|mot\-mb200|mot\-mb300|nexus\ one|opera\ mini|samsung\-s8000|series60.*webkit|series60/5\.0|sonyericssone10|sonyericssonu20|sonyericssonx10|t\-mobile\ mytouch\ 3g|t\-mobile\ opal|tattoo|webmate|2\.0\ mmp|240x320|alcatel|amoi|asus|au\-mic|audiovox|avantgo|benq|blackberry|blazer|cellphone|danger|ddipocket|docomo|dopod|elaine/3\.0|ericsson|eudoraweb|haier|hiptop|hp\.ipaq|htc|huawei|i\-mobile|iemobile|j\-phone|kddi|konka|kwc|kyocera/wx310k|lg/u990|lge\ vx|midp|midp\-2\.0|mmef20|mobilephone|mot\-v|motorola|netfront|newgen|newt|nintendo\ ds|nintendo\ wii|nitro|nokia|novarra|openweb|opera[\s\.]mobi|palm|panasonic|pantech|pdxgw|philips|\bphone\b|playstation\ portable|portalmmm|proxinet|psp|qtek|sagem|samsung|sanyo|sendo|sharp|sharp\-tq\-gx10|smartphone|softbank|sonyericsson|symbian|symbian\ os|symbianos|toshiba|treo|ts21i\-10|up\.browser|up\.link|vertu|vodafone|willcome|windows[ \.]ce|winwap';
+
+// Case-insensitive regex for whether a user-agent is something we never cache
+$regex_is_user_agent_never_cache = '^feedburner|feedblitz';
 
 // Case-insensitive regex for whether a user-agent is in our "mobile" caching group
 $regex_is_user_agent_mobile_group = "android|iphone|ipod|itouch";
@@ -16,7 +19,7 @@ $regex_is_user_agent_mobile_group = "android|iphone|ipod|itouch";
 $regex_is_user_agent_ipad_group = '\bipad\b';
 
 // Case-insensitive regex for user agents which we should automatically 403 on
-$regex_is_user_agent_403 = "^\W|^Mozilla(?: |/2|/4\.0\+?\\()|^(?:MSIE|Nut|Omniexpl|Opera/9\.64|pussycat|python|super happy|trackback/|user|website-|winnie)|[\\r\\n]|psyche|adwords|email|core-project|diamond|digger|ecollector|forum|java[/ ]\\d\\.|LWP|Microsoft URL|Missigua|Movable Type|grub|httpproxy|Internet Explorer|isc systems|blogsearch|cherrypicker|casper|boston|comodo|feedfinder|mj12bot|cmsworldmap|diavol|dotbot|flicky|ia_archiver|kmccrew|libwww|planetwork|pycurl|skygrid|; Widows|a href|DTS agent|user-agent:|Gecko/25|hanzoweb|indy lib|MSIE 7\.0;\s*Windows NT 5\.2|murzillo|\.NET CLR 1\)|POE-Component-Client|turing mach|Ubuntu/9\.25|unspecified\\.mail|webaltbot|wise(?:nut)?bot|Windows NT [45]\.[01];\)|Windows XP 5|WordPress/4\.01|discobot|xedant|\\\\\\\\";
+$regex_is_user_agent_403 = "^\W|^Mozilla(?: |/2|/4\.0\+?\\()|^(?:MSIE|Nut|Omniexpl|Opera/9\.64|pussycat|python|super happy|trackback/|user|website-|winnie)|[\\r\\n]|psyche|adwords|email|core-project|diamond|digger|ecollector|forum|^java[/ ]\\d\\.|LWP|Microsoft URL|Missigua|Movable Type|grub|httpproxy|Internet Explorer|isc systems|blogsearch|cherrypicker|casper|boston|comodo|feedfinder|mj12bot|cmsworldmap|diavol|dotbot|flicky|ia_archiver|kmccrew|libwww|planetwork|pycurl|skygrid|; Widows|a href|DTS agent|user-agent:|Gecko/25|hanzoweb|indy lib|MSIE 7\.0;\s*Windows NT 5\.2|murzillo|\.NET CLR 1\)|POE-Component-Client|turing mach|Ubuntu/9\.25|unspecified\\.mail|webaltbot|wise(?:nut)?bot|Windows NT [45]\.[01];\)|Windows XP 5|WordPress/4\.01|discobot|xedant|\\\\\\\\";
 
 // Case-insensitive regex for paths which we should automatically 403 on
 $regex_is_path_403 = "/\.(?:htaccess|svn|cvs|git|smushit-status|largefs)|\\.(?:as.x)\$|r\\d+shell|/wp-content/mysql\\.sql|/uploads/(?:temp|backupbuddy)_|/wp-content/plugins/tweet-blender/|^/sd_nginx_status|^/_wpeprivate|/php-?(?:my)?-?admin|/pma/?|^/readme.htm";

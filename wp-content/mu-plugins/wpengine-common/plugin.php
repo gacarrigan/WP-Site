@@ -318,7 +318,7 @@ class WpeCommon extends WpePlugin_common {
 		wp_enqueue_script('wpe-common', WPE_PLUGIN_URL.'/js/wpe-common.js',array('jquery','jquery-ui-core'));
 		
 		//setup some vars to be user in js/wpe-common.js
-		$popup_disabled = defined('WPE_POPUP_DISABLED')||constant('WPE_POPUP_DISABLED')?1:false;
+		$popup_disabled = defined('WPE_POPUP_DISABLED')||@constant('WPE_POPUP_DISABLED')?1:false;
 		wp_localize_script('wpe-common','wpe', array('account'=>PWP_NAME,'popup_disabled'=> $popup_disabled ) );
 		
 		// check for admin messages
@@ -394,6 +394,10 @@ class WpeCommon extends WpePlugin_common {
     
 	public function wpe_messaging_enabled() {
 		return ! defined('WPE_MESSAGES') || WPE_MESSAGES;
+	}
+    
+	public function is_readonly_filesystem() {
+		return defined('WPE_RO_FILESYSTEM') && WPE_RO_FILESYSTEM;
 	}
 
 	public function is_404() {
