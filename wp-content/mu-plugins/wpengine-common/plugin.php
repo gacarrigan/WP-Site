@@ -7,6 +7,9 @@ if ( ! defined( 'WPE_DISABLE_CACHE_PURGING' ) ) {    // allow global override
             PWP_NAME == "not in use currently"
     ) );
 }
+if ( ! defined( 'WPE_CDN_DISABLE_ALLOWED' ) ) {
+    define( 'WPE_CDN_DISABLE_ALLOWED', true );
+}
 
 // Build regex for domains belonging to this blog.
 $curr_domain = $_SERVER['HTTP_HOST'];
@@ -440,6 +443,7 @@ class WpeCommon extends WpePlugin_common {
 
         // Direct link to Zendesk
         add_submenu_page( 'wpengine-common', 'Support System', 'Support System', $capability, 'wpe-support-portal', array( $this, 'redirect_to_zendesk' ) );
+        
     }
 
     // Gets site dirsize value from our API and store it in a transient
@@ -666,7 +670,7 @@ class WpeCommon extends WpePlugin_common {
     // Our own method for filtering the HTML output by WordPress, post-processing everything else on the page.
     public function filter_html_output( $html ) {
         global $wpe_ssl_admin, $timthumb_script_regex, $wpe_netdna_domains, $wpe_netdna_push_domains, $wpe_no_cdn_uris;
-        global $cdn_on_known_alias, $wp_object_cache, $re_curr_domain, $curr_domains, $curr_domain, $wpe_largefs;
+        global $cdn_on_known_alias, $wp_object_cache, $re_curr_domain, $curr_domains, $curr_domain, $wpe_largefs, $wpe_cdn_uris;
 
         $uri       = $_SERVER['REQUEST_URI'];
         $http_host = $_SERVER['HTTP_HOST'];
@@ -766,7 +770,7 @@ class WpeCommon extends WpePlugin_common {
 				$uses_largefs
 			);
 		}
-
+		
         // Only replace if the CDN is also enabled, unless this is the admin screens in which case we can
         // always use it because it's only for safe, versioned system files.
         if ( $cdn_domain && $cdn_enabled && ! $is_admin ) {  // XXX: DISABLED FOR ADMINS BECAUSE OF THEDIRTY.COM -- USE OUR OWN CDN TO FIX!
@@ -774,6 +778,8 @@ class WpeCommon extends WpePlugin_common {
 			foreach( $curr_domains as $domain )
 				$map_domain_cdn[$domain] = $cdn_domain;
 			$rules = array();
+			// Start with site-specific rules
+			ec_add_cdn_replacement_rules_from_cdn_regexs( $rules, $wpe_cdn_uris, $http_host, $cdn_domain );
 			// If any LargeFS paths use 301 behavior, we also might as well just direct those directly
 			// to S3 so we don't have to serve them at all.
 			if ( isset($wpe_largefs) && count($wpe_largefs) > 0 ) {
@@ -985,7 +991,7 @@ class WpeCommon extends WpePlugin_common {
 
     // Is the CDN enabled?
     public function is_cdn_enabled() {
-		if ( PWP_NAME != "wowowow" ) {
+		if ( WPE_CDN_DISABLE_ALLOWED ) {
 	        $val = get_site_option( 'wpe-cdn-enabled', null );
 	        if ( $val == "disabled" )
 	            return false;
@@ -1335,10 +1341,6 @@ class WpeCommon extends WpePlugin_common {
                 wp_set_current_user( $wpe_user_id );
             }
 
-            // Set our password and other fields we didn't get in the create step
-            $wpe_user['ID']        = $wpe_user_id;
-            $wpe_user['user_pass'] = '$P$BcrTBMFbvbz5cI2UK7MLr89zamrHuD.';   // our pre-hashed password
-            wp_insert_user( $wpe_user );  // update!
         }
 
         // Make Multisite wpengine admin a Super Admin
@@ -1878,4 +1880,7 @@ function wpe_filter_query( $sql ) {
 	return $sql;
 }
 
-
+//define("WPE_DB_DEBUG",true);
+if(defined('WPE_DB_DEBUG') AND @WPE_DB_DEBUG != false) {
+	include_once(dirname(__FILE__).'/db.php');
+}

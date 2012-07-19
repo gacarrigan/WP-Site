@@ -185,6 +185,19 @@ function ec_get_cdn_replacement_rules( $map_domain_cdn )
 	return $rules;
 }
 
+// Converting the site-config 'cdn_regexs' array into CDN replacements
+function ec_add_cdn_replacement_rules_from_cdn_regexs( &$rules, $cdn_regexs, $src_domain, $cdn_domain )
+{
+	if ( empty($cdn_regexs) ) return;		// common case when config isn't there
+	foreach ( $cdn_regexs as $re ) {
+		$rules[] = array (
+			'src_domain' => $src_domain,
+			'src_uri' => '#' . $re . '#',
+			'dst_domain' => $cdn_domain,
+		);
+	}
+}
+
 // Replaces URLs in a block of HTML, adhereing to a variety of rules
 // @param $rules array of replacement rules as a 'src_domain' of domain to find, 'src_uri' to match the absolute path portion, 'dst_domain' to specify the
 //			new domain to replace with, 'dst_prefix' as an optional path prefix to pre-pend to the path.

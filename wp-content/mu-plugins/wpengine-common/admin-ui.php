@@ -81,7 +81,7 @@ if ( wpe_param( 'mirror-s3' ) ) {
 }
 
 // Process saving CDN info
-if ( wpe_param( 'cdn-control' ) ) {
+if ( WPE_CDN_DISABLE_ALLOWED && wpe_param( 'cdn-control' ) ) {
     check_admin_referer( PWP_NAME . '-config' );
 
 	// Enabled/Disabled
@@ -99,7 +99,7 @@ if ( wpe_param( 'cdn-control' ) ) {
     }
 }
 
-// Process saving CDN info
+// Process saving object cache status
 if ( wpe_param( 'object-cache-control' ) ) {
     check_admin_referer( PWP_NAME . '-config' );
 
@@ -338,6 +338,7 @@ if ( is_wpe_snapshot() ) {
 				        ?></ul>
 					</td>
 				</tr>
+	<? if ( WPE_CDN_DISABLE_ALLOWED ) { ?>
 				<tr valign="top">
 					<th scope="row"><label for="cdn-enable">CDN Activated</label></th>
 					<td>
@@ -356,6 +357,7 @@ if ( is_wpe_snapshot() ) {
 	                    <input type="submit" name="cdn-control" value="Save" class="button-primary" />
 	                </p></td>
 				</tr>
+	<? } ?>
 			</table>
             </form>
     <? } else { ?>
