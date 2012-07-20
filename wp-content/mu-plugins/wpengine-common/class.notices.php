@@ -112,9 +112,9 @@ class Wpe_Notices extends WpeCommon {
         $this->notices['read'] = get_user_meta($current_user->ID,'wpe_notices_read',true);
      
         // Leave immediately if nothing to do
-        if ( ! is_array( $this->notices ) )
+        if ( ! is_array( $this->notices ) OR empty($this->notices['messages']) )
             return false;
-
+	
         foreach ( $this->notices['messages'] as $notice ) {
 
 					if($notice == -1)

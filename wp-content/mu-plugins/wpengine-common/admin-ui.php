@@ -399,6 +399,12 @@ if ( is_wpe_snapshot() ) {
             You can always retrieve the most recent entries from the error log with the following links:
         </p>
         <p>
+            [<a href="<?= $this->get_access_log_url( 'current' ) ?>">
+                Access Log &mdash; Production Site &mdash; Current
+            </a>]<br>
+            [<a href="<?= $this->get_access_log_url( 'previous' ) ?>">
+                Access Log &mdash; Production Site &mdash; Previous
+            </a>]<br>
             [<a href="<?= $this->get_error_log_url( true ) ?>" target="_blank">
                 Error Log &mdash; Production Site
             </a>]<br>

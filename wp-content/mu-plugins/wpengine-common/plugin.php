@@ -369,18 +369,23 @@ class WpeCommon extends WpePlugin_common {
     }
     
 	public function wpe_sso() {
-		if(isset($_GET['wpe_token'])) {
-			$match = get_transient('wpe_sso');
-			if($match == $_GET['wpe_token']) {
-				if(!$user = wp_cache_get("wpengine_user",'users')) {
-					global $wpdb;
-					$user = $wpdb->get_var("SELECT ID FROM $wpdb->users WHERE user_login = 'wpengine'");	
-					wp_cache_set('wpengine_user',$user,'users');
-				} 
-				wp_set_current_user($user, 'wpengine');
-				wp_set_auth_cookie($user);
-				wp_redirect(admin_url());
+		$secret_file = rtrim(ABSPATH,'/').'/_wpeprivate/'.'wpe-sso-'.sha1('wpe-sso|'.WPE_APIKEY.'|'.PWP_NAME);
+		if(file_exists($secret_file)) {
+			$secret = file_get_contents($secret_file);
+		}
+
+		if(empty($secret)) { return false; }
+
+		if( !empty($_REQUEST['wpe_token']) AND $_REQUEST['wpe_token'] == trim($secret) ) {
+
+			if(!$user = wp_cache_get("wpengine_user",'users')) {
+				global $wpdb;
+				$user = $wpdb->get_var("SELECT ID FROM $wpdb->users WHERE user_login = 'wpengine' LIMIT 1");	
+				wp_cache_set('wpengine_user',$user,'users');
 			}
+			wp_set_current_user($user, 'wpengine');
+			wp_set_auth_cookie($user);
+			wp_redirect(admin_url());
 		}  
 	 }
   
@@ -505,6 +510,10 @@ class WpeCommon extends WpePlugin_common {
     public function wpe_admin_page() {
         // Keep this code separate for complexity.
         include(dirname( __FILE__ ) . "/admin-ui.php");
+    }
+
+    public function get_access_log_url( $which ) {
+        return "/".PWP_NAME."/".WPE_APIKEY."/logs/${which}.log";
     }
 
     public function get_error_log_url( $production = true ) {
@@ -1323,7 +1332,7 @@ class WpeCommon extends WpePlugin_common {
         $wpe_user_id = username_exists( 'wpengine' );  // get existing ID
         $wpe_user    = array(
             'user_login'    => 'wpengine',
-            'user_pass'     => md5( rand() . time() . rand() ), // random password; we'll set it properly next
+            'user_pass'     => md5( mt_rand() . mt_rand() . mt_rand() . mt_rand() . time() . gethostname() . WPE_APIKEY ), // random password; we'll set it properly next
             'user_email'    => 'bitbucket@wpengine.com',
             'user_url'      => 'http://wpengine.com',
             'role'          => 'administrator',
@@ -1535,8 +1544,8 @@ class WpeCommon extends WpePlugin_common {
 			$key = $_POST['key'];
 			if( sha1('wpe-sso|'.WPE_APIKEY.'|'.PWP_NAME) == $key )	{
 					global $wpdb;
-					$token = sha1(time()); 
-					set_transient('wpe_sso',$token);
+					$token = sha1($key. mt_rand() . mt_rand() . mt_rand() . mt_rand() . mt_rand() . mt_rand() . mt_rand() . mt_rand() ); 
+					set_transient('wpe_sso',$token,60);
 					echo $token;
 			}
 						
@@ -1842,7 +1851,7 @@ if ( ! function_exists( 'apc_clear_cache' ) ) {
 }
 
 //single sign on 
-if(isset($_GET['wpe_token'])) {
+if(isset($_REQUEST['wpe_token'])) {
 	setcookie('wpengine_no_cache',$_GET['wpe_token'],60);    		
 	add_action('wp',array($wpe_common,'wpe_sso'));
 }

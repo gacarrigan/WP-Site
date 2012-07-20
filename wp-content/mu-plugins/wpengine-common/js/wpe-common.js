@@ -26,23 +26,23 @@ jQuery(document).ready(function($) {
 	  	});	
 	  }
 	  
-		$('#doaction').click(function(e) { e.preventDefault(); });
-		$('#doaction').attr('onclick','wpe_validate_bulk_form();');
+	$('#doaction').click(function(e) { e.preventDefault(); });
+	$('#doaction').attr('onclick','wpe_validate_bulk_form();');
 		
   } else if( filename == 'plugin-install.php' && wpe.popup_disabled != 1) {
-  	
-		$('a.install-now').each(function() { 
+
+	$('a.install-now').each(function() { 
 			$(this).click(function(e) { e.preventDefault(); });
 			$(this).attr('onclick','wpe_upgrade_link("'+$(this).attr('href')+'");');
-	  });
+	});
 	
-		$('input[type="submit"]').click(function(e) {  
-			if( $(this).attr('name') != 'plugin-search-input' ) { 
-					e.preventDefault();
-					$(this).parent().attr('id','form-to-submit'); 
-					$('input[type="submit"]').attr('onclick','wpe_validate_install()');  	
-				}	
-			});
+	$('input[type="submit"]').live('click',function(e) {
+		if( $(this).attr('name') != 'plugin-search-input' ) { 
+			e.preventDefault();
+			$(this).parent().attr('id','form-to-submit'); 
+			$('input[type="submit"]').attr('onclick','wpe_validate_install()');  	
+		}	
+	});
   }
 
 });
