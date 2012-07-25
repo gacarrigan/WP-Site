@@ -91,6 +91,8 @@ $memcached_servers=array ();
 define('WPE_RO_FILESYSTEM',false);
 
 define('DISALLOW_FILE_MODS',FALSE);
+
+define('WPE_CDN_DISABLE_ALLOWED',true);
 define('WPLANG','');
 
 # WP Engine ID

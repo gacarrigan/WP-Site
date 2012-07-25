@@ -782,7 +782,7 @@ class WpeCommon extends WpePlugin_common {
 		
         // Only replace if the CDN is also enabled, unless this is the admin screens in which case we can
         // always use it because it's only for safe, versioned system files.
-        if ( $cdn_domain && $cdn_enabled && ! $is_admin ) {  // XXX: DISABLED FOR ADMINS BECAUSE OF THEDIRTY.COM -- USE OUR OWN CDN TO FIX!
+        if ( $cdn_domain && $cdn_enabled && ! $is_admin ) {  // XXX: DISABLED FOR ADMINS BECAUSE OF THESITEWHICHWILLNOTBENAMED.COM -- USE OUR OWN CDN TO FIX!
 			$map_domain_cdn = array();
 			foreach( $curr_domains as $domain )
 				$map_domain_cdn[$domain] = $cdn_domain;
