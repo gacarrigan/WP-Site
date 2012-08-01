@@ -14,24 +14,29 @@
 //first check if domain mapping is on 
 if( defined('SUNRISE') ) {
 
-	//if domain mapping is on lets add the appropriate actions
+	// if domain mapping is on let's add the appropriate actions
 	add_action('admin_init','wpe_api_domain_manage');
 
 	/*
  	* Domain Mapping Integration
  	*/
 	function wpe_api_domain_manage($domain) {
+        
+        // Ensure we have some default values, in case they aren't set (Prevents PHP Notices)
+        $page    = isset( $_GET['page'] )       ? $_GET['page']       : '';
+        $action  = isset( $_POST['action'] )    ? $_POST['action']    : '';
+        $request = isset( $_REQUEST['action'] ) ? $_REQUEST['action'] : '';
 
 		//make sure we're on a domain mapping plugin
-		if( $_GET['page'] == 'dm_domains_admin' OR $_GET['page'] == 'domainmapping') {
+		if( $page == 'dm_domains_admin' OR $page == 'domainmapping') {
 			
 			//don't do anything if we're editing		
-			if($_POST['action'] == 'edit') {
+			if($action == 'edit') {
 				
 				//maybe oneday we'll do something
 			
 			//save or add the domain	
-			} elseif(!empty($_POST) AND ( $_POST['action'] == 'save' OR $_POST['action'] == 'add') ) {
+			} elseif(!empty($_POST) AND ( $action == 'save' OR $action == 'add') ) {
 
 				//validate the referrer
 				check_admin_referer('domain_mapping');
@@ -61,7 +66,7 @@ if( defined('SUNRISE') ) {
 				}
 			
 			//delete a domain
-			} elseif( $_REQUEST['action'] == 'delete' OR $_REQUEST['action'] == 'del' ) {
+			} elseif( $request == 'delete' OR $request == 'del' ) {
 				
 				//check_admin_referer('domain_mapping');
 				//load the api class

@@ -259,6 +259,7 @@ function wpe_simulate_wpp_get_mostpopular( $params ) {
 
 class WpeCommon extends WpePlugin_common {
 	public $is_widget = false;
+    private $already_emitted_powered_by = false;
 
     public function get_default_options() {
         return array(
@@ -321,7 +322,7 @@ class WpeCommon extends WpePlugin_common {
 		wp_enqueue_script('wpe-common', WPE_PLUGIN_URL.'/js/wpe-common.js',array('jquery','jquery-ui-core'));
 		
 		//setup some vars to be user in js/wpe-common.js
-		$popup_disabled = defined('WPE_POPUP_DISABLED')||@constant('WPE_POPUP_DISABLED')?1:false;
+		$popup_disabled = defined( 'WPE_POPUP_DISABLED' ) ? (bool) WPE_POPUP_DISABLED : false;
 		wp_localize_script('wpe-common','wpe', array('account'=>PWP_NAME,'popup_disabled'=> $popup_disabled ) );
 		
 		// check for admin messages
@@ -546,7 +547,7 @@ class WpeCommon extends WpePlugin_common {
 		
 		// Authenticated, so set the cookie properly.  No need if it's already set properly.
 		$cookie_value = md5('wpe_auth_salty_dog|'.WPE_APIKEY);
-		if ( @$_COOKIE[$wpe_cookie] != $cookie_value )
+		if ( isset( $_COOKIE[$wpe_cookie] ) && $_COOKIE[$wpe_cookie] != $cookie_value )
 			setcookie($wpe_cookie,$cookie_value,0,'/');
 	}
 	
