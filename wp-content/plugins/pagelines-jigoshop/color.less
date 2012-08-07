@@ -1,0 +1,82 @@
+@light-base = lighten( @pl-base, @invert-light  );
+@dark-base = darken( @pl-base, @invert-dark  );
+
+div.product #tabs ul.tabs a, div.product #tabs ul.tabs li.active a{
+	color: @pl-text;
+}
+
+/* Tabs */ 
+div.product #tabs ul.tabs {
+	background-color: @dark-base;
+}
+div.product #tabs ul.tabs a {
+	background: darken(@dark-base, @invert-dark);
+}
+
+#page div.product #tabs .panel {
+	border: 1px solid @dark-base;
+	border-top: 0;
+}
+
+div.product #tabs ul.tabs li.active a{
+	background: @pl-base;
+}
+
+/* Forms */
+form .form-row input.input-text, #content .form-row input.input-text, form .form-row textarea, #content .form-row textarea, input#coupon_code {
+	background-color: @dark-base;
+	color: fadeout(@pl-text, 30%);
+	border: inset 1px solid darken(@dark-base, 8); 
+}
+
+/* Shop Tables */
+table.shop_table{
+	border: 1px solid darken(@dark-base, 8); 
+}
+
+table.shop_table td {
+	border-top: 1px solid darken(@dark-base, 8); 
+}
+
+table.shop_table th,.products li strong {
+	color: lighten(@pl-text, 50);
+}
+
+/* From Green to Default PL Link */
+span.onsale {
+	background-color: @pl-link;
+}
+.products li .price,div.product p.price,.stock  {
+	color: @pl-link;
+}
+span.price:hover {
+	color: fadeout(@pl-link, 20%);
+}
+
+
+/* Quantity Buttons */
+.quantity input.plus, .quantity input.minus  {
+	background-color: @dark-base;
+	border: 1px solid darken(@dark-base, 8); 
+	color: @pl-text !important;
+}
+
+.quantity input.plus:hover, .quantity input.minus:hover {
+	background-color: darken(@dark-base, 8);
+	border: 1px solid darken(@dark-base, 12); 
+} 
+
+
+/* Payment  */
+#payment {
+	background-color: @dark-base;
+}
+
+#payment div.payment_box {
+	background-color: lighten(@dark-base,4);
+}
+
+/* Images */
+img.attachment-shop_tiny {
+	border:1px solid darken(@dark-base, 12);
+}

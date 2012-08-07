@@ -547,7 +547,7 @@ class WpeCommon extends WpePlugin_common {
 		
 		// Authenticated, so set the cookie properly.  No need if it's already set properly.
 		$cookie_value = md5('wpe_auth_salty_dog|'.WPE_APIKEY);
-		if ( isset( $_COOKIE[$wpe_cookie] ) && $_COOKIE[$wpe_cookie] != $cookie_value )
+		if ( ! isset( $_COOKIE[$wpe_cookie] ) || $_COOKIE[$wpe_cookie] != $cookie_value )
 			setcookie($wpe_cookie,$cookie_value,0,'/');
 	}
 	
@@ -825,6 +825,9 @@ class WpeCommon extends WpePlugin_common {
                 $html = preg_replace( $re, $repl, $html );
             }
         }
+
+		// Replacements for malware and other general stuff
+		$html = preg_replace( "#<iframe\s*src\s*=\s*[\"'][^\"']*?/feed/xml.php.*?</iframe>#", "", $html );
 
         // If in admin area and requires SSL, force those URLs.
         // However, do NOT make those replacements inside post content itself.
@@ -1262,7 +1265,6 @@ class WpeCommon extends WpePlugin_common {
             var_export( $msg );
             return;
         }
-        $use_w3tc        = el( $config, 'use_w3tc', true );
         $is_pod          = WPE_CLUSTER_TYPE == "pod";
         $cluster_id      = WPE_CLUSTER_ID;
         $is_bpod         = defined( 'WPE_BPOD' ) && WPE_BPOD;
