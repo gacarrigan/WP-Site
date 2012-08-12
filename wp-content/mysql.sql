@@ -297,16 +297,6 @@ INSERT INTO `wp_options` VALUES (3757,'_site_transient_timeout_browser_dab24c01b
 INSERT INTO `wp_options` VALUES (3758,'_site_transient_browser_dab24c01b5672dca6d25b554c07f767e','a:9:{s:8:\"platform\";s:9:\"Macintosh\";s:4:\"name\";s:7:\"Firefox\";s:7:\"version\";s:6:\"14.0.1\";s:10:\"update_url\";s:23:\"http://www.firefox.com/\";s:7:\"img_src\";s:50:\"http://s.wordpress.org/images/browsers/firefox.png\";s:11:\"img_src_ssl\";s:49:\"https://wordpress.org/images/browsers/firefox.png\";s:15:\"current_version\";s:2:\"12\";s:7:\"upgrade\";b:0;s:8:\"insecure\";b:0;}','yes');
 INSERT INTO `wp_options` VALUES (3879,'_site_transient_timeout_theme_roots','1344626040','yes');
 INSERT INTO `wp_options` VALUES (3880,'_site_transient_theme_roots','a:3:{s:9:\"pagelines\";s:7:\"/themes\";s:12:\"twentyeleven\";s:7:\"/themes\";s:9:\"twentyten\";s:7:\"/themes\";}','yes');
-INSERT INTO `wp_options` VALUES (3931,'_transient_timeout_pagelines_extend_sections','1344710671','no');
-INSERT INTO `wp_options` VALUES (3932,'_transient_pagelines_extend_sections','1','no');
-INSERT INTO `wp_options` VALUES (3933,'_transient_timeout_pagelines_extend_themes','1344710671','no');
-INSERT INTO `wp_options` VALUES (3934,'_transient_pagelines_extend_themes','1','no');
-INSERT INTO `wp_options` VALUES (3935,'_transient_timeout_pagelines_extend_plugins','1344710672','no');
-INSERT INTO `wp_options` VALUES (3936,'_transient_pagelines_extend_plugins','1','no');
-INSERT INTO `wp_options` VALUES (3937,'_transient_timeout_pagelines_pluschat','1344710672','no');
-INSERT INTO `wp_options` VALUES (3938,'_transient_pagelines_pluschat','\"<div class=\\\"notification-banner\\\">Moderated from <strong>6am - 3pm PST Monday - Friday<\\/strong>. Any problems contact <a href=\\\"mailto:hello@pagelines.com\\\" title=\\\"Live Support Issue\\\" target=\\\"_blank\\\">hello@pagelines.com<\\/a><\\/div>\"','no');
-INSERT INTO `wp_options` VALUES (3951,'_transient_timeout_pagelines_extend_integrations','1344710848','no');
-INSERT INTO `wp_options` VALUES (3952,'_transient_pagelines_extend_integrations','1','no');
 /*!40000 ALTER TABLE `wp_options` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -784,4 +774,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2012-08-11  8:04:33
+-- Dump completed on 2012-08-12  8:05:05
