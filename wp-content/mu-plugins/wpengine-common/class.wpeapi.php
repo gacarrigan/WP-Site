@@ -39,7 +39,7 @@ class WpeAPINotices extends WpeAPI
 
 class WpeAPI extends Wp_Http {
 	
-	public $request_uri = 'http://api.wpengine.com/1.2/index.php';
+	public $request_uri = 'https://api.wpengine.com/1.2/index.php';
 	public $args = array();	
 	public $resp = '';
 	public $is_error;

@@ -19,7 +19,7 @@ $regex_is_user_agent_mobile_group = "android|iphone|ipod|itouch";
 $regex_is_user_agent_ipad_group = '\bipad\b';
 
 // Case-insensitive regex for user agents which we should automatically 403 on
-$regex_is_user_agent_403 = "^\W|^Mozilla(?: |/2|/4\.0\+?\\()|^(?:LWP|MSIE|Nut|Omniexpl|Opera/9\.64|pussycat|python|super happy|trackback/|user|website-|winnie)|[\\r\\n]|psyche|adwords|email|core-project|diamond|digger|ecollector|forum|^java[/ ]\\d\\.|Microsoft URL|Missigua|Movable Type|grub|httpproxy|Internet Explorer|isc systems|blogsearch|cherrypicker|casper|boston|comodo|feedfinder|mj12bot|cmsworldmap|diavol|dotbot|flicky|ia_archiver|kmccrew|libwww|planetwork|pycurl|skygrid|; Widows|a href|DTS agent|user-agent:|Gecko/25|hanzoweb|indy lib|murzillo|\.NET CLR 1\)|POE-Component-Client|turing mach|Ubuntu/9\.25|unspecified\\.mail|webaltbot|wise(?:nut)?bot|Windows NT [45]\.[01];\)|Windows XP 5|WordPress/4\.01|discobot|xedant|\\\\\\\\";
+$regex_is_user_agent_403 = "^\W|^Mozilla(?: |/2|/4\.0\+?\\()|^(?:LWP|MSIE|Nut|Omniexpl|Opera/9\.64|pussycat|python|super happy|trackback/|user|website-|winnie)|[\\r\\n]|psyche|adwords|\bemail|autoemailspider|core-project|diamond|digger|ecollector|forum|^java[/ ]\\d\\.|Microsoft URL|Missigua|Movable Type|grub|httpproxy|Internet Explorer|isc systems|blogsearch|cherrypicker|maxpoint|casper|boston|feedfinder|mj12bot|cmsworldmap|diavol|dotbot|flicky|ia_archiver|kmccrew|libwww|planetwork|pycurl|skygrid|; Widows|a href|DTS agent|user-agent:|Gecko/25|hanzoweb|indy lib|murzillo|\.NET CLR 1\)|POE-Component-Client|turing mach|Ubuntu/9\.25|unspecified\\.mail|webaltbot|wise(?:nut)?bot|Windows NT [45]\.[01];\)|Windows XP 5|WordPress/4\.01|discobot|xedant|\\\\\\\\";
 
 // Case-insensitive regex for paths which we should automatically 403 on
 $regex_is_path_403 = "/\.(?:htaccess|svn|cvs|git|smushit-status|largefs)|\\.(?:as.x)\$|r\\d+shell|/wp-content/mysql\\.sql|/uploads/(?:temp|backupbuddy)_|/wp-content/plugins/tweet-blender/|^/sd_nginx_status|^/_wpeprivate|/php-?(?:my)?-?admin|/pma/?|^/readme.htm";
@@ -28,10 +28,10 @@ $regex_is_path_403 = "/\.(?:htaccess|svn|cvs|git|smushit-status|largefs)|\\.(?:a
 $regex_is_qstr_403 = "(?:\\<|%3c).*script.*(?:\\>|%3e)|\\b(?:GLOBALS|_REQUEST|_GET|_POST|_COOKIE)(?:=|\[|\%[0-9A-Z]{0,2})";
 
 // Case-insensitive regex for paths which we should automatically 403 on, but ONLY IF the connection is NOT TRUSTED
-$regex_is_path_403_for_untrusted = ".*?/uploadify";
+$regex_is_path_403_for_untrusted = ".*?/uploadify.*(?<!\.js|\.css)\$";
 
 // Regex for whether a path is a feed
-$regex_is_path_feed = "/(?:atom(?:/|\\.xml)?(?:/index.php)?|feed(?:/|\\.xml|/rss2?/?|/rdf/?|/podcast/?)?(?:/index\\.php|.+\\.xml)?|index\\.rdf)\$";
+$regex_is_path_feed = "/(?:atom(?:/|\\.xml)?(?:/index.php)?|feed(?:/|\\.xml|/rss2?\b/?|/rdf/?|/podcast/?)?(?:/index\\.php|.+\\.xml)?|index\\.rdf)\$";
 
 // Regex for whether a path corresponds to a protected WordPress admin area
 $regex_is_path_wp_admin = "/wp-(?:admin|[^/]+\\.php\$)";
@@ -95,7 +95,7 @@ $dynamic_long_cachable_regex = $regex_is_path_dynamic_long_cache;
 $wordpress_admin_script_regex = "/wp-(admin/.|admin\$|[^/]+\\.php\$)";
 
 $static_dirs_nginx_regex       = "^/(?:wp-content/(?:themes|plugins|uploads|wptouch-data|gallery)|wp-includes|wp-admin)/";
-$static_dirs_cdn_regex         = "/(?:wp-content/(?:themes|plugins|uploads|files|wptouch-data|gallery)|wp-includes|wp-admin|files|images|img|css|js|fancybox)/";
+$static_dirs_cdn_regex         = "/(?:wp-content/(?:themes|plugins|uploads|files|wptouch-data|gallery)|wp-includes|wp-admin|files|images|img|css|js|fancybox|assets)/";
 
 // Removed sitemap.xml from this list because WordPress and other plugins can generate automatically.
 $static_no_backend_regexs = array (
@@ -283,7 +283,7 @@ function ec_get_non_core_backtrace( $backtrace = null )
 	if ( ! $backtrace ) {
 		$backtrace = debug_backtrace();
 	}
-	
+
 	// Scan for things not in core and not in our own plugin
 	for( $k=0 ; $k<count($backtrace) ; $k++ ) {
 		if ( ! isset($backtrace[$k]["file"]) ) continue;

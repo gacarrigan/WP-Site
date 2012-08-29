@@ -34,7 +34,7 @@ define('FS_CHMOD_FILE',0664);
 
 define('PWP_ROOT_DIR','/nas/wp');
 
-define('WPE_APIKEY','71bce9462c805a27adcc12b6eb5c076642b71a71');
+define('WPE_APIKEY','62a41b35f9047f73a2ded8b321bb8a32a844f26e');
 
 define('WPE_FOOTER_HTML',"<a href=\"http://wpengine.com/\" target=\"_blank\">Fast WordPress Hosting</a>");
 

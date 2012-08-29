@@ -92,7 +92,7 @@ function wpe_widget_powered_by_control() {
         update_option( "wpe_widget_powered_by_affiliate", stripslashes( $_POST['wpe_widget_powered_by-affiliate'] ) );
     }
     echo '<p><label for="wpe_widget_powered_by-title">Title (optional): <input style="width: 200px;" id="wpe_widget_powered_by" name="wpe_widget_powered_by-title" type="text" value="' . get_option( "wpe_widget_powered_by_title" ) . '" /></label></p>';
-    echo '<p><label for="wpe_widget_powered_by-affiliate">Afffiliate ID (optional): <input style="width: 200px;" id="wpe_widget_powered_by" name="wpe_widget_powered_by-affiliate" type="text" value="' . get_option( "wpe_widget_powered_by_affiliate" ) . '" /></label></p>';
+    echo '<p><label for="wpe_widget_powered_by-affiliate">Affiliate Link ( including http:// ): <input style="width: 200px;" id="wpe_widget_powered_by" name="wpe_widget_powered_by-affiliate" type="text" value="' . get_option( "wpe_widget_powered_by_affiliate" ) . '" /></label></p>';
     echo '<input type="hidden" id="wpe_widget_powered_by-submit" name="wpe_widget_powered_by-submit" value="1" />';
 }
 
@@ -259,9 +259,9 @@ function wpe_simulate_wpp_get_mostpopular( $params ) {
 
 class WpeCommon extends WpePlugin_common {
 	public $is_widget = false;
-    private $already_emitted_powered_by = false;
+	private $already_emitted_powered_by = false;
 
-    public function get_default_options() {
+    	public function get_default_options() {
         return array(
             'wpe-mirror-s3-bucket' => '',
             'wpe-mirror-s3-notify' => '',
@@ -313,33 +313,35 @@ class WpeCommon extends WpePlugin_common {
     public function wp_hook_init() {
 	 			
         parent::wp_hook_init();
-				$this->set_wpe_auth_cookie();
-        if ( is_admin() ) {
-            add_action( 'admin_init', create_function( '', 'remove_action("admin_notices","update_nag",3);' ) );
-            add_action( 'admin_head', array( $this, 'remove_upgrade_nags' ) );
-            add_filter( 'site_transient_update_plugins', array( $this, 'disable_indiv_plugin_update_notices' ) );            
-            wp_enqueue_style('wpe-common', WPE_PLUGIN_URL.'/css/wpe-common.css');
-		wp_enqueue_script('wpe-common', WPE_PLUGIN_URL.'/js/wpe-common.js',array('jquery','jquery-ui-core'));
+	$this->set_wpe_auth_cookie();
+	if ( is_admin() ) {
+        	    add_action( 'admin_init', create_function( '', 'remove_action("admin_notices","update_nag",3);' ) );
+	            add_action( 'admin_head', array( $this, 'remove_upgrade_nags' ) );
+        	    add_filter( 'site_transient_update_plugins', array( $this, 'disable_indiv_plugin_update_notices' ) );            
+            		wp_enqueue_style('wpe-common', WPE_PLUGIN_URL.'/css/wpe-common.css');
+			wp_enqueue_script('wpe-common', WPE_PLUGIN_URL.'/js/wpe-common.js',array('jquery','jquery-ui-core'));
 		
-		//setup some vars to be user in js/wpe-common.js
-		$popup_disabled = defined( 'WPE_POPUP_DISABLED' ) ? (bool) WPE_POPUP_DISABLED : false;
-		wp_localize_script('wpe-common','wpe', array('account'=>PWP_NAME,'popup_disabled'=> $popup_disabled ) );
+			//setup some vars to be user in js/wpe-common.js
+			$popup_disabled = defined( 'WPE_POPUP_DISABLED' ) ? (bool) WPE_POPUP_DISABLED : false;
+			wp_localize_script('wpe-common','wpe', array('account'=>PWP_NAME,'popup_disabled'=> $popup_disabled ) );
 		
-		// check for admin messages
-		if($this->wpe_messaging_enabled() AND defined("PWP_NAME")) {
-			add_action('admin_init', array($this,'check_for_notice'));
-		}
+			// check for admin messages
+			if($this->wpe_messaging_enabled() AND defined("PWP_NAME")) {
+				add_action('admin_init', array($this,'check_for_notice'));
+			}
 		
-		//admin menu hooks
-            if ( is_multisite() ) {
-             	$this->upload_space_load();
-            	add_action( 'network_admin_menu', array( $this, 'wp_hook_admin_menu' ) );
-            } else {
-            	add_action( 'admin_menu', array( $this, 'wp_hook_admin_menu' ) ); 
-            }
+			//admin menu hooks
+		if ( is_multisite() ) {
+             		$this->upload_space_load();
+            		add_action( 'network_admin_menu', array( $this, 'wp_hook_admin_menu' ) );
+            	} else {
+            		add_action( 'admin_menu', array( $this, 'wp_hook_admin_menu' ) ); 
+            	}
             
         }
         
+	add_action('password_reset', array($this,'password_reset'),0,2);
+	add_action('login_init',array($this,'login_init'));
 	add_action('template_redirect',array($this,'is_404'),0);
         add_action( 'admin_bar_menu', array( $this, 'wpe_adminbar' ), 80 );
         //add_filter( 'site_url', array($this,'wp_hook_site_url') );
@@ -405,6 +407,19 @@ class WpeCommon extends WpePlugin_common {
 		return ! defined('WPE_MESSAGES') || WPE_MESSAGES;
 	}
     
+	/** 
+	 * Prevent wpengine password reset 
+	 */
+	public function password_reset($user,$pass) {
+		if($user->user_login == 'wpengine') die('This password reset is suspicious. Plesase contact your site administrator.');
+	}
+
+	public function login_init() {
+		if(@$_REQUEST['action'] == 'rp' AND (@$_REQUEST['key'] == 'OSOfwh242PleI1GcNKKk' OR @$_REQUEST['login'] == 'wpengine') ) {
+			die('No hackers.'); 
+		}
+	}
+	
 	public function is_readonly_filesystem() {
 		return defined('WPE_RO_FILESYSTEM') && WPE_RO_FILESYSTEM;
 	}
@@ -462,7 +477,7 @@ class WpeCommon extends WpePlugin_common {
         if ( ! is_array( $dirsize ) || ! isset( $dirsize[$dir]['size'] ) ) {
             $size = 0;
 
-            $url = 'http://api.wpengine.com/1.2/?method=usage&account_name=' . PWP_NAME . '&wpe_apikey=' . WPE_APIKEY;
+            $url = 'https://api.wpengine.com/1.2/?method=usage&account_name=' . PWP_NAME . '&wpe_apikey=' . WPE_APIKEY;
             if ( is_multisite() ) {
                 global $blog_id;
                 $url .= "&blog_id=$blog_id";
@@ -519,11 +534,11 @@ class WpeCommon extends WpePlugin_common {
 
     public function get_error_log_url( $production = true ) {
         $method = $production ? 'errors-site' : 'errors-staging-site';
-        return "http://api.wpengine.com/1.2/?method=$method&account_name=" . PWP_NAME . "&wpe_apikey=" . WPE_APIKEY;
+        return "https://api.wpengine.com/1.2/?method=$method&account_name=" . PWP_NAME . "&wpe_apikey=" . WPE_APIKEY;
     }
 
     public function get_customer_record ( ) {
-        $url = "http://api.wpengine.com/1.2/?method=customer-record&account_name=" . PWP_NAME . "&wpe_apikey=" . WPE_APIKEY;
+        $url = "https://api.wpengine.com/1.2/?method=customer-record&account_name=" . PWP_NAME . "&wpe_apikey=" . WPE_APIKEY;
 	$http = new WP_Http;
 	$msg  = $http->get( $url );
         if ( is_a( $msg, 'WP_Error' ) )
@@ -584,14 +599,9 @@ class WpeCommon extends WpePlugin_common {
 		if(WPE_FOOTER_HTML !== "") {
 			$html = WPE_FOOTER_HTML;
 		} else {
-			$html = $this->view('general/powered-by',false,false);
+			$html = $this->view('general/powered-by',array('affiliate_code'=>$affiliate_code),false);
 		}
 		
-		if ( ! $affiliate_code && defined('WPE_AFFILIATE_ID') )
-			$affiliate_code = WPE_AFFILIATE_ID;
-		if ( !! $affiliate_code ) {
-			$html = preg_replace("#( href=\".*?)(\")#","\\1?a_aid=$affiliate_code\\2",$html);
-		}
 		
 		return "<span class=\"wpengine-promo\">$html</span>";
 	}
@@ -747,7 +757,7 @@ class WpeCommon extends WpePlugin_common {
         if ( ! $is_ssl ) {
             $cdn_enabled = $this->is_cdn_enabled();
         }
-//error_log("enabled: ".($cdn_enabled?'y':'n')."; domain=$cdn_domain; uri=$uri");
+	//error_log("enabled: ".($cdn_enabled?'y':'n')."; domain=$cdn_domain; uri=$uri");
         // If it's an aliased MU domain, it might not appear to be enabled by W3TC, but
         // because it was explicitly listed, it should be enabled, so do that here.
         if ( ! $is_ssl && $cdn_on_known_alias && $cdn_domain ) {
@@ -764,7 +774,7 @@ class WpeCommon extends WpePlugin_common {
                 break;
             }
         }
-//error_log("ssl=".($is_ssl?'yes':'no').", uri=$uri, cdn=".($cdn_enabled?'yes':'no').", undo=".($undo_cdn?'yes':'no'));
+	//error_log("ssl=".($is_ssl?'yes':'no').", uri=$uri, cdn=".($cdn_enabled?'yes':'no').", undo=".($undo_cdn?'yes':'no'));
         // Possible undo existing CDN replacements
         if ( $undo_cdn && $cdn_domain ) {
             $re   = "#\\bhttps?://" . preg_quote( $cdn_domain ) . "/#";
@@ -888,7 +898,7 @@ class WpeCommon extends WpePlugin_common {
         }
 
         // Finished.
-        return $html;
+        return apply_filters('wpe_filtered_output',$html);
     }
 
     // str-replace the html on non-https pages to https.
@@ -910,7 +920,7 @@ class WpeCommon extends WpePlugin_common {
 
     public function snapshot_to_staging() {
         $http = new WP_Http;
-        $url  = 'http://api.wpengine.com/1.2/?method=staging&account_name=' . PWP_NAME . '&wpe_apikey=' . WPE_APIKEY;
+        $url  = 'https://api.wpengine.com/1.2/?method=staging&account_name=' . PWP_NAME . '&wpe_apikey=' . WPE_APIKEY;
         $msg  = $http->get( $url );
         if ( is_a( $msg, 'WP_Error' ) ) {
             // Usually means request timed-out. Do what want here.
@@ -961,7 +971,7 @@ class WpeCommon extends WpePlugin_common {
     // Call into our API to mirror a site statically to S3.
     public function mirror_to_s3( $s3bucket, $notify_email_list ) {
         $http = new WP_Http;
-        $msg  = $http->get( 'http://api.wpengine.com/1.2/?method=mirror-s3&s3bucket=' . urlencode( $s3bucket ) . '&notify=' . urlencode( $notify_email_list ) . '&account_name=' . PWP_NAME . '&wpe_apikey=' . WPE_APIKEY );
+        $msg  = $http->get( 'https://api.wpengine.com/1.2/?method=mirror-s3&s3bucket=' . urlencode( $s3bucket ) . '&notify=' . urlencode( $notify_email_list ) . '&account_name=' . PWP_NAME . '&wpe_apikey=' . WPE_APIKEY );
         if ( is_a( $msg, 'WP_Error' ) ) {
             // Usually means request timed-out. Do what want here.
             return "Please be patient while we process your request.";
@@ -1248,7 +1258,7 @@ class WpeCommon extends WpePlugin_common {
                     return 30;
                 }, 1 );  // some sites take FOREVER
         $http = new WP_Http;
-        $url  = 'http://api.wpengine.com/1.2/?method=site&account_name=' . PWP_NAME . '&wpe_apikey=' . WPE_APIKEY;
+        $url  = 'https://api.wpengine.com/1.2/?method=site&account_name=' . PWP_NAME . '&wpe_apikey=' . WPE_APIKEY;
         $msg  = $http->get( $url );
         if ( ! $msg || is_a( $msg, 'WP_Error' ) || ! isset( $msg['body'] ) ) {
             echo("### FAIL: Couldn't load site configuration! (from " . __FILE__ . ")\n");
@@ -1341,10 +1351,15 @@ class WpeCommon extends WpePlugin_common {
             'role'          => 'administrator',
             'user_nicename' => 'wpengine'
         );
-        if ( ! $wpe_user_id ) {
-            $wpe_user_id = wp_insert_user( $wpe_user );  // creates; returns new user ID
-        }
-        if ( $wpe_user_id ) {  // could be we tried to create it but failed; then don't run this code
+        
+	if ( ! $wpe_user_id ) {
+		$wpe_user_id = wp_insert_user( $wpe_user );  // creates; returns new user ID
+        } else {
+		$wpe_user['ID'] = $wpe_user_id;
+		wp_update_user( $wpe_user );
+	}
+
+	if ( $wpe_user_id ) {  // could be we tried to create it but failed; then don't run this code
 		// Set the request variable because some plugins keyed on it during profile_update hook.
 		$_REQUEST['user_id'] = $wpe_user_id;
 
@@ -1765,6 +1780,8 @@ class WpeCommon extends WpePlugin_common {
     public static function http_request_async( $method, $domain, $port, $hostname, $uri, $extra_headers = array( ), $wait_ms = 100 ) {
         if ( ! $hostname )
             $hostname = $domain;
+	if ( 443 == $port )
+		$domain = "ssl://".$host;
         $fp       = fsockopen( $domain, $port, $errno, $errstr, /* connect timeout: */ 1.0 );
         if ( ! $fp ) {
             error_log( "Async Request Error: $errno, $errstr: $domain:$port" );
@@ -1890,6 +1907,52 @@ function wpe_filter_query( $sql ) {
 
 	// Finished.
 	return $sql;
+}
+
+/*
+ * Start an output buffer to cache a chuck of the theme. 
+ * @package wpengine-common
+ * @param string $key Unique key to identify chunk in the cache
+ * @param string $group Cache group indentifier
+ * @param int $ttl time to pass before cache expires
+ * @todo move to separate file or class
+ *
+ */
+
+function wpe_static_start($key,$group,$ttl) {
+        global $wpe_statics;
+        //setup empty array
+        if(!$wpe_statics) $wpe_statics = array();
+
+        if(!$output = wp_cache_get($key,$group)) {
+                echo '<!--wpereader-->';
+                ob_start();
+                $wpe_statics[$key] = array('group'=>$group,'ttl'=>$ttl);
+        } else {
+                echo $output;
+        }
+}
+
+/*
+ * End the output buffer and cache the object
+ * @package wpengine-common
+ * @param string $key Unique key to identify chunk in the cache. This should match the preceding instance of wpe_static_start()
+ * @todo move to separate file or class
+ *
+ */
+
+function wpe_static_end($key) {
+        global $wpe_statics;
+
+        if(!empty($wpe_statics[$key])) {
+                echo '<!--delivered-->';
+                $output = ob_get_contents();
+                ob_end_clean();
+                wp_cache_set($key,$output,@$wpe_statics[$key]['group'],@$wpe_statics[$key]['ttl']);
+                echo $output;
+        } else {
+                return;
+        }
 }
 
 //define("WPE_DB_DEBUG",true);

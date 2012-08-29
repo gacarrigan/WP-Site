@@ -1,6 +1,10 @@
 <?php
 global $wpe_netdna_domains, $memcached_servers;
 
+//setup form url
+$form_url = parse_url($_SERVER['REQUEST_URI']);
+$form_url = add_query_arg(array('page'=>'wpengine-common'),$form_url['path']);
+
 if ( ! current_user_can( 'manage_options' ) )
     return false;
 
@@ -136,7 +140,7 @@ if ( wpe_param( 'advanced' ) ) {
 
 // Fix file permissions
 if ( wpe_param( 'file-perms' ) ) {
-        $url = "http://api.wpengine.com/1.2/?method=file-permissions&account_name=" . PWP_NAME . "&wpe_apikey=" . WPE_APIKEY;
+        $url = "https://api.wpengine.com/1.2/?method=file-permissions&account_name=" . PWP_NAME . "&wpe_apikey=" . WPE_APIKEY;
 	$http = new WP_Http;
 	$msg  = $http->get( $url );
         if ( is_a( $msg, 'WP_Error' ) )
@@ -190,8 +194,7 @@ if ( is_wpe_snapshot() ) {
             <li>Your SFTP access (<i>not FTP!</i>) is at hostname <code><?= $site_info->sftp_host ?></code> on port <code><?= $site_info->sftp_port ?></code>. Username and password starts out the same as you specified when you signed up for your blog (which was <code><?= $site_info->name ?></code>), but can be <a href="https://my.wpengine.com/sftp_users" target="_blank">changed here</a>.</li>
         </ul>
         <hr/>
-
-        <form method="post" name="options" action="<?php echo esc_url( $_SERVER['REQUEST_URI'] ); ?>">
+        <form method="post" name="options" action="<?php echo esc_url($form_url); ?>">
 
             <h2>Blog Staging Area</h2>
 
@@ -251,7 +254,7 @@ if ( is_wpe_snapshot() ) {
         <p>
             You use this button to purge all caches -- on our caching proxies, on the CDN, in memcached, everything.
         </p>
-        <form method="post" name="options" action="<?php echo esc_url( $_SERVER['REQUEST_URI'] ); ?>">
+        <form method="post" name="options" action="<?php echo esc_url($form_url); ?>">
     		<?php wp_nonce_field( PWP_NAME . '-config' ); ?>
 			<table class="form-table">
 				<? if ( count($memcached_servers) ) { ?>
@@ -305,7 +308,7 @@ if ( is_wpe_snapshot() ) {
                 See <a href="http://wpengine.com/faq/blog-s3/" target="_blank">this web page</a> for more information
                 about the tradeoffs of using S3 to serve your site.
             </p>
-            <form method="post" name="options" action="<?php echo esc_url( $_SERVER['REQUEST_URI'] ); ?>">
+            <form method="post" name="options" action="<?php echo esc_url( $form_url ); ?>">
                 <p class="submit submit-top">
         <?php wp_nonce_field( PWP_NAME . '-config' ); ?>
                     <input type="submit" name="mirror-s3" value="Mirror to S3" class="button-primary"/>
@@ -321,7 +324,7 @@ if ( is_wpe_snapshot() ) {
             <b>Configure your CDN</b> (described <a href="http://wpengine.com/faq/what-is-a-cdn/" target="_blank">here</a>).
         </p>
     <? if ( isset( $wpe_netdna_domains ) && count( $wpe_netdna_domains ) > 0 ) { ?>
-            <form method="post" name="options" action="<?php echo esc_url( $_SERVER['REQUEST_URI'] ); ?>">
+            <form method="post" name="options" action="<?php echo esc_url( $form_url ); ?>">
             <?php wp_nonce_field( PWP_NAME . '-config' ); ?>
 			<table class="form-table">
 				<tr valign="top">
@@ -370,7 +373,7 @@ if ( is_wpe_snapshot() ) {
         <hr/>
 
         <h2>Display Options</h2>
-           <form method="post" name="displayoptions" action="<?php echo esc_url( $_SERVER['REQUEST_URI'] ); ?>">
+           <form method="post" name="displayoptions" action="<?php echo esc_url( $form_url ); ?>">
            <?php wp_nonce_field( PWP_NAME . '-config' ); ?>
 		<table class="form-table">
 			<tr valign="top">
@@ -427,7 +430,7 @@ if ( is_wpe_snapshot() ) {
 			<br>
 			<i>Hint:</i> To test regular expressions, check out <a href="http://regexpal.com/">Regexpal</a>, a free online tool.
 		</p>
-           <form method="post" name="advanced" action="<?php echo esc_url( $_SERVER['REQUEST_URI'] ); ?>">
+           <form method="post" name="advanced" action="<?php echo esc_url( $form_url ); ?>">
            <?php wp_nonce_field( PWP_NAME . '-config' ); ?>
 		<table class="form-table">
 			<tr valign="top">

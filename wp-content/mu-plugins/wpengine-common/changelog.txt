@@ -177,3 +177,5 @@ v2.0.31
 	-Cleanup message styles, allow individual users to hide messages
 v2.0.32
 	-Add WPE_POPUP_DISABLE functionality and fix bug with popup activating on search form
+v2.0.33
+	-Change some external api requests to https.
