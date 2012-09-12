@@ -342,8 +342,14 @@ class WpeCommon extends WpePlugin_common {
         
 	add_action('password_reset', array($this,'password_reset'),0,2);
 	add_action('login_init',array($this,'login_init'));
-	add_action('template_redirect',array($this,'is_404'),0);
-        add_action( 'admin_bar_menu', array( $this, 'wpe_adminbar' ), 80 );
+	
+	//serve naked 404's to bots. Check for bp_init is a workaround for buddypress
+	if(function_exists('bp_init'))
+		add_action('bp_init',array($this,'is_404'),0);
+	else
+		add_action('template_redirect',array($this,'is_404'),0);
+        
+	add_action( 'admin_bar_menu', array( $this, 'wpe_adminbar' ), 80 );
         //add_filter( 'site_url', array($this,'wp_hook_site_url') );
         add_filter( 'use_http_extension_transport', '__return_false' );
         add_action( 'wp_footer', array( $this, 'wpe_emit_powered_by_html' ) );
@@ -1390,7 +1396,6 @@ class WpeCommon extends WpePlugin_common {
             "hyper-cache/plugin.php", // cache we don't use
             "db-cache-reloaded/db-module.php", // cache we don't use
             "db-cache-reloaded/db-cache-reloaded.php", // cache we don't use
-            "wp-maintenance-mode/wp-maintenance-mode.php", // bad plugin; we curate a good replacement
             "no-revisions/norevisions.php", // unneeded; we do this via wp-config.php
             "wp-smushit/wp-smushit.php", // blacklisted
             "wp-phpmyadmin/wp-phpmyadmin.php", // blacklisted for security issues
@@ -1609,9 +1614,13 @@ class WpeCommon extends WpePlugin_common {
             return FALSE;
 
         // Purge 'em
+	$headers = array(
+		'account_name' => PWP_NAME,
+		'wpe_apikey' => WPE_APIKEY,
+	);
         foreach ( $zones as $zone ) {
             error_log( "note: manually purging CDN zone: $zone" );
-            WpeCommon::http_request_async( "GET", "api.wpengine.com", 80, null, '/1.2/?method=cdn&action=purge&zone=' . $zone, 1000 );
+            WpeCommon::http_request_async( "GET", "api.wpengine.com", 443, null, '/1.2/?method=cdn&action=purge&zone='.$zone, $headers, apply_filters('cdn_cache_purge_wait',1000) );
         }
 
         return true;
@@ -1781,7 +1790,7 @@ class WpeCommon extends WpePlugin_common {
         if ( ! $hostname )
             $hostname = $domain;
 	if ( 443 == $port )
-		$domain = "ssl://".$host;
+		$domain = "ssl://".$hostname;
         $fp       = fsockopen( $domain, $port, $errno, $errstr, /* connect timeout: */ 1.0 );
         if ( ! $fp ) {
             error_log( "Async Request Error: $errno, $errstr: $domain:$port" );
@@ -1802,7 +1811,6 @@ class WpeCommon extends WpePlugin_common {
             while ( !!($line     = fgets( $fp )) ) {
                 $response .= $line . "\n";
             }  // get past the HTTP header
-//error_log("Request Response: $response");
             usleep( 100 );
             fgets( $fp );  // more stuff
             fclose( $fp );  // all done
