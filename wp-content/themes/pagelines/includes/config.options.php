@@ -47,16 +47,22 @@ class PageLinesOptionsArray {
 				'shortexp' 		=> __( 'Login or Register for a Free PageLines Account', 'pagelines' ),
 				'exp' 			=> __( 'Logging in with your PageLines account will allow you to purchase items from the PageLines Store, and more.', 'pagelines' )
 			),
-			'pagelines_custom_logo' => array(
-				'default' 		=> PL_IMAGES.'/logo.png',
-				'type' 			=> 'image_upload',
-				'imagepreview' 	=> '270',
-				'inputlabel' 	=> __( 'Upload custom logo', 'pagelines' ),
-				'title'			=> __( 'Custom Header Image', 'pagelines' ),						
+			'pl_logo'	=> array(
+			
+				'type' 			=> 	'multi_option',
+				'selectvalues'	=> array(
+					'pagelines_custom_logo' => array(
+						'default' 		=> PL_IMAGES.'/logo.png',
+						'type' 			=> 'image_upload',
+						'imagepreview' 	=> '270',
+						'inputlabel' 	=> __( 'Upload custom logo', 'pagelines' )
+					)
+				),
+				'title' 		=> __( 'Custom Logo', 'pagelines' ),						
 				'shortexp' 		=> __( 'Input full URL to your custom header or logo image', 'pagelines' ),
-				'exp' 			=> __( 'Optional way to replace <strong>heading</strong> and <strong>description</strong> text for your website ' . 
-						    		'with an image.', 'pagelines' )
+				'exp'			=> ''
 			),
+			
 			'pagelines_favicon'		=> array(
 				'version' 		=> 'pro',
 				'default' 		=> 	PL_ADMIN_IMAGES . "/favicon-pagelines.ico",
@@ -108,7 +114,12 @@ class PageLinesOptionsArray {
 				'version' 		=> 'pro',
 				'type' 			=> 	'multi_option',
 				'selectvalues'	=> array(
-					'watermark_image'	=> array('type' =>'image_upload', 'inputlabel' => 'Watermark Image', 'default' => PL_IMAGES.'/pagelines.png'), 
+					'watermark_image'	=> array(
+						'type' 			=> 'image_upload', 
+						'inputlabel' 	=> 'Watermark Image', 
+						'default' 		=> PL_IMAGES.'/pagelines.png', 
+				
+					), 
 					'watermark_link'	=> array('type' => 'text', 'inputlabel' => 'Watermark Link (Blank for None)', 'default' => 'http://www.pagelines.com'),
 					'watermark_alt'		=> array('type' => 'text', 'inputlabel' => 'Watermark Link alt text', 'default' => 'Build a website with PageLines' ),
 					'watermark_hide'	=> array('type' => 'check', 'inputlabel' => "Hide Watermark")
@@ -951,15 +962,6 @@ class PageLinesOptionsArray {
 					'shortexp'	=> __( 'Strips whitespace from compiled CSS.', 'pagelines' ),
 					'exp'		=> ""
 			),
-			'hide_pagelines_introduction' => array(
-					'default'	=> '',
-					'version'	=> 'pro',
-					'type'		=> 'check',
-					'inputlabel'=> __( 'Hide the introduction?', 'pagelines' ),
-					'title'		=> __( 'Show Theme Introduction', 'pagelines' ),
-					'shortexp'	=> __( 'Uncheck this option to show theme introduction', 'pagelines' ),
-					'exp'		=> ""
-			),
 			'hide_controls_meta'	 => array(
 					'default' 		=> 'publish_posts',
 					'version'		=> 'pro',
@@ -1011,7 +1013,7 @@ class PageLinesOptionsArray {
 					'type' 		=> 'code',
 					'height'	=> '300px',
 					'layout' 	=> 'full',
-					'inputlabel'=> __( 'CSS Rules', 'pagelines' ),
+					'inputlabel'=> __( 'CSS/LESS Rules', 'pagelines' ),
 					'title' 	=> __( 'Custom CSS / LESS', 'pagelines' ),
 					'shortexp' 	=> __( 'Insert custom CSS or LESS styling here. It will be stored in the DB and not overwritten. <br/>Note: The professional way to customize your site is using a child theme, or customization plugin', 'pagelines' ),
 					'exp' 		=> $this->css_examples(),

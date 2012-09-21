@@ -98,7 +98,7 @@ class PageLinesLess {
 	
 		$pless = $this->add_constants( '' ) . $this->add_bootstrap() . $pless;
 		try {
-			$css = $this->lparser->parse( $pless );
+			$css = $this->lparser->compile( $pless );
 		} 
 			catch ( Exception $e) {		
 				plupop( "pl_less_error_{$type}", $e->getMessage() );
@@ -111,12 +111,29 @@ class PageLinesLess {
 	}
 
 	private function add_bootstrap( ) {
+		$less = '';
 		
-		$vars = pl_file_get_contents( sprintf( '%s/variables.less', CORE_LESS ) );
-		$mixins = pl_file_get_contents( sprintf( '%s/mixins.less', CORE_LESS ) );
+		$less .= $this->load_less_file( 'variables' );
+		$less .= $this->load_less_file( 'colors' );
+		$less .= $this->load_less_file( 'mixins' );
 	
-		return $vars . $mixins;
+		return $less;
 	}
+
+	function load_less_file( $file ) {
+
+		$file 	= sprintf( '%s.less', $file );
+		$parent = sprintf( '%s/%s', CORE_LESS, $file );
+		$child 	= sprintf( '%s/%s', CHILD_LESS, $file );
+
+		// check for child 1st if not load the main file.
+
+		if ( is_file( $child ) )
+			return pl_file_get_contents( $child );
+		else
+			return pl_file_get_contents( $parent );
+	}
+
 
 	private function add_core_less($pless){
 	

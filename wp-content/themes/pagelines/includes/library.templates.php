@@ -323,8 +323,7 @@ function pagelines_head_common(){
 }
 
 function load_prettify(){
-	//add_action( 'pl_body_attributes', create_function( '',  'echo "onload="prettyprint();"' ) );
-	
+	pagelines_add_bodyclass( 'prettify-on' );
 	wp_enqueue_script( 'prettify', PL_JS . '/prettify/prettify.js' );
 	wp_enqueue_style( 'prettify', PL_JS . '/prettify/prettify.css' );
 	add_action( 'wp_head', create_function( '',  'echo pl_js_wrap("prettyPrint()");' ), 14 );
@@ -620,12 +619,22 @@ function pagelines_font_replacement( $default_font = ''){
  */
 function pagelines_pagination() {
 	if(function_exists('wp_pagenavi') && show_posts_nav() && VPRO):
-		wp_pagenavi(); 
+		
+		$args = array(
+			'before' => '<div class="pagination pagenavi">', 
+			'after' => '</div>', 
+		); 
+		wp_pagenavi( $args );
+		 
 	elseif (show_posts_nav()) : ?>
-		<div class="page-nav-default fix">
-			<span class="previous-entries"><?php next_posts_link(__('&larr; Previous Entries','pagelines')) ?></span>
-			<span class="next-entries"><?php previous_posts_link(__('Next Entries &rarr;','pagelines')) ?></span>
-		</div>
+		<ul class="pager page-nav-default fix">
+			<li class="previous previous-entries">
+				<?php next_posts_link(__('&larr; Previous Entries','pagelines')) ?>
+			</li>
+			<li class="next next-entries">
+			<?php previous_posts_link(__('Next Entries &rarr;','pagelines')) ?>
+			</li>
+		</ul>
 <?php endif;
 }
 
@@ -712,13 +721,18 @@ function pagelines_main_logo( $location = null ){
 	
 	if(ploption('pagelines_custom_logo', $oset) || apply_filters('pagelines_site_logo', '') || apply_filters('pagelines_logo_url', '')){
 		
-
 		$logo = apply_filters('pagelines_logo_url', esc_url(ploption('pagelines_custom_logo', $oset) ), $location);
 
 
 		$logo_url = ( esc_url(ploption('pagelines_custom_logo_url', $oset) ) ) ? esc_url(ploption('pagelines_custom_logo_url', $oset) ) : home_url();
 		
-		$site_logo = sprintf( '<a class="plbrand mainlogo-link" href="%s" title="%s"><img class="mainlogo-img" src="%s" alt="%s" /></a>', $logo_url, get_bloginfo('name'), $logo, get_bloginfo('name'));
+		$site_logo = sprintf( 
+			'<a class="plbrand mainlogo-link" href="%s" title="%s"><img class="mainlogo-img" src="%s" alt="%s" /></a>', 
+			$logo_url, 
+			get_bloginfo('name'),
+			$logo, 
+			get_bloginfo('name')
+		);
 		
 		echo apply_filters('pagelines_site_logo', $site_logo, $location);
 		
