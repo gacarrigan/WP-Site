@@ -2,9 +2,9 @@
 # This file is distributed under the same license as the PageLines Framework package.
 msgid ""
 msgstr ""
-"Project-Id-Version: PageLines Framework 2.3\n"
+"Project-Id-Version: PageLines Framework 2.3.2\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/pagelines\n"
-"POT-Creation-Date: 2012-09-20 01:38:34+00:00\n"
+"POT-Creation-Date: 2012-10-02 17:39:42+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -2008,115 +2008,115 @@ msgstr ""
 msgid "Page Option Setup"
 msgstr ""
 
-#: admin/actions.options.php:357
+#: admin/actions.options.php:372
 msgid "%s Settings Saved. &nbsp;<a class='sh_preview' href='%s/' target='_blank'>View Your Site &rarr;</a>"
 msgstr ""
 
-#: admin/actions.options.php:361
+#: admin/actions.options.php:376
 msgid "Congratulations! %s Has Been Successfully Activated."
 msgstr ""
 
-#: admin/actions.options.php:366
+#: admin/actions.options.php:381
 msgid "Congratulations! New settings have been successfully imported."
 msgstr ""
 
-#: admin/actions.options.php:371
+#: admin/actions.options.php:386
 msgid "There was an error with import. Please make sure you are using the correct file."
 msgstr ""
 
-#: admin/actions.options.php:379
+#: admin/actions.options.php:394
 msgid "Template Configuration Restored To Default."
 msgstr ""
 
-#: admin/actions.options.php:382
+#: admin/actions.options.php:397
 msgid "Layout Dimensions Restored To Default."
 msgstr ""
 
-#: admin/actions.options.php:385
+#: admin/actions.options.php:400
 msgid "Settings Restored To Default."
 msgstr ""
 
-#: admin/actions.options.php:389
+#: admin/actions.options.php:404
 msgid "Launchpad settings saved."
 msgstr ""
 
-#: admin/actions.options.php:392
+#: admin/actions.options.php:407
 msgid "Successfully uploaded your %s"
 msgstr ""
 
-#: admin/actions.options.php:398
+#: admin/actions.options.php:413
 msgid "Section was deleted."
 msgstr ""
 
-#: admin/actions.options.php:402
+#: admin/actions.options.php:417
 msgid "Section was installed."
 msgstr ""
 
-#: admin/actions.options.php:406
+#: admin/actions.options.php:421
 msgid "Section was upgraded."
 msgstr ""
 
-#: admin/actions.options.php:410
+#: admin/actions.options.php:425
 msgid "Plugin was installed."
 msgstr ""
 
-#: admin/actions.options.php:414
+#: admin/actions.options.php:429
 msgid "Plugin was deleted."
 msgstr ""
 
-#: admin/actions.options.php:418
+#: admin/actions.options.php:433
 msgid "Plugin was upgraded."
 msgstr ""
 
-#: admin/actions.options.php:422
+#: admin/actions.options.php:437
 msgid "Theme installed."
 msgstr ""
 
-#: admin/actions.options.php:426
+#: admin/actions.options.php:441
 msgid "Theme upgraded."
 msgstr ""
 
-#: admin/actions.options.php:429
+#: admin/actions.options.php:444
 msgid "Theme deleted."
 msgstr ""
 
-#: admin/actions.options.php:476
+#: admin/actions.options.php:491
 msgid "You are using Internet Explorer version: %s"
 msgstr ""
 
-#: admin/actions.options.php:477
+#: admin/actions.options.php:492
 msgid "Advanced options don't support Internet Explorer version 7 or lower. Please switch to a standards based browser that will allow you to easily configure your site (e.g. Firefox, Chrome, Safari, even IE8 or better would work)."
 msgstr ""
 
-#: admin/actions.options.php:482
+#: admin/actions.options.php:497
 msgid "You are using PHP version %s"
 msgstr ""
 
-#: admin/actions.options.php:483
+#: admin/actions.options.php:498
 msgid "Version 5 or higher is required for this theme to work correctly. Please check with your host about upgrading to a newer version."
 msgstr ""
 
-#: admin/actions.options.php:486
+#: admin/actions.options.php:501
 msgid "Extension problem found"
 msgstr ""
 
-#: admin/actions.options.php:491
+#: admin/actions.options.php:506
 msgid "No file selected!"
 msgstr ""
 
-#: admin/actions.options.php:495
+#: admin/actions.options.php:510
 msgid "The file did not appear to be a PageLines section."
 msgstr ""
 
-#: admin/actions.options.php:499
+#: admin/actions.options.php:514
 msgid "Unknown error: %s"
 msgstr ""
 
-#: admin/actions.options.php:593
+#: admin/actions.options.php:608
 msgid "Select This Image For Option"
 msgstr ""
 
-#: admin/actions.options.php:610
+#: admin/actions.options.php:625
 msgid "Media Library"
 msgstr ""
 
@@ -3133,7 +3133,7 @@ msgstr ""
 msgid "The Latest"
 msgstr ""
 
-#: sections/sb_footcols/section.php:73 sections/features/section.php:387
+#: sections/sb_footcols/section.php:73 sections/features/section.php:389
 msgid "More"
 msgstr ""
 
@@ -3193,75 +3193,75 @@ msgstr ""
 msgid "BrandNav Section Navigation"
 msgstr ""
 
-#: sections/navbar/section.php:31 sections/navbar/section.php:32
+#: sections/navbar/section.php:44 sections/navbar/section.php:45
 msgid "Enable Fixed Navigation Bar"
 msgstr ""
 
-#: sections/navbar/section.php:33 sections/navbar/section.php:42
+#: sections/navbar/section.php:46 sections/navbar/section.php:55
 msgid "Applies a fixed navigation bar to the top of your site"
 msgstr ""
 
-#: sections/navbar/section.php:34
+#: sections/navbar/section.php:47
 msgid "Use this feature to add the NavBar section as a fixed navigation bar on the top of your site."
 msgstr ""
 
-#: sections/navbar/section.php:40
+#: sections/navbar/section.php:53
 msgid "Fixed NavBar Logo"
 msgstr ""
 
-#: sections/navbar/section.php:41
+#: sections/navbar/section.php:54
 msgid "Fixed NavBar - NavBar Logo"
 msgstr ""
 
-#: sections/navbar/section.php:43
+#: sections/navbar/section.php:56
 msgid "Use this feature to add the NavBar section as a fixed navigation bar on the top of your site.<br/><br/><strong>Notes:</strong> <br/>1. Only visible in Fixed Mode.<br/>2. Image Height is constricted to a maximum 29px."
 msgstr ""
 
-#: sections/navbar/section.php:76
+#: sections/navbar/section.php:89
 msgid "NavBar and Fixed NavBar Theme"
 msgstr ""
 
-#: sections/navbar/section.php:77
+#: sections/navbar/section.php:90
 msgid "Select the color and theme of the NavBar"
 msgstr ""
 
-#: sections/navbar/section.php:78
+#: sections/navbar/section.php:91
 msgid "The NavBar comes with several color options. Select one to automatically configure."
 msgstr ""
 
-#: sections/navbar/section.php:97
+#: sections/navbar/section.php:110
 msgid "NavBar and Fixed NavBar Menu"
 msgstr ""
 
-#: sections/navbar/section.php:98
+#: sections/navbar/section.php:111
 msgid "Select the WordPress Menu for the NavBar(s)"
 msgstr ""
 
-#: sections/navbar/section.php:99
+#: sections/navbar/section.php:112
 msgid "The NavBar uses WordPress menus. Select one for use."
 msgstr ""
 
-#: sections/navbar/section.php:121
+#: sections/navbar/section.php:134
 msgid "Configure Options for NavBars"
 msgstr ""
 
-#: sections/navbar/section.php:122
+#: sections/navbar/section.php:135
 msgid "NavBar and Fixed NavBar Configuration Options"
 msgstr ""
 
-#: sections/navbar/section.php:123
+#: sections/navbar/section.php:136
 msgid "Control various appearance options for the NavBars"
 msgstr ""
 
-#: sections/navbar/section.php:130
+#: sections/navbar/section.php:143
 msgid "NavBar Title"
 msgstr ""
 
-#: sections/navbar/section.php:131
+#: sections/navbar/section.php:144
 msgid "Applies text to NavBar on small screens. Not available on Fixed NavBar"
 msgstr ""
 
-#: sections/navbar/section.php:132
+#: sections/navbar/section.php:145
 msgid "Add text to the NavBar to serve as a title, but only displayed on small screens."
 msgstr ""
 
@@ -3321,300 +3321,300 @@ msgstr ""
 msgid "No Feature posts matched this page's criteria"
 msgstr ""
 
-#: sections/features/section.php:537 sections/features/section.php:552
+#: sections/features/section.php:539 sections/features/section.php:554
 msgid "Feature Design Style"
 msgstr ""
 
-#: sections/features/section.php:538
+#: sections/features/section.php:540
 msgid "The basic styling of the feature"
 msgstr ""
 
-#: sections/features/section.php:542
+#: sections/features/section.php:544
 msgid "Feature Text Position"
 msgstr ""
 
-#: sections/features/section.php:544
+#: sections/features/section.php:546
 msgid "Text On Left"
 msgstr ""
 
-#: sections/features/section.php:545
+#: sections/features/section.php:547
 msgid "Text On Right"
 msgstr ""
 
-#: sections/features/section.php:546
+#: sections/features/section.php:548
 msgid "Text On Bottom"
 msgstr ""
 
-#: sections/features/section.php:547
+#: sections/features/section.php:549
 msgid "Full Width Background Image - No Text - Links Entire BG"
 msgstr ""
 
-#: sections/features/section.php:554
+#: sections/features/section.php:556
 msgid "White Text - Dark Feature Background - Transparent Text Overlay (Default)"
 msgstr ""
 
-#: sections/features/section.php:555
+#: sections/features/section.php:557
 msgid "Black Text - Light Feature Background with Border - No Overlay"
 msgstr ""
 
-#: sections/features/section.php:556
+#: sections/features/section.php:558
 msgid "White Text - Dark Feature Background - No Overlay"
 msgstr ""
 
-#: sections/features/section.php:557
+#: sections/features/section.php:559
 msgid "Black Text - No Feature Background - No Overlay"
 msgstr ""
 
-#: sections/features/section.php:564
+#: sections/features/section.php:566
 msgid "Feature Media"
 msgstr ""
 
-#: sections/features/section.php:565
+#: sections/features/section.php:567
 msgid "The media that the feature will use"
 msgstr ""
 
-#: sections/features/section.php:568
+#: sections/features/section.php:570
 msgid "Full Size - Feature Background Image"
 msgstr ""
 
-#: sections/features/section.php:575
+#: sections/features/section.php:577
 msgid "Media Area - Image (optional)"
 msgstr ""
 
-#: sections/features/section.php:580
+#: sections/features/section.php:582
 msgid "Feature HTML (video embeds etc, In Media Area)"
 msgstr ""
 
-#: sections/features/section.php:585
+#: sections/features/section.php:587
 msgid "Make Feature HTML Full Width"
 msgstr ""
 
-#: sections/features/section.php:588
+#: sections/features/section.php:590
 msgid "Thumb Navigation - Upload Feature Thumbnail (50px by 30px)"
 msgstr ""
 
-#: sections/features/section.php:593
+#: sections/features/section.php:595
 msgid "Names Navigation - Enter Text"
 msgstr ""
 
-#: sections/features/section.php:601
+#: sections/features/section.php:603
 msgid "Adding a URL here will add a link to your feature slide"
 msgstr ""
 
-#: sections/features/section.php:602
+#: sections/features/section.php:604
 msgid "Feature Link URL"
 msgstr ""
 
-#: sections/features/section.php:603
+#: sections/features/section.php:605
 msgid "Enter Feature Link URL"
 msgstr ""
 
-#: sections/features/section.php:605
+#: sections/features/section.php:607
 msgid "Adds a \"More\" link to your text. If you have \"Full Width Background Image\" mode selected, the entire slide will be linked."
 msgstr ""
 
-#: sections/features/section.php:609
+#: sections/features/section.php:611
 msgid "Enter the text you would like in your feature link"
 msgstr ""
 
-#: sections/features/section.php:610
+#: sections/features/section.php:612
 msgid "Link Text"
 msgstr ""
 
-#: sections/features/section.php:611
+#: sections/features/section.php:613
 msgid "Enter Feature Link Text"
 msgstr ""
 
-#: sections/features/section.php:626 sections/features/section.php:636
+#: sections/features/section.php:628 sections/features/section.php:638
 msgid "Feature Setup Options"
 msgstr ""
 
-#: sections/features/section.php:653 sections/features/section.php:849
+#: sections/features/section.php:655 sections/features/section.php:851
 msgid "Features"
 msgstr ""
 
-#: sections/features/section.php:654
+#: sections/features/section.php:656
 msgid "Feature"
 msgstr ""
 
-#: sections/features/section.php:655
+#: sections/features/section.php:657
 msgid "For setting slides on the feature page template"
 msgstr ""
 
-#: sections/features/section.php:661 sections/features/section.php:670
+#: sections/features/section.php:663 sections/features/section.php:672
 msgid "Feature Sets"
 msgstr ""
 
-#: sections/features/section.php:662
+#: sections/features/section.php:664
 msgid "Feature Set"
 msgstr ""
 
-#: sections/features/section.php:667 sections/features/section.php:821
+#: sections/features/section.php:669 sections/features/section.php:823
 #: sections/boxes/section.php:219
 msgid "Title"
 msgstr ""
 
-#: sections/features/section.php:668
+#: sections/features/section.php:670
 msgid "Text"
 msgstr ""
 
-#: sections/features/section.php:669
+#: sections/features/section.php:671
 msgid "Media"
 msgstr ""
 
-#: sections/features/section.php:692
+#: sections/features/section.php:694
 msgid "Feature Section Setup"
 msgstr ""
 
-#: sections/features/section.php:693
+#: sections/features/section.php:695
 msgid "Basic section setup for features"
 msgstr ""
 
-#: sections/features/section.php:696
+#: sections/features/section.php:698
 msgid "View Feature Documentation"
 msgstr ""
 
-#: sections/features/section.php:704
+#: sections/features/section.php:706
 msgid "Select Feature Set"
 msgstr ""
 
-#: sections/features/section.php:711 sections/quickslider/section.php:160
+#: sections/features/section.php:713 sections/quickslider/section.php:171
 msgid "No Navigation"
 msgstr ""
 
-#: sections/features/section.php:712
+#: sections/features/section.php:714
 msgid "Squares or Dots"
 msgstr ""
 
-#: sections/features/section.php:713
+#: sections/features/section.php:715
 msgid "Feature Names"
 msgstr ""
 
-#: sections/features/section.php:714
+#: sections/features/section.php:716
 msgid "Feature Thumbs (50px by 30px)"
 msgstr ""
 
-#: sections/features/section.php:715
+#: sections/features/section.php:717
 msgid "Numbers"
 msgstr ""
 
-#: sections/features/section.php:717
+#: sections/features/section.php:719
 msgid "Feature Navigation Mode"
 msgstr ""
 
-#: sections/features/section.php:723
+#: sections/features/section.php:725
 msgid "Max number of features to show"
 msgstr ""
 
-#: sections/features/section.php:730
+#: sections/features/section.php:732
 msgid "Feature Section Height and Responsive Control"
 msgstr ""
 
-#: sections/features/section.php:731
+#: sections/features/section.php:733
 msgid "Dimensions and Responsive Handling"
 msgstr ""
 
-#: sections/features/section.php:739
+#: sections/features/section.php:741
 msgid "Static Height (Height is always the same)"
 msgstr ""
 
-#: sections/features/section.php:740
+#: sections/features/section.php:742
 msgid "Aspect Height (Height based on width)"
 msgstr ""
 
-#: sections/features/section.php:742
+#: sections/features/section.php:744
 msgid "Select Height Mode (The way feature height is managed)"
 msgstr ""
 
-#: sections/features/section.php:748
+#: sections/features/section.php:750
 msgid "Static Mode - Height (In Pixels)"
 msgstr ""
 
-#: sections/features/section.php:754
+#: sections/features/section.php:756
 msgid "Aspect Mode - Ratio (Width/Height - 16:9 would be 1.777)"
 msgstr ""
 
-#: sections/features/section.php:760
+#: sections/features/section.php:762
 msgid "Feature Transitions and Effects"
 msgstr ""
 
-#: sections/features/section.php:761
+#: sections/features/section.php:763
 msgid "Options for managing feature transitions"
 msgstr ""
 
-#: sections/features/section.php:768
+#: sections/features/section.php:770
 msgid "Select Transition Effect"
 msgstr ""
 
-#: sections/features/section.php:774
+#: sections/features/section.php:776
 msgid "Timeout (ms - 0 means manual transition, 5000 = 5 seconds)"
 msgstr ""
 
-#: sections/features/section.php:780
+#: sections/features/section.php:782
 msgid "Transition Speed (ms - e.g. 1500 = 1.5 seconds)"
 msgstr ""
 
-#: sections/features/section.php:787
+#: sections/features/section.php:789
 msgid "Show play pause button? (Auto Scrolling Only)"
 msgstr ""
 
-#: sections/features/section.php:793
+#: sections/features/section.php:795
 msgid "Feature Source and Order (Advanced)"
 msgstr ""
 
-#: sections/features/section.php:794
+#: sections/features/section.php:796
 msgid "Advanced options for feature sources and their order. Important: Enable feature panel under settings > advanced for use with posts."
 msgstr ""
 
-#: sections/features/section.php:801
+#: sections/features/section.php:803
 msgid "Feature Posts (custom post type)"
 msgstr ""
 
-#: sections/features/section.php:802
+#: sections/features/section.php:804
 msgid "Use Post Category"
 msgstr ""
 
-#: sections/features/section.php:803
+#: sections/features/section.php:805
 msgid "Use all Posts"
 msgstr ""
 
-#: sections/features/section.php:805
+#: sections/features/section.php:807
 msgid "Select Feature Post Source (Optional - Defaults to Custom Post Type)"
 msgstr ""
 
-#: sections/features/section.php:812
+#: sections/features/section.php:814
 msgid "Select Post Category (Post category source only)"
 msgstr ""
 
-#: sections/features/section.php:820 sections/boxes/section.php:218
+#: sections/features/section.php:822 sections/boxes/section.php:218
 msgid "Post ID (default)"
 msgstr ""
 
-#: sections/features/section.php:822 sections/boxes/section.php:220
+#: sections/features/section.php:824 sections/boxes/section.php:220
 msgid "Date"
 msgstr ""
 
-#: sections/features/section.php:823 sections/boxes/section.php:221
+#: sections/features/section.php:825 sections/boxes/section.php:221
 msgid "Last Modified"
 msgstr ""
 
-#: sections/features/section.php:824 sections/boxes/section.php:222
+#: sections/features/section.php:826 sections/boxes/section.php:222
 msgid "Random"
 msgstr ""
 
-#: sections/features/section.php:826
+#: sections/features/section.php:828
 msgid "Select sort method (If not using Post Type Order plugin)"
 msgstr ""
 
-#: sections/features/section.php:834 sections/boxes/section.php:229
+#: sections/features/section.php:836 sections/boxes/section.php:229
 msgid "Descending"
 msgstr ""
 
-#: sections/features/section.php:835 sections/boxes/section.php:230
+#: sections/features/section.php:837 sections/boxes/section.php:230
 msgid "Ascending"
 msgstr ""
 
-#: sections/features/section.php:837
+#: sections/features/section.php:839
 msgid "Select sort order (If not using Post Type Order plugin)"
 msgstr ""
 
@@ -3826,115 +3826,119 @@ msgstr ""
 msgid "Add a custom CSS class to this set of boxes."
 msgstr ""
 
-#: sections/postauthor/section.php:47
-msgid "Visit Authors Website"
+#: sections/postauthor/section.php:46
+msgid "Visit Authors Website &rarr;"
 msgstr ""
 
-#: sections/quickslider/section.php:136
-msgid "Number of Slides to Configure"
-msgstr ""
-
-#: sections/quickslider/section.php:137
-msgid "Number of Slides"
-msgstr ""
-
-#: sections/quickslider/section.php:138
-msgid "Enter the number of QuickSlider slides. <strong>Default is 3</strong>"
-msgstr ""
-
-#: sections/quickslider/section.php:139
-msgid "This number will be used to generate slides and option setup."
-msgstr ""
-
-#: sections/quickslider/section.php:146
-msgid "Use Fading Transition"
+#: sections/postauthor/section.php:51
+msgid "Authors Google Profile &rarr;"
 msgstr ""
 
 #: sections/quickslider/section.php:147
-msgid "Use Slide/Horizontal Transition"
+msgid "Number of Slides to Configure"
+msgstr ""
+
+#: sections/quickslider/section.php:148
+msgid "Number of Slides"
 msgstr ""
 
 #: sections/quickslider/section.php:149
-msgid "Select Transition Type"
+msgid "Enter the number of QuickSlider slides. <strong>Default is 3</strong>"
 msgstr ""
 
 #: sections/quickslider/section.php:150
-msgid "Slider Transition Type"
+msgid "This number will be used to generate slides and option setup."
 msgstr ""
 
-#: sections/quickslider/section.php:151
-msgid "Configure the way slides transfer to one another."
+#: sections/quickslider/section.php:157
+msgid "Use Fading Transition"
 msgstr ""
 
-#: sections/quickslider/section.php:159
-msgid "Use Both Arrow and Slide Control Navigation"
+#: sections/quickslider/section.php:158
+msgid "Use Slide/Horizontal Transition"
+msgstr ""
+
+#: sections/quickslider/section.php:160
+msgid "Select Transition Type"
 msgstr ""
 
 #: sections/quickslider/section.php:161
-msgid "Slide Controls Only"
+msgid "Slider Transition Type"
 msgstr ""
 
 #: sections/quickslider/section.php:162
+msgid "Configure the way slides transfer to one another."
+msgstr ""
+
+#: sections/quickslider/section.php:170
+msgid "Use Both Arrow and Slide Control Navigation"
+msgstr ""
+
+#: sections/quickslider/section.php:172
+msgid "Slide Controls Only"
+msgstr ""
+
+#: sections/quickslider/section.php:173
 msgid "Arrow Navigation Only"
 msgstr ""
 
-#: sections/quickslider/section.php:164
+#: sections/quickslider/section.php:175
 msgid "Slider Navigation"
 msgstr ""
 
-#: sections/quickslider/section.php:165
+#: sections/quickslider/section.php:176
 msgid "Slider Navigation mode"
 msgstr ""
 
-#: sections/quickslider/section.php:166
+#: sections/quickslider/section.php:177
 msgid "Configure the navigation for this slider."
 msgstr ""
 
-#: sections/quickslider/section.php:174
+#: sections/quickslider/section.php:185
 msgid "Animate Slideshow Automatically?"
 msgstr ""
 
-#: sections/quickslider/section.php:175
+#: sections/quickslider/section.php:186
 msgid "Automatic Slideshow?"
 msgstr ""
 
-#: sections/quickslider/section.php:176
+#: sections/quickslider/section.php:187
 msgid "Autoplay the slides, transitioning every 7 seconds."
 msgstr ""
 
-#: sections/quickslider/section.php:194
+#: sections/quickslider/section.php:205
 msgid "Slide Image"
 msgstr ""
 
-#: sections/quickslider/section.php:198
+#: sections/quickslider/section.php:209
 msgid "Image Alt"
 msgstr ""
 
-#: sections/quickslider/section.php:202
+#: sections/quickslider/section.php:213
 msgid "Slide Text"
 msgstr ""
 
-#: sections/quickslider/section.php:206
+#: sections/quickslider/section.php:217
 msgid "Slide Link URL"
 msgstr ""
 
-#: sections/quickslider/section.php:210
+#: sections/quickslider/section.php:221
 msgid "Slide Text Location"
 msgstr ""
 
-#: sections/quickslider/section.php:220
+#: sections/quickslider/section.php:231
 msgid "QuickSlider Slide "
 msgstr ""
 
-#: sections/quickslider/section.php:221
+#: sections/quickslider/section.php:232
 msgid "Setup options for slide number "
 msgstr ""
 
-#: sections/quickslider/section.php:222
+#: sections/quickslider/section.php:233
 msgid "For best results all images in the slider should have the same dimensions."
 msgstr ""
 
-#: sections/quickslider/section.php:231
+#: sections/quickslider/section.php:242
 msgid "QuickSlider"
 msgstr ""
 

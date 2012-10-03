@@ -4,6 +4,28 @@
 
 ********************************************************
 
+
+Version 2.3.2
+
+	- CORE - Revert fix for compatibility with WordPress 3.5 (layout editor broke).
+
+Version 2.3.1
+
+	- CORE - remove main style.css from HEAD, not needed now as it contains no actual css.
+	- CORE - Better minification rules.
+	- CORE - Fix compatibility with WordPress 3.5 alpha.
+	- CORE - Add version to admin scripts.
+	- Bugs - NavBar dropdown fix for IE8.
+	- Bugs - Features, add filter for target: pagelines_features_target.
+	- Bugs - Only show update nags to admins.
+	- Bugs - Fix cut and paste in wp-admin.
+	- Bugs - Add linewrapping to code editors.
+	- Bugs - Video shortcode, added related.
+	- Bugs - LESS sections handling, do not compile disabled sections.
+	- Bugs - Various IE8 fixes.
+	- Bugs - Fix tooltip/rollover position.
+	- Bugs - Fix Author profile links.
+
 Version 2.3
 
 	- NEW - Added code styling to all code areas.

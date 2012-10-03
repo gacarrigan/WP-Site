@@ -603,10 +603,29 @@ class PageLinesRenderCSS {
 		if( ! ploption( 'pl_minify') )
 			return $css;
 		
-		$min = preg_replace('@({)\s+|(\;)\s+|/\*.+?\*\/|\R@is', '$1$2 ', $css);
+		$data = $css;
+
+	    $data = preg_replace( '#/\*.*?\*/#s', '', $data );
+	    // remove new lines \\n, tabs and \\r
+	    $data = preg_replace('/(\t|\r|\n)/', '', $data);
+	    // replace multi spaces with singles
+	    $data = preg_replace('/(\s+)/', ' ', $data);
+	    //Remove empty rules
+	    $data = preg_replace('/[^}{]+{\s?}/', '', $data);
+	    // Remove whitespace around selectors and braces
+	    $data = preg_replace('/\s*{\s*/', '{', $data);
+	    // Remove whitespace at end of rule
+	    $data = preg_replace('/\s*}\s*/', '}', $data);
+	    // Just for clarity, make every rules 1 line tall
+	    $data = preg_replace('/}/', "}\n", $data);
+	    $data = str_replace( ';}', '}', $data );
+	    $data = str_replace( ', ', ',', $data );
+	    $data = str_replace( '; ', ';', $data );
+	    $data = str_replace( ': ', ':', $data );
+	    $data = preg_replace( '#\s+#', ' ', $data );
 		
 		if ( ! preg_last_error() )
-			return $min;
+			return $data;
 		else
 			return $css;
 	}
@@ -689,8 +708,14 @@ class PageLinesRenderCSS {
 
 		$disabled = get_option( 'pagelines_sections_disabled', array() );
 
-		foreach( $disabled as $type => $class ) 			
-			unset( $available[$type][key( $class )] );
+		/*
+		* Filter out disabled sections
+		*/
+		foreach( $disabled as $type => $data )
+			if ( isset( $disabled[$type] ) )
+				foreach( $data as $class => $state )
+					unset( $available[$type][ $class ] );
+
 		/*
 		* We need to reorder the array so sections css is loaded in the right order.
 		* Core, then pagelines-sections, followed by anything else. 
