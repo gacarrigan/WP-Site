@@ -122,7 +122,7 @@ class PageLinesRenderCSS {
 		$gfonts = preg_match( '#(@import[^;]*;)#', $a['type'], $g ); 
 		$out = '';
 		if ( $gfonts ) {
-			$out .= $g[1];
+			$a['core'] = sprintf( "%s\n%s", $g[1], $a['core'] );
 			$a['type'] = str_replace( $g[1], '', $a['type'] );
 		}
 		$out .= $this->minify( $a['core'] );
@@ -327,7 +327,7 @@ class PageLinesRenderCSS {
 		$version = sprintf( '%s_%s', $id, $version );
 				
 		if ( '' != get_option('permalink_structure') && ! $this->check_compat() )
-			$url = sprintf( '%s/pagelines-compiled-css-%s/', PARENT_URL, $version );
+			$url = sprintf( '%s/pagelines-compiled-css-%s/', PL_PARENT_URL, $version );
 		else {
 			
 			if ( false !== ( strpos( $this->get_base_url(), '?' ) ) )
@@ -572,7 +572,7 @@ class PageLinesRenderCSS {
 			$gfonts = preg_match( '#(@import[^;]*;)#', $a['type'], $g ); 
 			
 			if ( $gfonts ) {
-				echo $g[1];
+				$a['core'] = sprintf( "%s\n%s", $g[1], $a['core'] );
 				$a['type'] = str_replace( $g[1], '', $a['type'] );
 			}
 			echo $this->minify( $a['core'] );
