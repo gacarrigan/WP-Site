@@ -560,8 +560,6 @@ INSERT INTO `wp_options` VALUES (11198,'_transient_wc_uf_pid_98445f98e21fece4c09
 INSERT INTO `wp_options` VALUES (11199,'product_shipping_class_children','a:0:{}','yes');
 INSERT INTO `wp_options` VALUES (11207,'_site_transient_timeout_wpas_menu','1351180103','yes');
 INSERT INTO `wp_options` VALUES (11208,'_site_transient_wpas_menu','a:5:{s:4:\"slug\";s:12:\"wp-app-store\";s:5:\"title\";s:12:\"WP App Store\";s:8:\"subtitle\";s:4:\"Home\";s:8:\"position\";s:3:\"999\";s:7:\"submenu\";a:2:{s:19:\"wp-app-store-themes\";s:6:\"Themes\";s:20:\"wp-app-store-plugins\";s:7:\"Plugins\";}}','yes');
-INSERT INTO `wp_options` VALUES (11231,'_transient_timeout_plugin_slugs','1351180109','no');
-INSERT INTO `wp_options` VALUES (11232,'_transient_plugin_slugs','a:4:{i:0;s:19:\"akismet/akismet.php\";i:1;s:29:\"nextgen-gallery/nggallery.php\";i:2;s:27:\"woocommerce/woocommerce.php\";i:3;s:19:\"woodojo/woodojo.php\";}','no');
 INSERT INTO `wp_options` VALUES (11237,'_site_transient_timeout_theme_roots','1351109282','yes');
 INSERT INTO `wp_options` VALUES (11238,'_site_transient_theme_roots','a:4:{s:7:\"mystile\";s:7:\"/themes\";s:9:\"pagelines\";s:7:\"/themes\";s:12:\"twentyeleven\";s:7:\"/themes\";s:9:\"twentyten\";s:7:\"/themes\";}','yes');
 INSERT INTO `wp_options` VALUES (11239,'_site_transient_timeout_wporg_theme_feature_list','1351118290','yes');
@@ -1535,4 +1533,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2012-10-25  7:45:56
+-- Dump completed on 2012-10-26  7:45:25
