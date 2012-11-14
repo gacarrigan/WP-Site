@@ -117,7 +117,6 @@ function woo_shortcode_box( $atts, $content = null ) {
    	elseif ( $icon )
    		$custom = ' style="padding-left:50px;background-image:url( ' . esc_attr( esc_url( $icon ) ) . ' ); background-repeat:no-repeat; background-position:20px 45%;"';
 
-
    	return '<div class="woo-sc-box ' . esc_attr( $type ) . ' ' . esc_attr( $size ) . ' ' . esc_attr( $style ) . ' ' . esc_attr( $border ) . '"' . $custom . '>' . wp_kses_post( do_shortcode( woo_remove_wpautop( $content ) ) ) . '</div>';
 } // End woo_shortcode_box()
 

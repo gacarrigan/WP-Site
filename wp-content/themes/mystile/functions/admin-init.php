@@ -8,7 +8,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 /*-----------------------------------------------------------------------------------*/
 function woo_version_init () {
 
-    $woo_framework_version = '5.4.2';
+    $woo_framework_version = '5.5.0';
 
     if ( get_option( 'woo_framework_version' ) != $woo_framework_version ) {
     	update_option( 'woo_framework_version', $woo_framework_version );
@@ -64,8 +64,5 @@ if ( get_option( 'framework_woo_woonav' ) == 'true' ) {
 } // End If Statement
 require_once ( $functions_path . 'admin-shortcodes.php' );					// Woo Shortcodes
 require_once ( $functions_path . 'admin-shortcode-generator.php' ); 		// Framework Shortcode generator // 2011-01-21.
-require_once ( $functions_path . 'admin-backup.php' ); 						// Theme Options Backup // 2011-08-26.
-if ( is_admin() ) { 
-	require_once ( $classes_path . 'class-wp-app-store-installer.php' ); 	// WP App Store Installer // 2012-08-21.
-} // End If Statement 	
+require_once ( $functions_path . 'admin-backup.php' ); 						// Theme Options Backup // 2011-08-26.	
 ?>

@@ -1,5 +1,16 @@
 *** WooThemes Framework Changelog **
 
+2012.11.05 - version 5.5.0
+ * /classes/class-wp-app-store-installer.php - Remove WP App Store installer bridge.
+ * admin-init.php - Remove call to WP App Store installer bridge.
+ * admin-functions.php - Fix woo_pagination() for search queries and for taxonomy archives, to ensure query is preserved correctly. Fix over-escaping in cleanSource(). Fix grammer error in WooDojo notice in theme options.
+ * admin-seo.php - Removed all logic for WooSEO admin screen.
+ * admin-sbm.php - Remove all logic for the Sidebar Manager admin screen. Make sure "woo_sidebar()" returns "dynamic_sidebar()".
+ * admin-interface.php - Remove "SEO" admin menu screen for WooSEO and "Sidebar Manager" admin menu screen for Sidebar Manager.
+ * admin-framework-settings.php - Remove "Disable SEO Menu Item" and "Disable Sidebar Manager Menu Item" settings.
+ * admin-style.css - Remove Sidebar Manager CSS styles.
+ * admin-backup.php - Code maintenance. Remove "Sidebar Manager" and "SEO" from backed up data. Add scope to each class property and method.
+
 2012.09.12 - version 5.4.2
  * admin-init.php - Fix theme version display in meta tag hooked onto wp_head.
  * admin-interface.php - Fix theme version display in admin interface header. Fix version number in theme update check when using a child theme.

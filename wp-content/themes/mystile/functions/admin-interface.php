@@ -195,16 +195,6 @@ if ( ! function_exists( 'woothemes_add_admin' ) ) {
 			$wooframeworksettings = add_submenu_page( 'woothemes', __( 'Framework Settings', 'woothemes' ), __( 'Framework Settings', 'woothemes' ), 'manage_options', 'woothemes_framework_settings', 'woothemes_framework_settings_page' );
 		}
 
-		// Add SEO Menu Item
-		$wooseo = '';
-		if ( get_option( 'framework_woo_seo_disable' ) != 'true' )
-			$wooseo = add_submenu_page( 'woothemes', 'SEO', 'SEO', 'manage_options', 'woothemes_seo', 'woothemes_seo_page' );
-
-		// Add Sidebar Manager Menu Item
-		$woosbm = '';
-		if ( get_option( 'framework_woo_sbm_disable' ) != 'true' )
-			$woosbm = add_submenu_page( 'woothemes', 'Sidebar Manager', 'Sidebar Manager', 'manage_options', 'woothemes_sbm', 'woothemes_sbm_page' );
-
 		// Woothemes Content Builder
 		if ( function_exists( 'woothemes_content_builder_menu' ) ) {
 			woothemes_content_builder_menu();
@@ -218,21 +208,14 @@ if ( ! function_exists( 'woothemes_add_admin' ) ) {
 		// Add framework functionaily to the head individually
 		add_action( "admin_print_scripts-$woopage", 'woo_load_only' );
 		add_action( "admin_print_scripts-$wooframeworksettings", 'woo_load_only' );
-		add_action( "admin_print_scripts-$wooseo", 'woo_load_only' );
-		add_action( "admin_print_scripts-$woosbm", 'woo_load_only' );
 
 		// Load Framework CSS Files
 		add_action( "admin_print_styles-$woopage", 'woo_framework_load_css' );
 		add_action( "admin_print_styles-$wooframeworksettings", 'woo_framework_load_css' );
-		add_action( "admin_print_styles-$wooseo", 'woo_framework_load_css' );
-		add_action( "admin_print_styles-$woosbm", 'woo_framework_load_css' );
 
 		// Add the non-JavaScript "save" to the load of each of the screens.
 		add_action( "load-$woopage", 'woo_nonajax_callback' );
 		add_action( "load-$wooframeworksettings", 'woo_nonajax_callback' );
-		add_action( "load-$wooseo", 'woo_nonajax_callback' );
-		// add_action( "load-$woosbm", 'woo_nonajax_callback' );
-
 	}
 }
 
@@ -557,7 +540,6 @@ function woo_admin_head() {
 
 			});
 		</script>
-
 <?php } // End woo_admin_head()
 
 /*-----------------------------------------------------------------------------------*/

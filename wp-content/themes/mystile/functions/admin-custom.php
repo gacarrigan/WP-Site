@@ -41,24 +41,9 @@ function woothemes_metabox_create( $post, $callback ) {
 	// Allow child themes/plugins to act here.
 	do_action( 'woothemes_metabox_create', $post, $callback );
 	
-	$seo_post_types = array( 'post', 'page' );
-	if( defined( 'SEOPOSTTYPES' ) ) {
-		$seo_post_types_update = unserialize( constant( 'SEOPOSTTYPES' ) );
-	}
-
-	if( ! empty( $seo_post_types_update ) ) {
-		$seo_post_types = $seo_post_types_update;
-	}
-	
 	$template_to_show = $callback['args'];
 
     $woo_metaboxes = get_option( 'woo_custom_template', array() );
-
-    $seo_metaboxes = get_option( 'woo_custom_seo_template', array() );
-
-    if( empty( $seo_metaboxes ) && $template_to_show == 'seo' ) {
-    	return;
-    }
 
 	// Array sanity check.
 	if ( ! is_array( $woo_metaboxes ) ) { $woo_metaboxes = array(); }
@@ -68,12 +53,6 @@ function woothemes_metabox_create( $post, $callback ) {
     if ( count( $woo_metaboxes ) <= 0 ) {
         $display_general_fields = false;
     }
-
-	// Determine whether or not to display SEO fields.
-	$display_seo_fields = true;
-	if ( get_option( 'seo_woo_hide_fields' ) == 'true' || ( get_option( 'seo_woo_use_third_party_data' ) == 'true' ) ) {
-		$display_seo_fields = false;
-	}
 
     $output = '';
     
@@ -88,9 +67,6 @@ function woothemes_metabox_create( $post, $callback ) {
 	    	if ( $display_general_fields ) {
                 $output .= '<li class="wf-tab-general"><a href="#wf-tab-general">' . __( 'General Settings', 'woothemes' ) . '</a></li>' . "\n";
             }
-	    	if ( $display_seo_fields ) {
-	    		$output .= '<li class="wf-tab-seo"><a href="#wf-tab-seo">' . __( 'SEO', 'woothemes' ) . '</a></li>' . "\n";
-	    	}
 	    	
 	    	// Allow themes/plugins to add tabs to WooFramework custom fields.
 	    	$output .= apply_filters( 'wooframework_custom_field_tab_headings', '' );
@@ -100,10 +76,6 @@ function woothemes_metabox_create( $post, $callback ) {
     if ( $display_general_fields ) {
         $output .= woothemes_metabox_create_fields( $woo_metaboxes, $callback, 'general' );
 
-    }
-
-    if ( $display_seo_fields && ( array_search( get_post_type(), $seo_post_types ) !== false ) ) {
-    	$output .= woothemes_metabox_create_fields( $seo_metaboxes, $callback, 'seo' );
     }
     
     // Allow themes/plugins to add tabs to WooFramework custom fields.
@@ -136,7 +108,7 @@ function woothemes_metabox_create_fields ( $metaboxes, $callback, $token = 'gene
 	
 	$output = '';
 	
-	$output .= '<div id="wf-tab-' . $token . '">' . "\n";
+	$output .= '<div id="wf-tab-' . esc_attr( $token ) . '">' . "\n";
 	$output .= '<table class="woo_metaboxes_table">'."\n";
     foreach ( $metaboxes as $k => $woo_metabox ) {
     
@@ -147,9 +119,7 @@ function woothemes_metabox_create_fields ( $metaboxes, $callback, $token = 'gene
     	$woo_id = 'woothemes_' . $woo_metabox['name'];
     	$woo_name = $woo_metabox['name'];
 
-    	if ( $template_to_show == 'seo' ) {
-    		$metabox_post_type_restriction = 'undefined';
-    	} elseif ( function_exists( 'woothemes_content_builder_menu' ) ) {
+    	if ( function_exists( 'woothemes_content_builder_menu' ) ) {
     		$metabox_post_type_restriction = $woo_metabox['cpt'][$post->post_type];
     	} else {
     		$metabox_post_type_restriction = 'undefined';
@@ -469,11 +439,6 @@ function woothemes_metabox_handle() {
     global $globals, $post;
 
     $woo_metaboxes = get_option( 'woo_custom_template', array() );
-    $seo_metaboxes = get_option( 'woo_custom_seo_template', array() );
-	
-    if( ! empty( $seo_metaboxes ) && get_option( 'seo_woo_hide_fields' ) != 'true' ) {
-    	$woo_metaboxes = array_merge( (array)$woo_metaboxes, (array)$seo_metaboxes );
-    }
 
     // Sanitize post ID.
     if( isset( $_POST['post_ID'] ) ) {

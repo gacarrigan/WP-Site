@@ -49,18 +49,6 @@ function woothemes_framework_settings_page() {
 									'class' => 'text',
 									'type' => 'text' );
 
-	$framework_options[] = array( 	'name' => __( 'Disable SEO Menu Item', 'woothemes' ),
-									'desc' => sprintf( __( 'Disable the %s menu item in the theme menu.', 'woothemes' ), '<strong>' . __( 'SEO', 'woothemes' ) . '</strong>' ),
-									'id' => $shortname . '_seo_disable',
-									'std' => 'true',
-									'type' => 'checkbox' );
-
-	$framework_options[] = array( 	'name' => __( 'Disable Sidebar Manager Menu Item', 'woothemes' ),
-									'desc' => sprintf( __( 'Disable the %s menu item in the theme menu.', 'woothemes' ), '<strong>' . __( 'Sidebar Manager', 'woothemes' ) . '</strong>' ),
-									'id' => $shortname . '_sbm_disable',
-									'std' => 'true',
-									'type' => 'checkbox' );
-
 	$framework_options[] = array( 	'name' => __( 'Disable Backup Settings Menu Item', 'woothemes' ),
 									'desc' => sprintf( __( 'Disable the %s menu item in the theme menu.', 'woothemes' ), '<strong>' . __( 'Backup Settings', 'woothemes' ) . '</strong>' ),
 									'id' => $shortname . '_backupmenu_disable',

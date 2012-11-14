@@ -507,137 +507,8 @@ box-shadow: inset 1px 1px 0 rgba(255,255,255,.2), inset -1px -1px 0 rgba(255,255
 
 .woo-notice { background: #ffd1d1 ; border:1px solid #DFA8A7; -moz-border-radius:8px; text-align: center; margin-bottom: 15px  }
 
-/*-------------------------------------------------------------------------------------------*/
-/* FEEDS PAGE */
-/*-------------------------------------------------------------------------------------------*/
-
-		.themes-page div.info { height: 30px; margin-top: 10px; }
-		.themes-page div.info a {  float:left; margin: 0 10px 0 0; padding:3px 10px; background:#D7E6F2; -moz-border-radius:4px}
-		.themes-page div.info a:link,
-		.themes-page div.info a:visited { color:#21759B; font-size:10px; font-weight:bold; text-decoration:none; text-shadow:1px 1px 0 #FFFFFF;}
-		.themes-page div.info a:active,
-		.themes-page div.info a:hover{color:#155876;}
-
-        ul.themes li.theme {border-bottom: 1px #ddd solid; padding: 20px 0;  height:230px}
-        ul.themes li.theme span{ display:block; float: left}
-        ul.themes li.theme span img{  }
-        ul.themes li.theme div {margin-left: 310px; }
-        ul.themes li.theme div h2 { font-size: 20px; background: #eee; padding: 0px 10px; margin-bottom: 10px; border-bottom:1px #ddd solid; border-top:1px #e1e1e1 solid}
-        ul.themes li.theme div h2 a:link, 
-        ul.themes li.theme div h2 a:visited {  color: #555; text-decoration: none; font-style: normal;}
-        
-        ul.themes li.theme div p { width: 450px; padding-left: 5px;}
-        ul.themes li.theme div p{ font-size: 12px!important;  margin: 10px 10px 10px 10px; }
-        ul.themes li.theme div ul {padding-left: 0px; color: #ccc; float:left; border-top:#eee 1px solid; padding-top: 10px;margin-left:20px }
-        ul.themes li.theme div ul li { list-style: disc; list-style-position:inside;  }
-        ul.themes li.theme div ul li a:link, 
-        ul.themes li.theme div ul li a:visited { font-size: 12px!important; text-decoration: none;}
-        ul.themes li.theme div ul li a:hover, 
-        ul.themes li.theme div ul li a:active { text-decoration: underline ;}
-
-/*-------------------------------------------------------------------------------------------*/
-/* SIDEBAR MANAGER */
-/*-------------------------------------------------------------------------------------------*/
-
-#wpcontent #woo_container #content.sbm-content { width: 785px; padding-top:20px; margin-left: 0; border-right: 1px solid #D8D8D8; }
-
-#woo_container #content.sbm-content .info-box  { position: relative; left: 0; margin: 0px 0 20px 0; padding: 0 12px; background: #fff298; border: 1px solid #ecd852; }
-#woo_container #content.sbm-content .info-box h2  { font: bold 14px Helvetica, Arial, sans-serif; text-transform: uppercase; }
-#woo_container #content.sbm-content .info-box p  { margin: 5px 0 10px; font-family: Helvetica, Arial, sans-serif; }
-#woo_container #content.sbm-content .info-box .btn-close  { position: absolute; top: 7px; left: 730px; }
-
-#sbm-sidebar  { float: left; width: 230px; margin: 0 20px 0 0; }
-#sbm-main  { float: left; width: 505px; }
-
-#woo_container #woo-sbm-menu { min-width: 230px; }
-#woo_container #woo-sbm-menu h3  { padding: 7px 9px; font-size: 12px; cursor: default; }
-#woo_container #woo-sbm-menu ul  { margin: 0 0 0 10px; }
-#woo_container #woo-sbm-menu ul ul{ margin: 5px 0 0 5px; }
-#woo_container #woo-sbm-menu ul li { cursor: pointer}
-#woo_container #woo-sbm-menu ul li a { display: block; font-size: 12px; font-weight: bold; text-transform: uppercase; color: #333; text-decoration: none; }
-#woo_container #woo-sbm-menu ul li a:hover, #woo_container #woo-sbm-menu ul li li:hover  { color: #757575; }
-#woo_container #woo-sbm-menu ul ul li { margin-bottom: 4px; }
-#woo_container #woo-sbm-menu ul ul li span { display: none}
-ul#woo-sbm-menu_ul li a span { color: #999; }
-
 #woo_container h3 { margin: 0 0 10px 0}
 #woo_container h3 span { font-size: 10px; color: #ccc}
-#woo_container .woo-sbm-tip { display:block; padding: 15px 15px 15px 15px; margin-bottom: 10px; background: #EDFCD5; text-shadow: 0 1px 0 #FFFFFF; border: 1px solid #D4EBAF; font: italic 13px/1.5em Georgia, serif;
-}
-
-#woo_container #woo-sbm-get-links { display:  none; }
-
-#woo-sbm-toggle-info  { float: right; margin: 3px 5px 0 0; text-decoration: none; text-transform: uppercase; font-size: 11px; }
-#woo-sbm-toggle-info img  { vertical-align: top; padding: 0 0 0 5px; }
-
-#woo_container .woo-sbm-builder { position: relative}
-#woo_container .woo-sbm-builder .nav-tabs-nav  { margin: 0 0 0 10px; }
-#woo_container .woo-sbm-builder .nav-tab  { background: #F4F4F4; font-size: 11px; border-bottom: 1px solid #ccc; }
-#woo_container .woo-sbm-builder .nav-tab-active  { font-weight: bold; background: #ececec; border-bottom: 1px solid #ececec; }
-#woo_container .woo-sbm-builder .builder-header  {padding: 10px; border: 1px solid #ccc; border-width: 1px 1px 0; background: url( "images/gray-grad.png") repeat-x scroll left top #DFDFDF; border-top-right-radius: 6px; -moz-border-radius-topright: 6px; -webkit-border-top-right-radius: 6px; border-top-left-radius: 6px; -moz-border-radius-topleft: 6px; -webkit-border-top-left-radius: 6px; }
-#woo_container .woo-sbm-builder label { display: block; margin-bottom: 0px; padding: 5px 0; font-size: 12px}
-#woo_container .woo-sbm-builder label span { float:left; width: 130px; font-weight: 700; text-align: right; margin-right: 10px}
-#woo_container .woo-sbm-builder #woo-sbm-label-sb-name span  { padding-top: 5px; }
-#woo_container .woo-sbm-builder #woo-sbm-builder-body label span  { font-size: 13px; color: #333; padding-top: 3px; }
-#woo_container .woo-sbm-builder #woo-sbm-builder-body select  { width: 330px; }
-#woo_container .woo-sbm-builder #sidebar-description  { width: 330px!important; height: 80px; }
-#woo_container .woo-sbm-builder #sidebar-title  { width: 330px; padding: 5px 0 6px 5px; }
-#woo_container .woo-sbm-builder .woo-sbm-controls .button  { width: 90px!important; margin-right: 23px; }
-#woo_container .woo-sbm-builder #woo-sbm-more-info { text-align: center; display: block; font-size: 11px; text-transform: uppercase }
-#woo_container .woo-sbm-builder-edit { float:none; width: auto; margin:0; padding: 10px 0 0; border: 0; background: transparent none;}
-#woo_container .woo-sbm-builder-edit input { width: 230px; }
-
-#woo_container #woo-sbm-response-builder input { font-size: 12px; padding: 3px; width: 280px}
-
-#woo_container #woo-sbm-sidebars {margin-top: 20px; padding-top: 20px; border-top: 1px solid #eee }
-#woo_container #woo-sbm-sidebars #menu-to-edit  { padding: 0 0 30px; }
-#woo_container #woo-sbm-sidebars #menu-to-edit li dt  { width: 492px; cursor: default; }
-#woo_container #woo-sbm-sidebars #menu-to-edit li .menu-item-settings .description-thin  { width: 236px; }
-#woo_container #woo-sbm-sidebars #menu-to-edit li .menu-item-settings .description-wide  { width: 481px; }
-#woo_container #woo-sbm-sidebars #menu-to-edit li .menu-item-settings p label input, #woo_container #woo-sbm-sidebars #menu-to-edit li .menu-item-settings p label select, #woo_container #woo-sbm-sidebars #menu-to-edit li .menu-item-settings p label textarea  { margin-top: 5px;}
-#woo_container #woo-sbm-sidebars #menu-to-edit li .menu-item-settings p  { margin-bottom: 20px; }
-#woo_container #woo-sbm-sidebars #menu-to-edit li .menu-item-settings .menu-item-actions  { padding: 0; margin-top: -8px; }
-#woo_container #woo-sbm-sidebars #menu-to-edit li.menu-item-depth-1  { margin-left: 15px; }
-#woo_container #woo-sbm-sidebars #menu-to-edit li.menu-item-depth-1 dt  { width: 477px; }
-#woo_container #woo-sbm-sidebars #menu-to-edit li.menu-item-depth-1 .menu-item-settings  { width: 477px; }
-#woo_container #woo-sbm-sidebars #menu-to-edit li.menu-item-depth-1 .menu-item-settings .description-thin  { width: 336px; }
-#woo_container #woo-sbm-sidebars #menu-to-edit li .menu-item-settings p label  { z-index: 9999; position: relative; }
-
-
-#woo_container .menu-item-depth-1 { margin-left: 30px; }
-
-
-#woo_container #woo-sbm-builder-meta { display: none; font-size: 11px; padding: 0px; background: #fff; color: #555; border: 1px solid #ccc; width: 320px; position: absolute; top:-185px; right:0;
-	 box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.1);
-    -webkit-box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.1);
-    -moz-box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.1);
-	border-radius: 6px;
-	-webkit-border-radius: 6px;
-	-moz-border-radius: 6px;
-	-khtml-border-radius: 6px;
-}
-#woo_container #woo-sbm-builder-meta label { font-size: 11px; border-bottom: #ccc 1px solid;  padding: 5px 10px }
-#woo_container #woo-sbm-builder-meta label span { text-transform: uppercase; width: 40px; text-align: right; padding-right: 5px;}
-#woo_container #woo-sbm-builder-meta label.last { overflow:hidden; height:18px} 
-
-#woo_container #woo-sbm-builder-body { padding: 10px; background: #f3f3f3;border: 1px solid; border-color: #fff #e3e3e3 #e3e3e3 #ddd;}
-#woo_container #woo-sbm-builder-body label { border:0px;}
-#woo_container #woo-sbm-builder-body label span {  color:#999; font-family: georgia,arial; font-size: 1.2em; font-weight: 100; font-style:italic}
-#woo_container .woo-sbm-builder label span  { position: relative; z-index: 9999; }
-
-#woo_container #woo-sbm-builder-meta-top { padding: 5px 10px; background: #ccc; color: #000; font-size: 14px; text-transform: uppercase }
-#woo_container #woo-sbm-builder-meta-bottom {}
-
-#woo_container #woo-sbm-builder-part-assign { display: none}
-#woo_container #woo-sbm-builder-message { display:block; font-size: 11px; padding: 10px 0; cursor: pointer; text-decoration: underline; color:green; font-weight: 700;}
-#woo_container #woo-sbm-builder-message:hover { text-decoration: none;}
-#woo_container .woo-sbm-controls {height:20px; margin-top: 15px}
-#woo_container .woo-sbm-controls .button { float:right}
-
-#woo_container .saved_sidebar { background: #D7E6F2; border:1px solid #C2CFDF; font-size: 13px; margin-bottom: 3px; padding: 5px 10px}
-#woo_container .piggy { margin-left: 6px; background: #C9D9E6; padding: 0px 10px;font-size: 11px}
-#woo_container .delete-sidebar { float:right; font-size: 9px; color: red; margin-left: 15px}
-#woo_container .edit-sidebar { float:right; font-size: 9px; color: green}
 
 /* Nav Menu - From wordpress */
 #menu-container .inside { padding-bottom: 10px; }
@@ -885,17 +756,6 @@ body.js .item-order {
 #woo_container #woo-nav ul li.connect span.icon { background-image:url(images/option-icon-connect.png); }
 #woo_container #woo-nav ul li.wpsc_presentation span.icon { background-image:url(images/option-icon-cart.png); }
 #woo_container #woo-nav ul li.presstrends span.icon { background-image:url(images/option-icon-presstrends.png); }
-
-
-
-/*-------------------------------------------------------------------------------------------*/
-/* WP E Commerce Plugin Options Panel */
-/*-------------------------------------------------------------------------------------------*/
-
-#wpsc-presentation {
-	min-height: 2650px;
-	width: 600px;
-} 
 
 /*-------------------------------------------------------------------------------------------*/
 /* GENERAL STYLES */
