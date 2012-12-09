@@ -1,6 +1,5 @@
 <?php
-global $wpe_netdna_domains, $memcached_servers;
-
+global $wpe_netdna_domains, $memcached_servers, $current_user;
 //setup form url
 $form_url = parse_url($_SERVER['REQUEST_URI']);
 $form_url = add_query_arg(array('page'=>'wpengine-common'),$form_url['path']);
@@ -228,8 +227,11 @@ if ( is_wpe_snapshot() ) {
             </p>
 
             <p class="submit submit-top">
-    <?php wp_nonce_field( PWP_NAME . '-config' ); ?>
+    		<?php wp_nonce_field( PWP_NAME . '-config' ); ?>
                 <input type="submit" name="snapshot" value="<?= $have_snapshot ? "Recreate" : "Create" ?> staging area" class="button-primary"/>
+		 <?php if( $snapshot_state['is_ready'] AND current_user_can('administrator') AND ( defined('WPE_BETA_TESTER') AND WPE_BETA_TESTER ) ) :?>
+			<input type="button" name="deploy-from-staging" value="Deply from Staging" class="<?php if(!in_array('deploy-staging', get_user_meta($current_user->ID,'hide-pointer',false))) { echo 'wpe-pointer'; } ?> button-primary"/>
+		<?php endif; ?>
 
             </p>
         </form>

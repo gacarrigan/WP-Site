@@ -2,6 +2,22 @@ var url = window.location.pathname
 var filename = url.substring(url.lastIndexOf('/')+1);
 var warning = "Before taking this action, we at WP Engine recommend that you create a Restore Point of your site. This will allow you undo this action within minutes.";
 
+//function to determine whether query args are present
+function has_args(str) {	
+	var querystring = window.location.href.split('?',2);
+	var querystring = querystring[1];
+	if ( !querystring ) {
+		return false;
+	} else {
+		if( querystring.indexOf(str) != '-1' ) 
+		{
+			return true;
+		} else {
+			return false;
+		}
+	}
+}
+
 jQuery(document).ready(function($) {    	    			
 //apprise implementation
 
@@ -29,8 +45,8 @@ jQuery(document).ready(function($) {
 	$('#doaction').click(function(e) { e.preventDefault(); });
 	$('#doaction').attr('onclick','wpe_validate_bulk_form();');
 		
-  } else if( filename == 'plugin-install.php' && wpe.popup_disabled != 1) {
-
+  } else if( filename == 'plugin-install.php' && wpe.popup_disabled != 1 && !has_args("tab=favorites") ) {
+	
 	$('a.install-now').each(function() { 
 			$(this).click(function(e) { e.preventDefault(); });
 			$(this).attr('onclick','wpe_upgrade_link("'+$(this).attr('href')+'");');
@@ -98,7 +114,24 @@ function wpe_upgrade_link(link) {
 			window.location.href = 'https://my.wpengine.com/customers/'+wpe.account+'/checkpoints/new';
 		} 
   });
-}           
+} 
+
+function wpe_deploy_staging() {
+	apprise("<center>Which strategy you would like to use to deploy?</center>", { 'confirm':true,'textCancel': "Copy all files and the database.",'textOk':'Copy only the files.' }, 
+	function(r) {
+		if(r != false) {
+			jQuery.post(ajaxurl, {'action':'wpe-ajax','wpe-action':'deploy-staging','db_mode':'none'}, function(resp) {
+				apprise("Request sent: "+resp);
+				success = 1;
+			});
+		} else {
+			jQuery.post(ajaxurl, {'action':'wpe-ajax','wpe-action':'deploy-staging','db_mode':'default'}, function(resp) {
+                               apprise("<center>Request sent:</sent> <br/>"+resp);
+                               success = 1;
+                        });
+		}
+	});
+}          
   
 /**
 	* Displays popup
@@ -132,7 +165,7 @@ function apprise(string, args, callback) {
 	$('body').append('<div class="appriseOuter"></div>');
 	$('.appriseOuter').append('<div class="appriseInner"></div>');
 	$('.appriseInner').append(string);
-    $('.appriseOuter').css("left", ( $(window).width() - $('.appriseOuter').width() ) / 2+$(window).scrollLeft() + "px");
+	$('.appriseOuter').css("left", ( $(window).width() - $('.appriseOuter').width() ) / 2+$(window).scrollLeft() + "px");
     
     if(args)
 		{

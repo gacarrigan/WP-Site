@@ -22,7 +22,7 @@ class Wpe_Notices extends WpeCommon {
     function hooks() {
         add_action( 'admin_notices', array( $this, 'display_notices' ) );
      
-        if( WP_ALLOW_MULTISITE ) {
+        if( @WP_ALLOW_MULTISITE ) {
         	add_action('network_admin_notices',array( $this, 'display_notices' ) );
         }
         
@@ -166,7 +166,7 @@ class Wpe_Notices extends WpeCommon {
 				// If already selected to not see this message, do nothing
 				if ( @in_array($id,$read) )
 					continue;
-				$read[] = $id;;
+				$read[] = $id;
 				update_user_meta($current_user->ID,'wpe_notices_read', $read);
     	return false;
     }

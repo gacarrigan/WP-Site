@@ -51,7 +51,7 @@ $regex_content_type_js  = "(?:\\.js|[\\._/-](?:js|javascripts?|scripts?)\.php)\$
 $regex_content_type_html = "(?:\\.html|/|/index\\.php)\$";
 
 // Regex for cookies that prevent us from serving the page cached
-$regex_is_cookie_nocache = "\\b(?:(?!wordpress_test_cookie)wordpress_|wp-postpass_|comment_author_|wptouch[\w-]+|wpengine_no_cache|mp_globalcart_|wlcookie|wishlist|Cart66\\w*SID|woo(?!commerce_items_in_cart=0)[\\w-]+|ap_id|wc_bundle_pge_id|wm_affid|cart_in_use|eMember_in_use|wpsc_customer_cookie_|BS_SESSION|region_pref|lax_user)";
+$regex_is_cookie_nocache = "\\b(?:(?!wordpress_test_cookie)wordpress_|wp-postpass_|comment_author_|wptouch[\w-]+|wpengine_no_cache|mp_globalcart_|wlcookie|wishlist|Cart66\\w*SID|ap_id|wc_bundle_pge_id|wm_affid|cart_in_use|eMember_in_use|wpsc_customer_cookie_|BS_SESSION|region_pref|lax_user)";
 
 // Regex for paths which we never cache
 $regex_is_path_nocache_prefix = "/(?:store|cart|check-?out)(?:/|\$)";
