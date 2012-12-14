@@ -13,17 +13,15 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
  *
  * TABLE OF CONTENTS
  *
- * var $version
- * var $file
+ * public $version
+ * private $file
  *
- * var $token
- * var $prefix
- * var $conditions
+ * private $token
+ * private $prefix
+ * public $conditions
  * 
- * var $plugin_url
- * var $assets_url
- * 
- * var $updater
+ * private $plugin_url
+ * private $assets_url
  *
  * - __construct()
  * - init()
@@ -54,18 +52,16 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
  * - register_plugin_version()
  */
 class Woo_Sidebars {
-	var $version;
-	var $file;
+	public $version;
+	private $file;
 
-	var $token;
-	var $prefix;
-	var $conditions;
+	private $token;
+	private $prefix;
+	public $conditions;
 	
-	var $plugin_url;
-	var $assets_url;
+	private $plugin_url;
+	private $assets_url;
 
-	var $updater;
-	
 	/**
 	 * __construct function.
 	 * 
@@ -85,11 +81,6 @@ class Woo_Sidebars {
 
 		$this->conditions = new Woo_Conditions();
 		$this->conditions->token = $this->token;
-
-		if ( is_admin() ) {
-			require_once( 'class.updater.php' );
-			$this->updater = new WooSidebars_Updater( $file );
-		}
 	} // End __construct()
 	
 	/**
