@@ -95,3 +95,11 @@ h1 {
   -webkit-transform: rotate(-1deg);
   /* Saf3.1+, Chrome */
 
+[unordered_list style="orange-dot"]
+<ul>
+    <li>List item 1</li>
+    <li>List item 2</li>
+    <li>List item 3</li>
+</ul>
+[/unordered_list]
+
