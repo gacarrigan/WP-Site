@@ -934,5 +934,12 @@ ul.nav li a {
   background-color: #925c31;
   border: 1px dashed #af9179;
 }
-
+.post .wp-caption-text,
+.type-page .wp-caption-text {
+  margin: 0;
+  padding: 0;
+  font-size: .618em;
+  font-family: "Cutive", sans-serif;
+  text-align: left;
+}
 
