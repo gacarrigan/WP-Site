@@ -3,7 +3,7 @@
 Plugin Name: WooDojo
 Plugin URI: http://woothemes.com/woodojo/
 Description: WooDojo is a powerful collection of WooThemes features to enhance your website.
-Version: 1.3.0
+Version: 1.5.0
 Author: WooThemes
 Author URI: http://woothemes.com/
 License: GPL version 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
@@ -24,15 +24,10 @@ License: GPL version 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-	if ( ! empty( $_SERVER['SCRIPT_FILENAME'] ) && basename( __FILE__ ) == basename( $_SERVER['SCRIPT_FILENAME'] ) ) {
-        die ( 'Please do not load this screen directly. Thanks!' );
-    }
+	if ( ! defined( 'ABSPATH' ) ) exit;
 
 	require_once( 'classes/woodojo.class.php' );
-    require_once( 'classes/transmitter-installer.class.php' );
 
-	global $woodojo;
-
-	$woodojo = new WooDojo( __FILE__ );
-	$woodojo->version = '1.3.0';
+	$GLOBALS['woodojo'] = new WooDojo( __FILE__ );
+	$GLOBALS['woodojo']->version = '1.5.0';
 ?>

@@ -22,7 +22,7 @@ $regex_is_user_agent_ipad_group = '\bipad\b';
 $regex_is_user_agent_403 = "^\W|^Mozilla(?: |/2|/4\.0\+?\\()|^(?:LWP|MSIE|Nut|Omniexpl|Opera/9\.64|pussycat|python|super happy|trackback/|user|website-|winnie)|[\\r\\n]|psyche|adwords|\bemail|autoemailspider|core-project|diamond|digger|ecollector|forum|^java[/ ]\\d\\.|Microsoft URL|Missigua|Movable Type|grub|httpproxy|Internet Explorer|isc systems|blogsearch|cherrypicker|maxpoint|casper|boston|feedfinder|mj12bot|cmsworldmap|diavol|dotbot|flicky|ia_archiver|kmccrew|libwww|planetwork|pycurl|skygrid|; Widows|a href|DTS agent|user-agent:|Gecko/25|hanzoweb|indy lib|murzillo|\.NET CLR 1\)|POE-Component-Client|turing mach|Ubuntu/9\.25|unspecified\\.mail|webaltbot|wise(?:nut)?bot|Windows NT [45]\.[01];\)|Windows XP 5|WordPress/4\.01|discobot|xedant|\\\\\\\\";
 
 // Case-insensitive regex for paths which we should automatically 403 on
-$regex_is_path_403 = "/\.(?:htaccess|svn|cvs|git|smushit-status|largefs)|\\.(?:as.x)\$|r\\d+shell|/wp-content/mysql\\.sql|/uploads/(?:temp|backupbuddy)_|/wp-content/plugins/tweet-blender/|^/sd_nginx_status|^/_wpeprivate|/php-?(?:my)?-?admin|/pma/?|^/readme.htm";
+$regex_is_path_403 = "/\.(?:htaccess|svn|cvs|git|smushit-status|largefs)|\\.(?:as.x)\$|r\\d+shell|/wp-content/mysql\\.sql|/uploads/(?:temp|backupbuddy)_|/wp-content/plugins/tweet-blender/|^/sd_nginx_status|^/_wpeprivate|/php-?(?:my)?-?admin|/pma/?$|^/readme.htm";
 
 // Case-insensitive regex for query-strings which we should automatically 403 on
 $regex_is_qstr_403 = "(?:\\<|%3c).*script.*(?:\\>|%3e)|\\b(?:GLOBALS|_REQUEST|_GET|_POST|_COOKIE)(?:=|\[|\%[0-9A-Z]{0,2})";
@@ -129,6 +129,39 @@ $known_short_cache_args_regex = "(?:\\bnggpage=)";
 
 */
 $known_404_regex = "^/nas/wp\\b|^/nginx_status|/undefined/?\$|/plugins/wp-postviews/wp-postviews\\.php|^/cgi-bin|/autodiscover\\.xml";
+
+class Patterns
+{
+	static public function build_http_to_https ($html, $blog_url)
+	{
+		// Strip the protocol
+		$blog_url = preg_replace('(https?://)', '', $blog_url);
+		$r = '#([\\s-]?src[\s]*=[\s]*[\'"])http://('.$blog_url.')(/?.*[\'"])#i';
+		// Let's skip anything that's in a <textarea>
+		$ignore_start = $ignore_end   = 0;
+		if ( preg_match( "#<textarea.+?</textarea>#is", $html, $match, PREG_OFFSET_CAPTURE ) ) {
+			$ignore_start = $match[0][1];
+			$ignore_end   = $ignore_start + strlen( $match[0][0] );
+			$html         = self::preg_replace_around( $r, "\$1https://".$blog_url."\$3", $html, $ignore_start, $ignore_end );
+		} else {
+			$html = preg_replace( $r, "\$1https://".$blog_url."\$3", $html );
+		}
+        	return $html;
+	}
+
+	// Performs a preg_replace(), but ignores the substring between the two ignore ends, exclusive.
+	static public function preg_replace_around( $re, $repl, $src, $ignore_start, $ignore_end )
+	{
+		// trivial cases
+		if ( $ignore_start >= $ignore_end )
+			return preg_replace( $re, $repl, $src );
+		// replace before and after and stitch together
+		$a = preg_replace( $re, $repl, substr( $src, 0, $ignore_start ) );
+		$b = substr( $src, $ignore_start, $ignore_end - $ignore_start );
+		$c = preg_replace( $re, $repl, substr( $src, $ignore_end ) );
+		return $a . $b . $c;
+	}
+}
 
 // Given a regular expression which matches the path-part of a URL, returns a regular expression
 // which matches the entire path + qargs part.

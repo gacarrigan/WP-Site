@@ -272,9 +272,12 @@ class WpeCommon extends WpePlugin_common {
 	public function wpe_adminbar() {
 		global $wp_admin_bar;
 
-		// Make sure we're supposed to do this.
-		if ( ! $this->is_wpengine_admin_bar_enabled() )
-			return;
+	// Make sure we're supposed to do this.
+	if ( ! $this->is_wpengine_admin_bar_enabled() )
+		return;
+
+	if( $this->is_whitelabel() )  
+		return;
 
 		$user = wp_get_current_user();
 
@@ -472,6 +475,16 @@ class WpeCommon extends WpePlugin_common {
 			die();
 		}
 	}
+	
+	// test to see whether this is a whitelabel install
+	public function is_whitelabel() {
+		if( defined("WPE_WHITELABEL") AND WPE_WHITELABEL AND WPE_WHITELABEL != 'wpengine') {
+			return WPE_WHITELABEL;
+		} else {
+			return false;
+		}
+
+	}
 
 	public function view($view, $data = array(), $echo = true) {
     		if(!empty($data)) { extract($data); }
@@ -486,44 +499,73 @@ class WpeCommon extends WpePlugin_common {
 	    	}
     	}
 
-	public function wp_hook_admin_menu() {
-		// Variations due to type of site
-		if ( is_multisite() ) {
-		    $capability = 'manage_network';
-		    $position   = -1;
-		} else {
-		    $capability = 'manage_options';
-		    $position   = 0;
+    public function wp_hook_admin_menu() {
+        // Variations due to type of site
+        if ( is_multisite() ) {
+            $capability = 'manage_network';
+            $position   = -1;
+        } else {
+            $capability = 'manage_options';
+            $position   = 0;
+        }
+	
+	if( $wp = $this->is_whitelabel() ) 
+	{
+		//Setup menu data
+	
+		if( !$menudata = wp_cache_get("$wl-menudata",'wpengine') )
+		{	
+			$menudata = array(
+				'menu_title'	=> get_option("wpe-install-menu_title","WP Engine"),
+				'menu_icon'	=> get_option("wpe-install-menu_icon",WPE_PLUGIN_URL.'/images/favicon.png'),
+				'menu_items'	=> get_option("wpe-install-menu_items",false),
+			);
+			wp_cache_set("$wl-menudata",$menudata,'wpengine');
 		}
 
-		// The main page
-		add_menu_page( 'WP Engine', 'WP Engine', $capability, dirname( __FILE__ ), array( $this, 'wpe_admin_page' ), WPE_PLUGIN_URL . '/images/favicon.png', $position );
+		//The main page
+		add_menu_page( $menudata['menu_title'], $menudata['menu_title'], $capability, dirname(__FILE__), array( $this, 'wpe_admin_page'), $menudata['menu_icon'], $position);
+		//Direct link to user portal
+		add_submenu_page('wpengine-common', 'User Portal','User Portal', $capability, 'wpe-user-portal', array( $this, 'redirect_to_user_portal') );
+		if( $menudata['menu_items'] ) 
+		{
+			foreach( $menudata['menu_items'] as $mid => $mitem) {
+				add_submenu_page('wpengine-common', $mitem->label, $mitem->label , $capability, "$mid", array( $this, "redirect_menu_page" ) );
+			}
+		}		
 
-		// Direct link to user portal
-		add_submenu_page( 'wpengine-common', 'User Portal', 'User Portal', $capability, 'wpe-user-portal', array( $this, 'redirect_to_user_portal' ) );
+	} else {
+	        // The main page
+        	add_menu_page( 'WP Engine', 'WP Engine', $capability, dirname( __FILE__ ), array( $this, 'wpe_admin_page' ), WPE_PLUGIN_URL . '/images/favicon.png', $position );
 
-		// Direct link to Zendesk
-		add_submenu_page( 'wpengine-common', 'Support System', 'Support System', $capability, 'wpe-support-portal', array( $this, 'redirect_to_zendesk' ) );
+	        // Direct link to user portal
+        	add_submenu_page( 'wpengine-common', 'User Portal', 'User Portal', $capability, 'wpe-user-portal', array( $this, 'redirect_to_user_portal' ) );
+
+	        // Direct link to Zendesk
+        	add_submenu_page( 'wpengine-common', 'Support System', 'Support System', $capability, 'wpe-support-portal', array( $this, 'redirect_to_zendesk' ) );
 	}
+    }
 
+	//fetchs the Upload space used from the api
 	private function fetch_upload_space_usage_KB() {
-        $size = 0;
+		
+		$size = 0;
 
-        $url = 'https://api.wpengine.com/1.2/?method=usage&account_name=' . PWP_NAME . '&wpe_apikey=' . WPE_APIKEY;
-        if ( is_multisite() ) {
-            global $blog_id;
-            $url .= "&blog_id=$blog_id";
-        }
+		$url = 'https://api.wpengine.com/1.2/?method=usage&account_name=' . PWP_NAME . '&wpe_apikey=' . WPE_APIKEY;
+		if ( is_multisite() ) {
+		    global $blog_id;
+		    $url .= "&blog_id=$blog_id";
+		}
 
-        // Pull this value from our API.
-        $http = new WP_Http;
-        $msg  = $http->get( $url );
-        if ( ! is_a( $msg, 'WP_Error' ) && isset( $msg['body'] ) ) {
-            $usage = json_decode( $msg['body'], TRUE );
-            if ( $usage && is_array( $usage ) ) {
-                $size = $usage['kbytes'];
-            }
-        }
+		// Pull this value from our API.
+		$http = new WP_Http;
+		$msg  = $http->get( $url );
+		if ( ! is_a( $msg, 'WP_Error' ) && isset( $msg['body'] ) ) {
+		    $usage = json_decode( $msg['body'], TRUE );
+		    if ( $usage && is_array( $usage ) ) {
+			$size = $usage['kbytes'];
+		    }
+		}
 	
 		return $size;
 	}
@@ -538,73 +580,97 @@ class WpeCommon extends WpePlugin_common {
 		return $cached;
 	}
 
-    // Gets site dirsize value from our API and store it in a transient
-    public function upload_space_load() {
-        $dir     = BLOGUPLOADDIR;
-        $key     = 'dirsize_cache';
-        $dirsize = get_transient( $key );
+	// Gets site dirsize value from our API and store it in a transient
+	public function upload_space_load() {
+		$dir     = BLOGUPLOADDIR;
+		$key     = 'dirsize_cache';
+		$dirsize = get_transient( $key );
 
-        // If don't have value, go get it.
-        if ( ! is_array( $dirsize ) || ! isset( $dirsize[$dir]['size'] ) ) {
-	    $size = FALSE;
-            if( !is_wpe_snapshot() ) {
-		$size = 1024 * $this->cached_upload_space_usage_KB();
-	    }
-            $dirsize[$dir]['size'] = $size;
-        }
+		// If don't have value, go get it.
+		if ( ! is_array( $dirsize ) || ! isset( $dirsize[$dir]['size'] ) ) {
+		    $size = FALSE;
+		    if( !is_wpe_snapshot() ) {
+			$size = 1024 * $this->cached_upload_space_usage_KB();
+		    }
+		    $dirsize[$dir]['size'] = $size;
+		}
 
-        set_transient( $key, $dirsize, 3600 );
-    }
+		set_transient( $key, $dirsize, 3600 );
+	}
 
-    public function wp_hook_site_url( $url, $path, $orig_scheme, $blog_id ) {
-        if ( defined( 'PWP_NAME' ) && PWP_NAME == "balsamiqmain" ) {
-            return preg_replace( '#^https?://[^/]+/(wp-login\.php|wp-admin)\b#', 'http://balsamiqmain.wpengine.com/\1', $url );
-        }
-        return $url;
-    }
+	public function wp_hook_site_url( $url, $path, $orig_scheme, $blog_id ) {
+        	if ( defined( 'PWP_NAME' ) && PWP_NAME == "balsamiqmain" ) {
+            		return preg_replace( '#^https?://[^/]+/(wp-login\.php|wp-admin)\b#', 'http://balsamiqmain.wpengine.com/\1', $url );
+        	}
+        	return $url;
+	}
 
-    public function redirect_to_user_portal() {
-        if ( empty( $_GET['page'] ) && $_GET['page'] )
-            return false;
+	public function redirect_to_user_portal() {
+        	if ( empty( $_GET['page'] ) && $_GET['page'] )
+			return false;
+		
+		if( $this->is_whitelabel() ) {
+			$link = wp_cache_get('wpe-install-userportal','wpengine');
+			if( !$link ) {
+				$link = get_option('wpe-install-userportal');
+				wp_cache_set( 'wpe-install-userportal',$link, 'wpengine');
+			}
+		} else {
+			$link = "http://my.wpengine.com";
+		}
+	
+		wp_redirect( $link );
+		exit;
+	}
 
-        wp_redirect( 'http://my.wpengine.com' );
-        exit;
-    }
+	public function redirect_to_zendesk() {
+        	if ( empty( $_GET['page'] ) && $_GET['page'] )
+        		return false;
 
-    public function redirect_to_zendesk() {
-        if ( empty( $_GET['page'] ) && $_GET['page'] )
-            return false;
+		wp_redirect( 'http://wpengine.zendesk.com' );
+		exit;
+	}
 
-        wp_redirect( 'http://wpengine.zendesk.com' );
-        exit;
-    }
+	public function redirect_menu_page() {
+		if ( empty( $_GET['page'] ) && $_GET['page'] )
+			return false;
 
-    // Emits our admin page into the output stream.
-    public function wpe_admin_page() {
-        // Keep this code separate for complexity.
-        include(dirname( __FILE__ ) . "/admin-ui.php");
-    }
+		if( $this->is_whitelabel() ) {
+			$wl = WPE_WHITELABEL;
+			$menudata = wp_cache_get("$wl-menudata",'wpengine'); 
+			if( !empty( $menudata['menu_items']->$_GET['page'] ) ) 
+			{
+				wp_redirect($menudata['menu_items']->$_GET['page']->target);
+			}
+		}
+    	}
 
-    public function get_access_log_url( $which ) {
-        return "/".PWP_NAME."/".WPE_APIKEY."/logs/${which}.log";
-    }
+	// Emits our admin page into the output stream.
+	public function wpe_admin_page() {
+        	// Keep this code separate for complexity.
+		include(dirname( __FILE__ ) . "/admin-ui.php");
+    	}
 
-    public function get_error_log_url( $production = true ) {
-        $method = $production ? 'errors-site' : 'errors-staging-site';
-        return "https://api.wpengine.com/1.2/?method=$method&account_name=" . PWP_NAME . "&wpe_apikey=" . WPE_APIKEY;
-    }
+	public function get_access_log_url( $which ) {
+        	return "/".PWP_NAME."/".WPE_APIKEY."/logs/${which}.log";
+    	}
 
-    public function get_customer_record ( ) {
-        $url = "https://api.wpengine.com/1.2/?method=customer-record&account_name=" . PWP_NAME . "&wpe_apikey=" . WPE_APIKEY;
-	$http = new WP_Http;
-	$msg  = $http->get( $url );
-        if ( is_a( $msg, 'WP_Error' ) )
-            return false;
-	if ( ! isset( $msg['body'] ) )
-            return false;
-        $data = json_decode( $msg['body'], true );
-	return $data;
-    }
+	public function get_error_log_url( $production = true ) {
+        	$method = $production ? 'errors-site' : 'errors-staging-site';
+        	return "https://api.wpengine.com/1.2/?method=$method&account_name=" . PWP_NAME . "&wpe_apikey=" . WPE_APIKEY;
+	}
+
+    	public function get_customer_record ( ) {
+       		$url = "https://api.wpengine.com/1.2/?method=customer-record&account_name=" . PWP_NAME . "&wpe_apikey=" . WPE_APIKEY;
+		$http = new WP_Http;
+		$msg  = $http->get( $url );
+        	if ( is_a( $msg, 'WP_Error' ) )
+	        	return false;
+		if ( ! isset( $msg['body'] ) )
+        		return false;
+		$data = json_decode( $msg['body'], true );
+		return $data;
+    	}
 
 	// If not already set, and we're an administrator, set the WP Engine authentication cookie.
 	public function set_wpe_auth_cookie() {
@@ -623,30 +689,31 @@ class WpeCommon extends WpePlugin_common {
 			setcookie($wpe_cookie,$cookie_value,0,'/');
 	}
 
-    function wpengine_credits() {
+	function wpengine_credits() {
 
-        if ( get_option( 'stylesheet' ) != 'twentyeleven' && get_option( 'template' ) != 'twentyeleven' )
-            return false;
-        if ( !defined('WPE_FOOTER_HTML') OR !WPE_FOOTER_HTML OR $this->already_emitted_powered_by == true )
-            return false;
+       		if ( get_option( 'stylesheet' ) != 'twentyeleven' && get_option( 'template' ) != 'twentyeleven' )
+			return false;
+		
+		if ( !defined('WPE_FOOTER_HTML') OR !WPE_FOOTER_HTML OR $this->already_emitted_powered_by == true )
+			return false;
 
-       //to prevent repeating
-       $this->already_emitted_powered_by = true; ?>
-        <div id="site-host">
-            WP Engine <a href="http://wpengine.com" title="<?php esc_attr_e( 'Managed WordPress Hosting', 'wpengine' ); ?>"><?php printf( __( '%s.', 'wpengine' ), 'WordPress Hosting' ); ?></a>
-        </div>
-        <?php
-    }
+		//to prevent repeating
+		$this->already_emitted_powered_by = true; ?>
+        	<div id="site-host">
+            		WP Engine <a href="http://wpengine.com" title="<?php esc_attr_e( 'Managed WordPress Hosting', 'wpengine' ); ?>"><?php printf( __( '%s.', 'wpengine' ), 'WordPress Hosting' ); ?></a>
+		</div>
+        	<?php
+    	}
 
-    public function disable_indiv_plugin_update_notices( $value ) {
-        $plugins_to_disable_notices_for = array();
-        $basename = '';
-        foreach ( $plugins_to_disable_notices_for as $plugin )
-            $basename = plugin_basename( $plugin );
-        if ( isset( $value->response[@$basename] ) )
-            unset( $value->response[$basename] );
-        return $value;
-    }
+	public function disable_indiv_plugin_update_notices( $value ) {
+        	$plugins_to_disable_notices_for = array();
+        	$basename = '';
+        	foreach ( $plugins_to_disable_notices_for as $plugin )
+            		$basename = plugin_basename( $plugin );
+        	if ( isset( $value->response[@$basename] ) )
+            		unset( $value->response[$basename] );
+        	return $value;
+    	}
 
 	public function get_powered_by_html( $affiliate_code = null ) {
 		if ( ( ! defined('WPE_FOOTER_HTML') OR !WPE_FOOTER_HTML ) AND !$this->is_widget ) return "";
@@ -663,20 +730,20 @@ class WpeCommon extends WpePlugin_common {
 		return "<span class=\"wpengine-promo\">$html</span>";
 	}
 
-    public function wpe_emit_powered_by_html( $affiliate_code = null ) {
-        if ( ! isset($this->already_emitted_powered_by) || $this->already_emitted_powered_by != true ) {
-	        echo($this->get_powered_by_html($affiliate_code));
-	        $this->already_emitted_powered_by = true;
-        }
-    }
+	public function wpe_emit_powered_by_html( $affiliate_code = null ) {
+			if ( ! isset($this->already_emitted_powered_by) || $this->already_emitted_powered_by != true ) {
+				echo($this->get_powered_by_html($affiliate_code));
+			$this->already_emitted_powered_by = true;
+		}
+    	}
 
-    // Filter on all WordPress SQL queries
-    public function query_filter( $sql ) {
-        // Ordering by the non-GMT version isn't indexed and always returns the same results as ordering by GMT.
-        $new_sql = preg_replace( "#\\bORDER BY (\\w+_(?:posts\\.post|comments\\.comment)_date)\\b(\\s+(?:A|DE)SC\\b)?#", "ORDER BY \$1_gmt\$2, \$1\$2", $sql );
-//if($new_sql != $sql) error_log("[[[$sql]]] -> [[[$new_sql]]]");
-        return $new_sql;
-    }
+	// Filter on all WordPress SQL queries
+	public function query_filter( $sql ) {
+		// Ordering by the non-GMT version isn't indexed and always returns the same results as ordering by GMT.
+		$new_sql = preg_replace( "#\\bORDER BY (\\w+_(?:posts\\.post|comments\\.comment)_date)\\b(\\s+(?:A|DE)SC\\b)?#", "ORDER BY \$1_gmt\$2, \$1\$2", $sql );
+		//if($new_sql != $sql) error_log("[[[$sql]]] -> [[[$new_sql]]]");
+		return $new_sql;
+	}
 
     // Stuff we run as often as WordPress will allow
     public function do_frequently() {
@@ -730,18 +797,6 @@ class WpeCommon extends WpePlugin_common {
         }
 
         print("Finished.\n" );
-    }
-
-    // Performs a preg_replace(), but ignores the substring between the two ignore ends, exclusive.
-    public function preg_replace_around( $re, $repl, $src, $ignore_start, $ignore_end ) {
-        // trivial cases
-        if ( $ignore_start >= $ignore_end )
-            return preg_replace( $re, $repl, $src );
-        // replace before and after and stitch together
-        $a = preg_replace( $re, $repl, substr( $src, 0, $ignore_start ) );
-        $b = substr( $src, $ignore_start, $ignore_end - $ignore_start );
-        $c = preg_replace( $re, $repl, substr( $src, $ignore_end ) );
-        return $a . $b . $c;
     }
 
     // Our own method for filtering the HTML output by WordPress, post-processing everything else on the page.
@@ -904,14 +959,9 @@ class WpeCommon extends WpePlugin_common {
                 $ignore_start = $match[0][1];
                 $ignore_end   = $ignore_start + strlen( $match[0][0] );
             }
-            
-              $html .= "\n<!-- WPE: $ignore_start ... $ignore_end
-              ".substr($html,$ignore_start,$ignore_end-$ignore_start)."
-              -->";
-            
             $new_blog_url = preg_replace( "#\\bhttp://#", "https://", $blog_url );
             if ( $new_blog_url != $blog_url )  // handle trivial case
-                $html         = $this->preg_replace_around(
+                $html         = Patterns::preg_replace_around(
                         "#\\b$re_blog_url#", $new_blog_url, $html, $ignore_start, $ignore_end
                 );
         }
@@ -961,19 +1011,7 @@ class WpeCommon extends WpePlugin_common {
     public function build_http_to_https ($html)
     {
         $blog_url       = home_url();
-        $blog_url = preg_replace('(https?://)', '', $blog_url);
-        $r = '#([\\s-]src[\s]*=[\s]*[\'"])http://('.$blog_url.')(/?.*[\'"])#i';
-        // Strip the protocol
-	// Let's skip anything that's in a <textarea>
-        $ignore_start = $ignore_end   = 0;
-        if ( preg_match( "#<textarea.+?</textarea>#is", $html, $match, PREG_OFFSET_CAPTURE ) ) {
-                $ignore_start = $match[0][1];
-                $ignore_end   = $ignore_start + strlen( $match[0][0] );
-                $html         = $this->preg_replace_around( $r, "\$1https://".$blog_url, $html, $ignore_start, $ignore_end );
-        } else { 
-        	$html = preg_replace( $r, "\$1https://".$blog_url."\$3", $html );
-	}
-        return $html;
+	return Patterns::build_http_to_https($html,$blog_url);
     }
 
     public static function get_url_to_replace( $url ) {
@@ -1576,7 +1614,7 @@ class WpeCommon extends WpePlugin_common {
         $cmd = wpe_param( 'wp-cmd' );
         if ( ! $cmd )
             return;    // without a command, it's not an internal request
-        if ( $_SERVER['SERVER_ADDR'] != '127.0.0.1' &&
+        if ( $_SERVER['REMOTE_ADDR'] != '127.0.0.1' &&
                 substr( $_SERVER['REMOTE_ADDR'], 0, 9 ) != '127.0.0.1' &&
                 substr( $_SERVER['REMOTE_ADDR'], 0, 11 ) != '67.210.230.' &&
                 substr( $_SERVER['REMOTE_ADDR'], 0, 11 ) != '199.47.222.' &&

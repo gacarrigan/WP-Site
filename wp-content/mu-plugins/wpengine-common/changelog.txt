@@ -181,3 +181,9 @@ v2.0.33
 	-Change some external api requests to https.
 v2.0.34
 	-The purge cdn api request is now https with creds.
+v2.0.35
+	-Fix regex replacement when ssl pages force src objects from http to https.
+v2.0.36
+	- Fix debug being added to html when wp-admin and textarea replacement.
+v2.0.37
+	- Prevent internal commands from being run from the outside network.

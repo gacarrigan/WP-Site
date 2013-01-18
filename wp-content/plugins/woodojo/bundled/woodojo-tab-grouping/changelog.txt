@@ -1,0 +1,8 @@
+*** WooDojo Tab Grouping Changelog ***
+
+2012.08.30 - version 1.0.1
+ * /screens/edit-screen.php - Prevent direct file access.
+ * /screens/list-screen.php - Prevent direct file access.
+ * /classes/class-list-table.php - Prevent direct file access. Add missing docblocks.
+ * /classes/class-woodojo-tab-grouping.php - Prevent direct file access. Add missing docblocks.
+ * woodojo-tab-grouping.php - Prevent direct file access.

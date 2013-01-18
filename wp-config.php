@@ -72,7 +72,7 @@ $wpe_no_cdn_uris=array ();
 
 $wpe_content_regexs=array ();
 
-$wpe_all_domains=array (  0 => 'gacarrigan.wpengine.com',);
+$wpe_all_domains=array (  0 => 'gacarrigan.wpengine.com',  1 => 'www.westcoast-east.com',);
 
 $wpe_varnish_servers=array (  0 => 'pod-1198',);
 
