@@ -72,7 +72,7 @@ $wpe_no_cdn_uris=array ();
 
 $wpe_content_regexs=array ();
 
-$wpe_all_domains=array (  0 => 'gacarrigan.wpengine.com',  1 => 'www.westcoast-east.com',);
+$wpe_all_domains=array (  0 => 'gacarrigan.wpengine.com',  1 => 'westcoast-east.com',);
 
 $wpe_varnish_servers=array (  0 => 'pod-1198',);
 
@@ -92,7 +92,7 @@ define('WPE_RO_FILESYSTEM',false);
 
 define('DISALLOW_FILE_MODS',FALSE);
 
-define('WPE_CDN_DISABLE_ALLOWED',true);
+define('WPE_CDN_DISABLE_ALLOWED',false);
 define('WPLANG','');
 
 # WP Engine ID
