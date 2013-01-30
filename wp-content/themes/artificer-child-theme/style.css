@@ -876,27 +876,7 @@ ul.nav li a {
   display: inline-block;
   font-size: .857em;
   margin-right: .618em;
-}
-.post .post-meta li.post-author a:before,
-.type-page .post-meta li.post-author a:before {
-  content: "U";
-}
-.post .post-meta li.post-date:before,
-.type-page .post-meta li.post-date:before {
-  content: "P";
-}
-.post .post-meta li.post-category a:before,
-.type-page .post-meta li.post-category a:before {
-  content: "F";
-}
-.post .post-meta li.tags:before,
-.type-page .post-meta li.tags:before {
-  content: ",";
-}
-.post .post-meta li.edit a:before,
-.type-page .post-meta li.edit a:before {
-  content: "S";
-}
+
 .post .post-more,
 .type-page .post-more {
   clear: both;
