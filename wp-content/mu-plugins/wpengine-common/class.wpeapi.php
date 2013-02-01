@@ -69,15 +69,19 @@ class WpeAPI extends Wp_Http {
                 return $this->timeout;
         }
 	
-	function setup_request() {
+	function setup_request($method='GET') {
 		if(empty($this->args['method'])) {
 			return new WP_Error('error',"Please specify a method for this request.");
 		} else {
-			if(count($this->args) > 0) {
-				foreach($this->args as $k=>$v) {
-					$this->request_uri = add_query_arg(array($k=>$v),$this->request_uri);
+			if( 'GET' == $method ) 
+			{
+				if(count($this->args) > 0) {
+					foreach($this->args as $k=>$v) {
+							if(!empty($v))
+								$this->request_uri = add_query_arg(array($k=>$v),$this->request_uri);
+					}
 				}
-			}
+			} 
 		}
 		return null;
 	}
@@ -89,8 +93,13 @@ class WpeAPI extends Wp_Http {
 	}
 	
 	function post($args = false) {
-		$this->setup_request();
-		$this->resp = parent::post($this->request_uri,$args);
+		$ch = curl_init();
+		curl_setopt($ch, CURLOPT_URL, $this->request_uri);
+		curl_setopt($ch, CURLOPT_POST, true);
+		curl_setopt($ch, CURLOPT_POSTFIELDS, $this->args);
+		curl_setopt($ch, CURLOPT_HTTPHEADER, array("Host: api.wpengine.com"));
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+		$this->resp = curl_exec($ch);
 		return $this;
 	}
 	

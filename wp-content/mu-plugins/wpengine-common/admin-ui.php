@@ -2,7 +2,8 @@
 global $wpe_netdna_domains, $memcached_servers, $current_user;
 //setup form url
 $form_url = parse_url($_SERVER['REQUEST_URI']);
-$form_url = add_query_arg(array('page'=>'wpengine-common'),$form_url['path']);
+$active_tab = @$_GET['tab'] ?: 'general';
+$form_url = add_query_arg(array('page'=>'wpengine-common','tab'=>$active_tab),$form_url['path']);
 
 if ( ! current_user_can( 'manage_options' ) )
     return false;
@@ -66,7 +67,7 @@ if ( wpe_param( 'snapshot' ) ) {
     } else {
         try {
             $plugin->snapshot_to_staging();
-            $message               = "Your staging site is being built in the background.  <b>It can take a long time</b>, especially for large sites.<br><br><a href=\"" . $plugin->get_plugin_admin_url() . "\">Click here to refresh this page</a> to check on the status of its creation.";
+            $message               = "Your staging site is being built in the background.  <b>It can take a long time</b>, especially for large sites.<br>";
             $just_started_snapshot = true;
         } catch ( Exception $e ) {
             $error = $e;
@@ -168,11 +169,9 @@ if ( is_wpe_snapshot() ) {
         $snapshot_state['status']   = "Starting the staging snapshot process...";
         $snapshot_state['is_ready'] = false;
     }
-}
-?>
+}?>
 
 <div class="wrap">
-    <h2><?php esc_html( $plugin->get_plugin_title() ) ?></h2>
 
 <?php if ( ! empty( $error ) ) : ?>
         <div class="error"><p><?php echo $error; ?></p></div>
@@ -180,63 +179,23 @@ if ( is_wpe_snapshot() ) {
 
 <?php if ( ! empty( $message ) ) : ?>
         <div class="updated fade"><p><?php echo $message; ?></p></div>
-    <?php endif; ?>
+<?php endif; ?>
 
     <?php if ( ! is_wpe_snapshot() ) { ?>
-
-        <h2>General Information</h2>
-        <ul>
-			<li><b>You should <a href="http://eepurl.com/i3HPf" target="_blank">subscribe to our customer announcement list</a></b> to get
-				updates on new features, system developments, and account and billing information.  You can of course unsubscribe at any time,
-				and we use it only for infrequent but important announcements.</p>
-            <li>Your DNS should either be set to CNAME to <code><?= $site_info->name ?>.wpengine.com</code> or an A record to <code><?= $site_info->public_ip ?></code>.</li>
-            <li>Your SFTP access (<i>not FTP!</i>) is at hostname <code><?= $site_info->sftp_host ?></code> on port <code><?= $site_info->sftp_port ?></code>. Username and password starts out the same as you specified when you signed up for your blog (which was <code><?= $site_info->name ?></code>), but can be <a href="https://my.wpengine.com/sftp_users" target="_blank">changed here</a>.</li>
-        </ul>
-        <hr/>
-        <form method="post" name="options" action="<?php echo esc_url($form_url); ?>">
-
-            <h2>Blog Staging Area</h2>
-
-    <? if ( $snapshot_state['have_snapshot'] ) { ?>
-                <div class="message"><p>
-                        <b>Staging Status:</b> <?= htmlspecialchars( $snapshot_state['status'] ) ?>
-                    </p><p>
-        <? if ( $snapshot_state['is_ready'] ) { ?>
-                            Last staging snapshot was taken on <?= date( "Y-m-d g:i:sa", $snapshot_state['last_update'] + (get_option( "gmt_offset" ) * 60 * 60) ) ?><br><br>
-                            Access it here: <a target="_blank" href="<?= $snapshot_state['staging_url'] ?>"><b><?= htmlspecialchars( $snapshot_state['staging_url'] ) ?></b></a>
-        <? } else { ?>
-                            <b>Please wait</b> while the staging area continues to be deployed.  It can take a while!
-                            You can <a href="<?= $plugin->get_plugin_admin_url() ?>">refresh this page</a> to check on its progress.
-                        <? } ?>
-                    </p></div>
-                    <? } ?>
-
-            <p>
-                This takes a snapshot of your blog and copies it to a "staging area" where you can test out changes
-                without affecting your live site.
-            </p>
-
-            <p>
-                There's only one staging area, so every time you click this button the old staging area is lost forever,
-                replaced with a snapshot of your live blog.
-            </p>
-
-            <p>
-            	<b>Please note:</b> if you want to access your staging site via SFTP, there is a different username required.
-            	You can manage your SFTP users in your <a href="https://my.wpengine.com/sftp_users" target="_blank">User Portal</a>.
-            </p>
-
-            <p class="submit submit-top">
-    		<?php wp_nonce_field( PWP_NAME . '-config' ); ?>
-                <input type="submit" name="snapshot" value="<?= $have_snapshot ? "Recreate" : "Create" ?> staging area" class="button-primary"/>
-		 <?php if( $snapshot_state['is_ready'] AND current_user_can('administrator') AND ( defined('WPE_BETA_TESTER') AND WPE_BETA_TESTER ) ) :?>
-			<input type="button" name="deploy-from-staging" value="Deply from Staging" class="<?php if(!in_array('deploy-staging', get_user_meta($current_user->ID,'hide-pointer',false))) { echo 'wpe-pointer'; } ?> button-primary"/>
-		<?php endif; ?>
-
-            </p>
-        </form>
-
-        <hr/>
+	<h2 class="nav-tab-wrapper">
+		<a class="nav-tab <?php if($active_tab=='general') { echo 'nav-tab-active'; } ?>" href="<?php echo add_query_arg(array('tab'=>'general')); ?>">General Settings</a> 
+		<a class="nav-tab <?php if($active_tab=='staging') { echo 'nav-tab-active'; } ?>" href="<?php echo add_query_arg(array('tab'=>'staging')); ?>">Staging</a>
+	</h2>
+	
+	<div class="wpe-content-wrapper">
+	<?php if( $active_tab == 'general'): ?>
+		<div class="span-30">
+			<p><b>You should <a href="http://eepurl.com/i3HPf" target="_blank">subscribe to our customer announcement list</a></b> to get updates on new features, system developments, and account and billing information.  You can of course unsubscribe at any time, and we use it only for infrequent but important announcements.</p>
+			<p>Your DNS should either be set to CNAME to <code><?= $site_info->name ?>.wpengine.com</code> or an A record to <code><?= $site_info->public_ip ?></code>.</p>
+			<p>Your SFTP access (<i>not FTP!</i>) is at hostname <code><?= $site_info->sftp_host ?></code> on port <code><?= $site_info->sftp_port ?></code>. Username and password starts out the same as you specified when you signed up for your blog (which was <code><?= $site_info->name ?></code>), but can be <a href="<?php echo get_option('wpe-install-userportal','http://my.wpengine.com'); ?>/sftp_users" target="_blank">changed here</a>.</p>
+		</div><!--.span-30-->
+      		<br class="clear"/>
+        
 
         <h2>Dynamic Page &amp; Database Cache Control</h2>
         <p>
@@ -419,7 +378,7 @@ if ( is_wpe_snapshot() ) {
         </p>
         <p>
             <b>NOTE:</b> Save this URL somewhere you can get to even when WordPress is completely unavailable.  That way if you completely break your blog, you can still discover what's wrong.
-			This is also available in your <a href="http://my.wpengine.com">WP Engine User Portal</a>.
+			This is also available in your <a href="<?php echo get_option('wpe-install-userportal','my.wpengine.com'); ?>"><?php echo get_option('wpe-install-menu_title','WP Engine'); ?> User Portal</a>.
         </p>
 
         <hr/>
@@ -475,8 +434,79 @@ if ( is_wpe_snapshot() ) {
 			</tr>
 		</table>
            </form>
+	<?php elseif($active_tab == 'staging'): ?>	
+		<form method="post" name="options" action="<?php echo esc_url($form_url); ?>">
 
+
+		<? if ( $snapshot_state['have_snapshot'] ) { ?>
+			<div class="alert alert-message alert-success">
+				<h3 class="wpe-callout"><i class="icon-hdd"></i>  Staging Status: <?= htmlspecialchars( $snapshot_state['status'] ) ?></h3>
+			    	<p>
+				<? if ( $snapshot_state['is_ready'] ) { ?>
+				    Last staging snapshot was taken on <?= date( "Y-m-d g:i:sa", $snapshot_state['last_update'] + (get_option( "gmt_offset" ) * 60 * 60) ) ?>. Access it here: <a target="_blank" href="<?= $snapshot_state['staging_url'] ?>"><b><?= htmlspecialchars( $snapshot_state['staging_url'] ) ?></b></a>
+				<? } else { ?>
+				    <b>Please wait</b> while the staging area continues to be deployed.  It can take a while!  You can <a href="<?= $plugin->get_plugin_admin_url() ?>">refresh this page</a> to check on its progress.
+				<? } ?>
+			    	</p>
+			</div>
+		<? } ?>
+			
+		<h2><i class="icon-large icon-hdd"></i> What is a Staging Area?</h2>
+		<p>
+			This takes a snapshot of your blog and copies it to a "staging area" where you can test out changes without affecting your live site. There's only one staging area, so every time you click this button the old staging area is lost forever, replaced with a snapshot of your live blog.
+		</p>
+
+		<p>
+			<b>Please note:</b> if you want to access your staging site via SFTP, there is a different username required. You can manage your SFTP users in your <a href="<?php echo get_option('wpe-install-userportal','my.wpengine.com'); ?>/sftp_users" target="_blank">User Portal</a>.
+		</p>
+
+		    <p class="submit submit-top">
+			<?php wp_nonce_field( PWP_NAME . '-config' ); ?>
+
+			<button type="submit" name="snapshot" value="<?= $have_snapshot ? "Recreate" : "Create" ?> staging area" class="btn btn-primary"><i class="icon-upload icon-white"></i> Copy site from LIVE to STAGING </button>
+			 <?php if( $snapshot_state['is_ready'] AND current_user_can('administrator') AND ( defined('WPE_BETA_TESTER') AND WPE_BETA_TESTER ) ) :?>
+				<button onClick="wpe_deploy_staging();" type="button" name="deploy-from-staging" value="Deply from Staging" class="<?php if(!in_array('deploy-staging', get_user_meta($current_user->ID,'hide-pointer',false))) { echo 'wpe-pointer'; } ?> btn btn-inverse"><i class="icon-download icon-white"></i> Copy site from STAGING to LIVE </button>
+			<?php endif; ?>
+
+		    </p>
+		</form>
+		<form class="form" id="deploy-from-staging" style="display:none;" action="" method="post">
+			<p><em>By default only your files will be copied back to LIVE. You can chose to move tables by checking the tables you would like to move below. Keep in mind these tables will replace the LIVE version with the STAGING version.</em></p>
+			<?php
+				//tables
+				global $wpdb;
+				$tables = $wpdb->get_col("SHOW TABLES;" );
+				$wpdb->flush();
+			?>
+			<p>
+			<label>Database Mode</label>
+			<select name="db_mode" class="chzn-select" style="width:300px;"> 
+				<option value="none">Move No Tables</option>
+				<option value="default">Move All Tables</option>
+				<option value="tables">Select Tables to Move</option>
+			</select>
+			</p>
+			<p class="table-select" style="display:none;">
+			<label>Select Databases</label>
+			<select name="tables[]" style="width:300px;" class="chzn chzn-select" multiple data-placeholder="(start typing to see a list)" >
+			<?php foreach($tables as $table) : ?>
+				<option value="<?php echo $table; ?>" <?php if('wp_options' == $table) echo 'selected'; ?>><?php echo $table; ?></option>
+			<?php endforeach; ?>	
+			</select>
+			</p>
+			<p class="clear">	
+				<label>Email to Notify</label>
+				<input type="text" class="text email" name="email" placeholder="<?php echo get_option('admin_email'); ?>" value="<?php echo get_option('admin_email'); ?>"/>
+			</p>
+
+			<div class="submit form-actions">
+				<p><buttom id="submit-deploy" name="submit-deploy" value="Submit" class="btn btn-primary" >Submit</button></p>
+			</div>
+						
+		</form>
+	<?php endif; ?>
+	</div><!--.wpe-content-wrapper-->
 <?php } /* is_wpe_snapshot() */ ?>
-</div>
+</div><!--.wrap-->
 <hr/>
 <p>WP Engine Plugin v<?= WPE_PLUGIN_VERSION ?> | <a href="http://wpengine.zendesk.com" target="_blank">Support</a></p>

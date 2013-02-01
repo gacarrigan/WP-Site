@@ -22,7 +22,7 @@ class Wpe_Notices extends WpeCommon {
     function hooks() {
         add_action( 'admin_notices', array( $this, 'display_notices' ) );
      
-        if( @WP_ALLOW_MULTISITE ) {
+        if( @constant('WP_ALLOW_MULTISITE') ) {
         	add_action('network_admin_notices',array( $this, 'display_notices' ) );
         }
         

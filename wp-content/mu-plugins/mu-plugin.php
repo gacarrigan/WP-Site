@@ -4,13 +4,12 @@
   Plugin URI: http://wpengine.com/plugins
   Description: WP Engine-specific services and options
   Author: WP Engine
-  Version: 2.0.37
-
+  Version: 2.0.40
   Changelog: (see changelog.txt)
  */
 
 // Our plugin
-define( 'WPE_PLUGIN_VERSION', '2.0.37' );
+define( 'WPE_PLUGIN_VERSION', '2.0.40' );
 
 //setup wpe plugin url
 if(is_multisite()) {

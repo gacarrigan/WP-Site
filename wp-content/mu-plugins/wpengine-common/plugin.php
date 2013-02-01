@@ -314,7 +314,8 @@ class WpeCommon extends WpePlugin_common {
 
 	// Initialize hooks
 	public function wp_hook_init() {
-
+		global $current_user;
+		
 		parent::wp_hook_init();
 		$this->set_wpe_auth_cookie();
 		if ( is_admin() ) {
@@ -323,6 +324,10 @@ class WpeCommon extends WpePlugin_common {
 			add_filter( 'site_transient_update_plugins', array( $this, 'disable_indiv_plugin_update_notices' ) );
 			wp_enqueue_style('wpe-common', WPE_PLUGIN_URL.'/css/wpe-common.css');
 			wp_enqueue_script('wpe-common', WPE_PLUGIN_URL.'/js/wpe-common.js',array('jquery','jquery-ui-core'));
+			if( 'wpengine-common' == @$_GET['page']) {
+				wp_enqueue_script('wpe-chzn', WPE_PLUGIN_URL.'/js/chosen.jquery.min.js', array('jquery','jquery-ui-core'));
+				wp_enqueue_style('wpe-chzn', WPE_PLUGIN_URL.'/js/chosen.css');
+			}
 			//lets load some specific files for our admin scree
 			if( 'wpengine-common' == @$_GET['page']) 
 			{
@@ -335,7 +340,7 @@ class WpeCommon extends WpePlugin_common {
 
 			//setup some vars to be user in js/wpe-common.js
 			$popup_disabled = defined( 'WPE_POPUP_DISABLED' ) ? (bool) WPE_POPUP_DISABLED : false;
-			wp_localize_script('wpe-common','wpe', array('account'=>PWP_NAME,'popup_disabled'=> $popup_disabled ) );
+			wp_localize_script('wpe-common','wpe', array('account'=>PWP_NAME,'popup_disabled'=> $popup_disabled,'user_email'=>$current_user->user_email ) );
 			// check for admin messages
 			if($this->wpe_messaging_enabled() AND defined("PWP_NAME")) {
 				add_action('admin_init', array($this,'check_for_notice'));
@@ -509,7 +514,7 @@ class WpeCommon extends WpePlugin_common {
             $position   = 0;
         }
 	
-	if( $wp = $this->is_whitelabel() ) 
+	if( $wl = $this->is_whitelabel() ) 
 	{
 		//Setup menu data
 	
@@ -1034,10 +1039,11 @@ class WpeCommon extends WpePlugin_common {
 
     // Returns structured status information block, especially useful for displaying to a human.
     public function get_staging_status() {
+	$sldomain = get_option('wpe-install-domain_mask', 'wpengine.com');
         $r = array( );
         $staging_dir        = PWP_ROOT_DIR . "/www/staging/" . PWP_NAME;
         $staging_touch_file = "${staging_dir}/last-mod";
-        $r['staging_url']   = "http://" . PWP_NAME . ".staging.wpengine.com";
+        $r['staging_url']   = "http://" . PWP_NAME . ".staging.$sldomain";
         $have_snapshot      = is_dir( $staging_dir ) && file_exists( $staging_touch_file );
         $r['have_snapshot'] = $have_snapshot;
         if ( $have_snapshot ) {
@@ -1614,6 +1620,7 @@ class WpeCommon extends WpePlugin_common {
         $cmd = wpe_param( 'wp-cmd' );
         if ( ! $cmd )
             return;    // without a command, it's not an internal request
+	// TODO C1: this is cluster 1 legacy.
         if ( $_SERVER['REMOTE_ADDR'] != '127.0.0.1' &&
                 substr( $_SERVER['REMOTE_ADDR'], 0, 9 ) != '127.0.0.1' &&
                 substr( $_SERVER['REMOTE_ADDR'], 0, 11 ) != '67.210.230.' &&

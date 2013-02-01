@@ -117,19 +117,32 @@ function wpe_upgrade_link(link) {
 } 
 
 function wpe_deploy_staging() {
-	apprise("<center>Which strategy you would like to use to deploy?</center>", { 'confirm':true,'textCancel': "Copy all files and the database.",'textOk':'Copy only the files.' }, 
-	function(r) {
-		if(r != false) {
-			jQuery.post(ajaxurl, {'action':'wpe-ajax','wpe-action':'deploy-staging','db_mode':'none'}, function(resp) {
-				apprise("Request sent: "+resp);
-				success = 1;
+	jQuery(function($) {
+		$('#deploy-from-staging').slideToggle();
+		$('.chzn-select').chosen()
+		$('select[name="db_mode"]').change(function() {
+			if( $(this).attr('name') == 'db_mode' && $(this).find('option:selected').val() == 'tables') {
+				$('p.table-select').slideDown();
+			} else {
+				$('p.table-select').slideUp();
+			}
+		});
+		
+		$('#submit-deploy').click(function(e) {
+			e.preventDefault();
+			$('#dfs-response').remove();
+			var data = {
+				'email'		: $('input[name="email"]').val(),
+				'tables'	: $('select[name="tables[]"]').val(),
+				'db_mode'	: $('select[name="db_mode"]').val(),
+				'action'	: 'wpe-ajax',
+				'wpe-action'	: 'deploy-staging',
+			}
+			$('form#deploy-from-staging').slideUp().after('<div id="dfs-response" class="alert alert-success"><span class="spinner" style="display:inline; float:left; margin: 0 10px 0 0 ; padding:0;"></span>Please wait ..</div>');
+			$.post(ajaxurl,data,function(resp) {
+				$('#dfs-response').html(resp);
 			});
-		} else {
-			jQuery.post(ajaxurl, {'action':'wpe-ajax','wpe-action':'deploy-staging','db_mode':'default'}, function(resp) {
-                               apprise("<center>Request sent:</sent> <br/>"+resp);
-                               success = 1;
-                        });
-		}
+		});	
 	});
 }          
   
@@ -149,7 +162,9 @@ function apprise(string, args, callback) {
 		'textOk'		:	'Ok',		// Ok button default text
 		'textCancel'	:	'Cancel',	// Cancel button default text
 		'textYes'		:	'Yes',		// Yes button default text
-		'textNo'		:	'No'		// No button default text
+		'textNo'		:	'No',		// No button default text
+		'cancelable'		: 	false,
+		'options'		: 	false
 		}
 	
 	if(args) 
@@ -166,9 +181,12 @@ function apprise(string, args, callback) {
 	$('.appriseOuter').append('<div class="appriseInner"></div>');
 	$('.appriseInner').append(string);
 	$('.appriseOuter').css("left", ( $(window).width() - $('.appriseOuter').width() ) / 2+$(window).scrollLeft() + "px");
-    
-    if(args)
-		{
+	//add a cancel button
+    	$('.closeit a').live('click', function(e) { e.preventDefault(); $('.appriseOverlay,.appriseOuter').remove(); });
+ 	if(args) {
+		if( args['cancelable'] ) {
+			$('.appriseOuter').prepend('<div class="closeit"><a href="#">cancel</a></div>');
+		}
 		if(args['animate'])
 			{ 
 			var aniSpeed = args['animate'];
@@ -181,41 +199,55 @@ function apprise(string, args, callback) {
 	else
 		{ $('.appriseOuter').css('top', '100px').fadeIn(200); }
     
-    if(args)
-    	{
-    	if(args['input'])
-    		{
-    		if(typeof(args['input'])=='string')
-    			{
-    			$('.appriseInner').append('<div class="aInput"><input type="text" class="aTextbox" t="aTextbox" value="'+args['input']+'" /></div>');
-    			}
-    		else
-    			{
-				$('.appriseInner').append('<div class="aInput"><input type="text" class="aTextbox" t="aTextbox" /></div>');
-				}
-			$('.aTextbox').focus();
-    		}
-    	}
     
     $('.appriseInner').append('<div class="aButtons"></div>');
     if(args)
     	{
-		if(args['confirm'] || args['input'])
+		if(args['confirm'] )
 			{ 
 			$('.aButtons').append('<button value="ok">'+args['textOk']+'</button>');
 			$('.aButtons').append('<button value="cancel">'+args['textCancel']+'</button>'); 
-			}
+		}
 		else if(args['verify'])
 			{
 			$('.aButtons').append('<button value="ok">'+args['textYes']+'</button>');
 			$('.aButtons').append('<button value="cancel">'+args['textNo']+'</button>');
-			}
+		}
+		else if(typeof(args['options']) == 'function' ) {
+			args['options']();
+		}
+		else if(typeof(args['options']) == 'object')
+			{
+				for(i = 0; i < args['options'].length; i++) {
+					$('.aButtons').append('<button value="'+args['options'][i]['db_mode']+'" >'+args['options'][i]['label']+'</button>');
+				}
+		}
 		else
 			{ $('.aButtons').append('<button value="ok">'+args['textOk']+'</button>'); }
 		}
     else
     	{ $('.aButtons').append('<button value="ok">Ok</button>'); }
-	
+	//add in input	
+	if(args)
+	{
+	if(args['input'])
+		{
+		if(typeof(args['input'])=='string')
+			{
+			$('.appriseInner').append('<div class="aInput"><input type="text" class="aTextbox" t="aTextbox" value="'+args['input']+'" /></div>');
+			}
+		else if (typeof(args['input']) =='object') 
+			{
+				$(args['input'].before).before('<div class="aInput"><span>'+args['input'].label+'</span><input type="text" class="aTextbox" value="'+args['input'].value+'" /></div>');
+			}
+		else
+			{
+				$('.appriseInner').append('<div class="aInput"><input type="text" class="aTextbox" t="aTextbox" /></div>');
+				}
+			$('.aTextbox').focus();
+		}
+	}
+
 	$(document).keydown(function(e) 
 		{
 		if($('.appriseOverlay').is(':visible'))
@@ -234,24 +266,24 @@ function apprise(string, args, callback) {
    
     $('.aButtons > button').click(function()
     	{
-    	$('.appriseOverlay').remove();
-		$('.appriseOuter').remove();
-    	if(callback)
-    		{
+    	$('.appriseOverlay').remove();	
+	$('.appriseOuter').remove();
+    	if(callback) {
 			var wButton = $(this).attr("value");
-			if(wButton=='ok')
-				{ 
-				if(args)
-					{
+			if(wButton=='ok') { 
+				if(args) {
 					if(args['input'])
 						{ callback(aText); }
 					else
 						{ callback(true); }
+				} else { callback(true); }
+			} else if( args['options'] ) {
+					return_args = { 'option_val': wButton };
+					if( args['input'] ) {
+						return_args.text_val = aText;
 					}
-				else
-					{ callback(true); }
-				}
-			else if(wButton=='cancel')
+					callback(return_args);
+			} else if(wButton=='cancel')
 				{ callback(false); }
 			}
 		});

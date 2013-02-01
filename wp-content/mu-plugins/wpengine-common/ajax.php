@@ -27,6 +27,18 @@ class Wpe_Ajax {
 		$user = wp_get_current_user(); 
 		
 		add_user_meta($user->ID,'hide-pointer', esc_attr( $_REQUEST['pointer'] ) );
+		die();
+	}
+
+	/**
+	* Lookup Tables
+	* 
+	*/
+	public function lookup_tables() {
+		global $wpdb;
+		$result = $wpdb->get_col("SHOW TABLES;");
+		print json_encode($result);
+		die();
 	}
 
 	/**
@@ -46,11 +58,17 @@ class Wpe_Ajax {
 		require_once(WPE_PLUGIN_DIR.'/class.wpeapi.php');
 		
 		$db_mode = @$_REQUEST['db_mode'] ?: 'default';		
-		
+		$email = @$_REQUEST['email'] ?: get_option('admin_email');		
+		$tables = @$_REQUEST['tables'] ?: false;
+
 		$api = new WPEApi();
 		$api->set_arg('method','deploy-from-staging');
 		$api->set_arg('db_mode', esc_attr($db_mode) );
-		$api->get();
+		$api->set_arg('email',	esc_attr($email) );
+		if( $tables )
+			$api->set_arg('tables', implode('&',$tables));
+		$api->set_arg('headers', "Host:api.wpengine.com");
+		$api->post();
 		if( !$api->is_error() ) {
 			echo "Your request has been submitted. You will receive an email once it has been processed";
 		} else {
