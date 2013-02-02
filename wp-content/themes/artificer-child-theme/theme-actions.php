@@ -345,7 +345,8 @@ if ( ! function_exists( 'woo_layout_body_class' ) ) {
 		
 		// Add classes to body_class() output 
 		$classes[] = $layout;
-		return $classes;						
+		return $classes;
+
 					
 	} // End woo_layout_body_class()
 }
