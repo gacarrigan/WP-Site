@@ -187,6 +187,7 @@ v2.0.36
 	- Fix debug being added to html when wp-admin and textarea replacement.
 v2.0.37
 	- Prevent internal commands from being run from the outside network.
-
 v2.0.40 
 	- Added Deploy From Staging
+v2.0.41
+	- Fix staging refresh page link to point at staging tab.

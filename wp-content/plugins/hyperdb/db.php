@@ -67,6 +67,12 @@ class hyperdb extends wpdb {
 	 */
 	var $dbhs;
 
+    /**
+     * Associative array (dbhname => host:port) for established mysql connections
+     * @var array
+     */
+    var $dbh2host = array();
+
 	/**
 	 * The multi-dimensional array of datasets and servers
 	 * @var array

@@ -34,7 +34,7 @@ define('FS_CHMOD_FILE',0664);
 
 define('PWP_ROOT_DIR','/nas/wp');
 
-define('WPE_APIKEY','a1f57df8b15f3a551c6841e660c95bae6b47e07f');
+define('WPE_APIKEY','77ac608fe875f3aea44d63ebb05318f7d3ec5cdb');
 
 define('WPE_FOOTER_HTML',"<a href=\"http://wpengine.com/\" target=\"_blank\">Fast WordPress Hosting</a>");
 
@@ -93,6 +93,8 @@ define('WPE_RO_FILESYSTEM',false);
 define('DISALLOW_FILE_MODS',FALSE);
 
 define('WPE_CDN_DISABLE_ALLOWED',false);
+
+define('WPE_BETA_TESTER',false);
 define('WPLANG','');
 
 # WP Engine ID

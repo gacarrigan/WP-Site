@@ -43,16 +43,21 @@ if ( isset( $_POST['options'] ) && isset( $_POST['submit'] ) ) {
         $message = __( "Settings have been successfully updated", PWP_NAME );
     }
 }
-
 // Process form submissions
 if ( isset( $_POST['displayoptions'] ) && isset( $_POST['displayoptions'] ) ) {
     check_admin_referer( PWP_NAME . '-config' );
 
 	$error = "";
 	$plugin->set_wpengine_admin_bar_enabled( $_POST['wpe-adminbar-enable'] );
-    if ( empty( $error ) ) {
-        $message = __( "Settings have been successfully updated", PWP_NAME );
-    }
+    	if ( empty( $error ) ) {
+        	$message = __( "Settings have been successfully updated", PWP_NAME );
+    	}
+	
+	//update the user access role	
+	if(!empty($_POST['wpe-adminbar-roles']))
+		$plugin->set_option('wpe-adminbar-roles', $_POST['wpe-adminbar-roles']);
+	else 
+		delete_option('wpe-adminbar-roles');
 }
 
 // Process snapshot -> staging
@@ -344,10 +349,24 @@ if ( is_wpe_snapshot() ) {
                         <option value="1" <?= $this->is_wpengine_admin_bar_enabled() ? "selected" : "" ?> >Enabled</option>
                         <option value="0" <?= $this->is_wpengine_admin_bar_enabled() ? "" : "selected" ?> >Disabled</option>
                     </select>
-					<div class="description">
+					<div class="description comment">
         				Should we display the "WP Engine Quick Links" menu in the WordPress admin titlebar?
 					</div>
 				</td>
+			</tr>
+			<tr valign="top">
+			<td>Restrict Access</td>
+			<td>
+			<div class="description comment">Select which roles should have access to the "WP Engine Quick Links" menu</div>
+			<p>
+				<?php $has_access = get_option('wpe-adminbar-roles',array()); ?>
+				<?php $roles = new WP_Roles(); ?>
+				<?php foreach( $role_names = $roles->get_names() as $role=>$role_name): ?>
+					<?php $checked = in_array($role, $has_access) ? 'checked="checked"' : ''; ?>
+					<input name="wpe-adminbar-roles[]" value="<?php echo $role; ?>" type="checkbox" <?php echo $checked; ?> /> <?php echo $role_name; ?><br/>
+				<?php endforeach; ?>
+			</p>
+			</td>
 			</tr>
 			<tr><td></td><td>
                 <p class="submit submit-top">
@@ -445,7 +464,7 @@ if ( is_wpe_snapshot() ) {
 				<? if ( $snapshot_state['is_ready'] ) { ?>
 				    Last staging snapshot was taken on <?= date( "Y-m-d g:i:sa", $snapshot_state['last_update'] + (get_option( "gmt_offset" ) * 60 * 60) ) ?>. Access it here: <a target="_blank" href="<?= $snapshot_state['staging_url'] ?>"><b><?= htmlspecialchars( $snapshot_state['staging_url'] ) ?></b></a>
 				<? } else { ?>
-				    <b>Please wait</b> while the staging area continues to be deployed.  It can take a while!  You can <a href="<?= $plugin->get_plugin_admin_url() ?>">refresh this page</a> to check on its progress.
+				    <b>Please wait</b> while the staging area continues to be deployed.  It can take a while!  You can <a href="<?= $plugin->get_plugin_admin_url() ?>&tab=staging">refresh this page</a> to check on its progress.
 				<? } ?>
 			    	</p>
 			</div>

@@ -209,4 +209,14 @@ class WpePlugin_common
                                 @ini_set('memory_limit', '256M');
                         }
 	}
+	
+	function user_has_access( $user_id, $roles ) {
+		$has_access = false;
+		$i = 0;
+		while( $has_access === false AND $i < count($roles) ) {
+			$has_access = user_can($user_id, $roles[$i]);
+			$i++;
+		}
+		return $has_access;
+	}
 }

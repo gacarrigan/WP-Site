@@ -280,6 +280,9 @@ class WpeCommon extends WpePlugin_common {
 		return;
 
 		$user = wp_get_current_user();
+		//check user access
+		if( ! $this->user_has_access($user, get_option('wpe-adminbar-roles', array() ))) 
+			return;
 
 		$wp_admin_bar->add_menu( array( 'id'    => 'wpengine_adminbar', 'title' => 'WP Engine Quick Links' ) );
 		$wp_admin_bar->add_menu( array( 'id'	=> 'wpengine_adminbar_status','parent' => 'wpengine_adminbar', 'title'  => 'Status Blog', 'href'   => 'http://wpengine.wordpress.com' ) );
@@ -322,7 +325,7 @@ class WpeCommon extends WpePlugin_common {
 			add_action( 'admin_init', create_function( '', 'remove_action("admin_notices","update_nag",3);' ) );
 			add_action( 'admin_head', array( $this, 'remove_upgrade_nags' ) );
 			add_filter( 'site_transient_update_plugins', array( $this, 'disable_indiv_plugin_update_notices' ) );
-			wp_enqueue_style('wpe-common', WPE_PLUGIN_URL.'/css/wpe-common.css');
+			wp_enqueue_style( 'wpe-common', WPE_PLUGIN_URL.'/css/wpe-common.css', array(), WPE_PLUGIN_VERSION );
 			wp_enqueue_script('wpe-common', WPE_PLUGIN_URL.'/js/wpe-common.js',array('jquery','jquery-ui-core'));
 			if( 'wpengine-common' == @$_GET['page']) {
 				wp_enqueue_script('wpe-chzn', WPE_PLUGIN_URL.'/js/chosen.jquery.min.js', array('jquery','jquery-ui-core'));
@@ -1944,6 +1947,7 @@ class WpeCommon extends WpePlugin_common {
             return $path . '/';
         return $path;
     }
+
 }
 
 /**
@@ -2075,3 +2079,15 @@ function wpe_static_end($key) {
 if(defined('WPE_DB_DEBUG') AND @WPE_DB_DEBUG != false) {
 	include_once(dirname(__FILE__).'/db.php');
 }
+
+if( is_wpe_snapshot() ) {
+	/*
+	 * Filter the blog_public option on staging
+	 * @params $value | value to filter received from the pre_get_option filter
+	 * 
+	 */
+	function wpe_filter_privacy_option( $value ) {
+		return '0';
+	}
+	add_action( 'pre_option_blog_public', 'wpe_filter_privacy_option' );
+}  
