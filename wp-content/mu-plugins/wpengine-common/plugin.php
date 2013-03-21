@@ -260,6 +260,7 @@ function wpe_simulate_wpp_get_mostpopular( $params ) {
 class WpeCommon extends WpePlugin_common {
 	public $is_widget = false;
 	private $already_emitted_powered_by = false;
+	static $deployment;
 
 	public function get_default_options() {
 		return array(
@@ -327,23 +328,36 @@ class WpeCommon extends WpePlugin_common {
 			add_filter( 'site_transient_update_plugins', array( $this, 'disable_indiv_plugin_update_notices' ) );
 			wp_enqueue_style( 'wpe-common', WPE_PLUGIN_URL.'/css/wpe-common.css', array(), WPE_PLUGIN_VERSION );
 			wp_enqueue_script('wpe-common', WPE_PLUGIN_URL.'/js/wpe-common.js',array('jquery','jquery-ui-core'));
-			if( 'wpengine-common' == @$_GET['page']) {
+			
+			//if a deployment is underway or recently completed, lets do some stuff ... see class.deployment.php for details
+			include_once('class.deployment.php');
+			add_action('admin_init', array('WpeDeployment','instance'));
+	
+			add_action( 'admin_print_footer_scripts', array( $this , 'print_footer_scripts') );
+			
+			//Some scripts we only want to load on the WPE plugin admin page
+			if( 'wpengine-common' == @$_GET['page'] ) {	
+
 				wp_enqueue_script('wpe-chzn', WPE_PLUGIN_URL.'/js/chosen.jquery.min.js', array('jquery','jquery-ui-core'));
 				wp_enqueue_style('wpe-chzn', WPE_PLUGIN_URL.'/js/chosen.css');
-			}
-			//lets load some specific files for our admin scree
-			if( 'wpengine-common' == @$_GET['page']) 
-			{
+				wp_enqueue_script('bootstrap',WPE_PLUGIN_URL.'/js/bootstrap.js', array('jquery','jquery-effects-core'),WPE_PLUGIN_VERSION,TRUE);
+				wp_enqueue_script('jquery-ui-widget',false, array(),false,TRUE);
+				wp_enqueue_script('jquery-ui-progressbar',false, array(),false,TRUE);
+				wp_enqueue_script('jquery-ui-slide');
+				wp_enqueue_script('jquery-ui-bounce');
+				//lets load some specific files for our admin screen
 		    		// Using Pointers
 		   		wp_enqueue_style( 'wp-pointer' );
 		    		wp_enqueue_script( 'wp-pointer' );
-
-		    		add_action( 'admin_print_footer_scripts', array( $this , 'print_footer_scripts') );
+				wp_enqueue_style('jquery-ui');
 			}
 
 			//setup some vars to be user in js/wpe-common.js
 			$popup_disabled = defined( 'WPE_POPUP_DISABLED' ) ? (bool) WPE_POPUP_DISABLED : false;
-			wp_localize_script('wpe-common','wpe', array('account'=>PWP_NAME,'popup_disabled'=> $popup_disabled,'user_email'=>$current_user->user_email ) );
+			
+			//set some vars for usage in the admin
+			wp_localize_script('wpe-common','wpe', array('account'=>PWP_NAME,'popup_disabled'=> $popup_disabled,'user_email'=>$current_user->user_email,'deployment'=>WpeDeployment::warn() ) );
+
 			// check for admin messages
 			if($this->wpe_messaging_enabled() AND defined("PWP_NAME")) {
 				add_action('admin_init', array($this,'check_for_notice'));
@@ -399,21 +413,16 @@ class WpeCommon extends WpePlugin_common {
 		}
  	}
 	
+	// Loads footer scripts in the admin
+	// hook: admin_print_footer_scripts
 	public function print_footer_scripts() {
-		?>
-		<script>
-			jQuery(document).ready( function ($) { 
-				$('input.wpe-pointer').pointer({
-						'content': '<h3>New: Deploy Your Site From Staging!</h3> <p>This will move all the files and content from your staging site to your live site. A restore point will be created automatically so you can roll back this deploy.</p>',
-						'position': 'top',
-						'close': function() { 
-								$.post(ajaxurl,{ 'action': 'wpe-ajax','wpe-action':'hide-pointer','pointer':'deploy-staging' });
-						 	}	
-					}).pointer('open');
-				$('input[name="deploy-from-staging"]').live('click',function() { wpe_deploy_staging(); });
-			}); 
-		</script>
-		<?php
+		//if we're on the wpengine-admin load those scripts
+		if( isset($_GET['page']) AND 'wpengine-common' == $_GET['page'])
+			$this->view('admin-footer');	
+
+		//if a deployment is in progress load the modal
+		if( 'wpengine-common' == @$_GET['page'] || self::$deployment ) 
+			$this->view('modal');
 	}
 
 	public function do_ajax() {
@@ -695,6 +704,7 @@ class WpeCommon extends WpePlugin_common {
 		$cookie_value = md5('wpe_auth_salty_dog|'.WPE_APIKEY);
 		if ( ! isset( $_COOKIE[$wpe_cookie] ) || $_COOKIE[$wpe_cookie] != $cookie_value )
 			setcookie($wpe_cookie,$cookie_value,0,'/');
+
 	}
 
 	function wpengine_credits() {
@@ -1649,15 +1659,15 @@ class WpeCommon extends WpePlugin_common {
                 	header( "Content-Type: text/plain" );
                 	header( "X-WPE-Host: " . gethostname() . " " . $_SERVER['SERVER_ADDR'] );
                 	print( "pong\n" );
-                break;
+                	break;
             	case 'ensure':
                 	header( "Content-Type: text/plain" );
                 	$this->ensure_standard_settings();
-                break;
+                	break;
             	case 'ensure-user':
                 	header( "Content-Type: text/plain" );
                 	$this->ensure_account_user();
-                break;
+                	break;
             	case 'nada':
                 	return;  // ignore, just to get into some other page
 		case 'cron':
@@ -1668,7 +1678,7 @@ class WpeCommon extends WpePlugin_common {
                 	delete_option('wpe_notices_ttl');
                 	delete_transient('wpe_notices_ttl');
                 	wp_cache_delete('wpe_notices_ttl','transient');
-               	break;
+        	       	break;
 		case 'sso':
 			$key = $_POST['key'];
 			if( sha1('wpe-sso|'.WPE_APIKEY.'|'.PWP_NAME) == $key )	{
@@ -1677,9 +1687,7 @@ class WpeCommon extends WpePlugin_common {
 					set_transient('wpe_sso',$token,60);
 					echo $token;
 			}
-
-		break;
-
+			break;
 		case 'purge-all-caches':
 			ob_start();
 			WpeCommon::purge_memcached();

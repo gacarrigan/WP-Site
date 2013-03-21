@@ -104,25 +104,36 @@ class Wpe_Notices extends WpeCommon {
      * Print the notices
     **/
     function display_notices() {
+
+	//a hook to allow other parts of the plugin to leaverage this
+	do_action('wpe_notices', $this);
+
         global $current_user;
 				
-				//make sure we have notices
+	//make sure we have notices
         $this->load();
 			  
         $this->notices['read'] = get_user_meta($current_user->ID,'wpe_notices_read',true);
-     
-        // Leave immediately if nothing to do
+        
+	// Leave immediately if nothing to do
         if ( ! is_array( $this->notices ) OR empty($this->notices['messages']) )
             return false;
 	
         foreach ( $this->notices['messages'] as $notice ) {
 
-					if($notice == -1)
-						continue;
-					if ( ! isset($notice['starts']) || strtotime($notice['starts']) > time() )
-						continue;
-					if ( ! isset($notice['ends']) || strtotime($notice['ends']) <= time() )
-						continue;
+					//if this message isn't forced then lets validate it's time/date
+					//@internal this check allows us to hijack the message feature elsewhere in the plugin
+					if($notice['force'] != 1) 
+					{
+						if($notice == -1)
+							continue;
+						if ( ! isset($notice['starts']) || strtotime($notice['starts']) > time() )
+							continue;
+						if ( ! isset($notice['ends']) || strtotime($notice['ends']) <= time() )
+							continue;
+					}
+
+					//check this for all notices	
 					if ( @in_array($notice['id'],$this->notices['read']) )
 						continue;
 	

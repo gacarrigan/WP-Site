@@ -2,6 +2,134 @@ var url = window.location.pathname
 var filename = url.substring(url.lastIndexOf('/')+1);
 var warning = "Before taking this action, we at WP Engine recommend that you create a Restore Point of your site. This will allow you undo this action within minutes.";
 
+//runtime jQuery
+jQuery(document).ready(function($) {    	    			
+	
+	if(filename == 'update-core.php' && $('form.upgrade').length > 0 && wpe.popup_disabled != 1 ) {
+  		$('form[name="upgrade"] input[type=submit]').click(function(e) { e.preventDefault(); });
+	  	$('form[name="upgrade"] input[type=submit]').attr('onclick','wpe_validate_upgrade("upgrade");');
+
+  		$('form[name="upgrade-plugins"] input[type=submit]').click(function(e) { e.preventDefault(); });
+	  	$('form[name="upgrade-plugins"] input[type=submit]').attr('onclick','wpe_validate_upgrade("upgrade-plugins");');  	
+  	
+  		$('form[name="upgrade-themes"] input[type=submit]').click(function(e) { e.preventDefault(); });
+	  	$('form[name="upgrade-themes"] input[type=submit]').attr('onclick','wpe_validate_upgrade("upgrade-themes");');  	
+	} else if(filename == 'plugins.php' && wpe.popup_disabled !=  1) {
+  	
+  		if($('.update-message').length > 0 ) {
+	  		$('.update-message a').each(function(i,obj) {
+	  			var txt = $(obj).text();
+	  			if(txt == 'update now') {
+	  				$(this).click(function(e) { e.preventDefault(); });
+		  			$(this).attr('onclick','wpe_upgrade_link("'+$(obj).attr('href')+'");');
+	  			}
+	  		});	
+	 	 }
+	  
+	$('#doaction').click(function(e) { e.preventDefault(); });
+	$('#doaction').attr('onclick','wpe_validate_bulk_form();');
+		
+	} else if( filename == 'plugin-install.php' && wpe.popup_disabled != 1 && !has_args("tab=favorites") ) {
+	
+		$('a.install-now').each(function() { 
+				$(this).click(function(e) { e.preventDefault(); });
+				$(this).attr('onclick','wpe_upgrade_link("'+$(this).attr('href')+'");');
+		});
+		
+		$('input[type="submit"]').live('click',function(e) {
+			if( $(this).attr('name') != 'plugin-search-input' ) { 
+				e.preventDefault();
+				$(this).parent().attr('id','form-to-submit'); 
+				$('input[type="submit"]').attr('onclick','wpe_validate_install()');  	
+			}	
+		});
+ 	 }
+
+});
+/*
+ * Class for managing the Deploy from staging response
+ */
+(function($) {
+	$.fn.extend({
+		//name
+		wpeDeploy: function(cmd) {
+
+			var max = 238;
+			var current = '';
+			var started = 0;
+			var finished = 0;
+			this.each(function() {
+				new $.wpeDeploy(cmd);
+			});
+		        return;	
+		}
+	}); //end return
+
+	$.wpeDeploy = function(cmd) {
+			//@TODO there's got to be a better way to do this
+			if( 'start' == cmd ) {
+				start();
+			} else if ('update' == cmd) {
+				update();
+			}
+			/* 
+			 * Start the deploy
+			 */
+			function start() {
+				$('#myModal').modal().addClass('in');
+				$('.modal-header h3').html("A deployment is currently underway ... ");
+				$('.modal-body #progress').progressbar({'value':5}).addClass('active progress progress-info progress-striped');
+				//$('.ui-progressbar-value').css({'background':'rgb(140, 186, 169)'});
+				$('.ui-progressbar-value').addClass('bar loading');
+				$('#status').html('<pre>Beginning Depoy ...\n</pre>');	
+				$('.progress-label').text('Beginning Deploy ...');
+				$('.progress-label').effect("slide", 300);
+				update();
+			}
+
+			/*
+			 * Progress bar handler for deploy from staging
+			 * @note this will run until a "Deploy Complete" status is received.
+			 */
+			function update() {
+				$.get('/wpe-deploy-status-'+wpe.account, function(resp) {
+					$.deployStarted = 1;
+					$.wpeDeploy.max = 238;	
+					$.wpeDeploy.current = $('#status pre').text();
+					$.wpeDeploy.data = resp.split("\n");
+					$.wpeDeploy.currIndex = 0;
+					
+					//loop over the status file
+					while( $.wpeDeploy.currIndex < $.wpeDeploy.data.length ) {
+						setProgress($.wpeDeploy.data[$.wpeDeploy.currIndex]);
+						$.wpeDeploy.currIndex++;
+					}
+					
+					if( $.wpeDeploy.current.indexOf("Deploy Completed") !== -1 ) { 
+						$('.modal-body #progress').progressbar('option','value', 100);	
+						setTimeout( function() { $('#myModal,.modal-backdrop').removeClass('in',1000).remove() }, 5000);
+					} else {
+						setTimeout( function() { update() } , 500);
+					}
+					
+				}).fail( function() { 
+						//else if the deployment never started try again
+						setTimeout( function() { update() } ,2000);
+				});
+			}
+
+			function setProgress(data) {
+				if( data !== "Beginning Deploy ..." && data !== "" && $.wpeDeploy.current.length > 1 && $.wpeDeploy.current.indexOf( data ) === -1 ) {	
+					$('#status pre').append( data + "\n");
+					value = ($('#status pre').text().length / $.wpeDeploy.max) * 100;
+					$('.progress-label').text(data);
+					$('.modal-body #progress').progressbar('option','value', value);
+					$('.progress-label').html(data);
+				} 
+			}
+		}
+})(jQuery);
+
 //function to determine whether query args are present
 function has_args(str) {	
 	var querystring = window.location.href.split('?',2);
@@ -17,51 +145,6 @@ function has_args(str) {
 		}
 	}
 }
-
-jQuery(document).ready(function($) {    	    			
-//apprise implementation
-
-  if(filename == 'update-core.php' && $('form.upgrade').length > 0 && wpe.popup_disabled != 1 ) {
-  	$('form[name="upgrade"] input[type=submit]').click(function(e) { e.preventDefault(); });
-  	$('form[name="upgrade"] input[type=submit]').attr('onclick','wpe_validate_upgrade("upgrade");');
-
-  	$('form[name="upgrade-plugins"] input[type=submit]').click(function(e) { e.preventDefault(); });
-  	$('form[name="upgrade-plugins"] input[type=submit]').attr('onclick','wpe_validate_upgrade("upgrade-plugins");');  	
-  	
-  	$('form[name="upgrade-themes"] input[type=submit]').click(function(e) { e.preventDefault(); });
-  	$('form[name="upgrade-themes"] input[type=submit]').attr('onclick','wpe_validate_upgrade("upgrade-themes");');  	
-  } else if(filename == 'plugins.php' && wpe.popup_disabled !=  1) {
-  	
-  	if($('.update-message').length > 0 ) {
-	  	$('.update-message a').each(function(i,obj) {
-	  		var txt = $(obj).text();
-	  		if(txt == 'update now') {
-	  			$(this).click(function(e) { e.preventDefault(); });
-	  			$(this).attr('onclick','wpe_upgrade_link("'+$(obj).attr('href')+'");');
-	  		}
-	  	});	
-	  }
-	  
-	$('#doaction').click(function(e) { e.preventDefault(); });
-	$('#doaction').attr('onclick','wpe_validate_bulk_form();');
-		
-  } else if( filename == 'plugin-install.php' && wpe.popup_disabled != 1 && !has_args("tab=favorites") ) {
-	
-	$('a.install-now').each(function() { 
-			$(this).click(function(e) { e.preventDefault(); });
-			$(this).attr('onclick','wpe_upgrade_link("'+$(this).attr('href')+'");');
-	});
-	
-	$('input[type="submit"]').live('click',function(e) {
-		if( $(this).attr('name') != 'plugin-search-input' ) { 
-			e.preventDefault();
-			$(this).parent().attr('id','form-to-submit'); 
-			$('input[type="submit"]').attr('onclick','wpe_validate_install()');  	
-		}	
-	});
-  }
-
-});
 
 /**
 	* Accepts the form identifier and applies the popup confirmation
@@ -141,12 +224,13 @@ function wpe_deploy_staging() {
 			$('form#deploy-from-staging').slideUp().after('<div id="dfs-response" class="alert alert-success"><span class="spinner" style="display:inline; float:left; margin: 0 10px 0 0 ; padding:0;"></span>Please wait ..</div>');
 			$.post(ajaxurl,data,function(resp) {
 				$('#dfs-response').html(resp);
+				$.wpeDeploy('start');
 			});
 		});	
 	});
 }          
-  
-/**
+
+	/**
 	* Displays popup
 	* http://thrivingkings.com/apprise/
 	*/
