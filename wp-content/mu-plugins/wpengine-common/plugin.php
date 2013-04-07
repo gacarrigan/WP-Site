@@ -563,43 +563,10 @@ class WpeCommon extends WpePlugin_common {
 	}
     }
 
-	//fetchs the Upload space used from the api
-	private function fetch_upload_space_usage_KB() {
-		
-		$size = 0;
-
-		$url = 'https://api.wpengine.com/1.2/?method=usage&account_name=' . PWP_NAME . '&wpe_apikey=' . WPE_APIKEY;
-		if ( is_multisite() ) {
-		    global $blog_id;
-		    $url .= "&blog_id=$blog_id";
-		}
-
-		// Pull this value from our API.
-		$http = new WP_Http;
-		$msg  = $http->get( $url );
-		if ( ! is_a( $msg, 'WP_Error' ) && isset( $msg['body'] ) ) {
-		    $usage = json_decode( $msg['body'], TRUE );
-		    if ( $usage && is_array( $usage ) ) {
-			$size = $usage['kbytes'];
-		    }
-		}
-	
-		return $size;
-	}
-
-	public function cached_upload_space_usage_KB() {
-		$transient = 'wpe-upload-space-usage';
-		$cached = get_site_transient($transient);
-		if($cached === false) {
-			$cached = $this->fetch_upload_space_usage_KB();
-			set_site_transient($transient, $cached, 3600 * 100); // 100 hours, insert vague nyquist sampling argument
-		}
-		return $cached;
-	}
-
 	// Gets site dirsize value from our API and store it in a transient
 	public function upload_space_load() {
-		$dir     = BLOGUPLOADDIR;
+		$upload_dirs = wp_upload_dir();
+        $dir = $upload_dirs['basedir'];
 		$key     = 'dirsize_cache';
 		$dirsize = get_transient( $key );
 
@@ -607,7 +574,9 @@ class WpeCommon extends WpePlugin_common {
 		if ( ! is_array( $dirsize ) || ! isset( $dirsize[$dir]['size'] ) ) {
 		    $size = FALSE;
 		    if( !is_wpe_snapshot() ) {
-			$size = 1024 * $this->cached_upload_space_usage_KB();
+    			include_once WPE_PLUGIN_DIR.'/class.wpeapi.php';
+    			$usage = new WpeDiskUsage();
+    			$size = 1024 * $usage->get();
 		    }
 		    $dirsize[$dir]['size'] = $size;
 		}
