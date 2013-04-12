@@ -2057,14 +2057,7 @@ if(defined('WPE_DB_DEBUG') AND @WPE_DB_DEBUG != false) {
 	include_once(dirname(__FILE__).'/db.php');
 }
 
+// Force the blog to be private when viewing the staging site.
 if( is_wpe_snapshot() ) {
-	/*
-	 * Filter the blog_public option on staging
-	 * @params $value | value to filter received from the pre_get_option filter
-	 * 
-	 */
-	function wpe_filter_privacy_option( $value ) {
-		return '0';
-	}
-	add_action( 'pre_option_blog_public', 'wpe_filter_privacy_option' );
+    add_action( 'pre_option_blog_public', '__return_zero' );
 }  
