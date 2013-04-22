@@ -158,14 +158,14 @@ html {
   background: url("images/body.gif") #e6e1dd;
 }
 body {
-  font-size: .857em;
-  line-height: 1;
-  color: #6c6158;
+  font-size: 1.4em;
+  line-height: 1.618;
+  color: #5A4A42;
   font-family: "Karla", sans-serif;
   -webkit-text-size-adjust: 100%;
   -ms-text-size-adjust: 100%;
   text-rendering: optimizeLegibility;
-  background: url("images/body.png");
+  background: url("../images/body.png");
 }
 #wrapper {
   padding: 0 1.4em;
