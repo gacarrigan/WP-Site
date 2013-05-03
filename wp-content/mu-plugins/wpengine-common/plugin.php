@@ -574,8 +574,8 @@ class WpeCommon extends WpePlugin_common {
 		if ( ! is_array( $dirsize ) || ! isset( $dirsize[$dir]['size'] ) ) {
 		    $size = FALSE;
 		    if( !is_wpe_snapshot() ) {
-    			include_once WPE_PLUGIN_DIR.'/class.wpeapi.php';
-    			$usage = new WpeDiskUsage();
+    			include_once WPE_PLUGIN_DIR.'/class-wpeapi.php';
+    			$usage = new WPE_Disk_Usage();
     			$size = 1024 * $usage->get();
 		    }
 		    $dirsize[$dir]['size'] = $size;

@@ -42,8 +42,8 @@ if( defined('SUNRISE') ) {
 				check_admin_referer('domain_mapping');
 				
 				//load the api class
-				include_once(WPE_PLUGIN_DIR.'/class.wpeapi.php');
-				$api = new WpeAPI();
+				include_once(WPE_PLUGIN_DIR.'/class-wpeapi.php');
+				$api = new WPE_API();
 
 				if( preg_match('/(\;|\,|\?)/',$_POST['domain']) OR !preg_match('/[A-z]|[1-9]|\./',$_POST['domain']) ) {
 
@@ -70,8 +70,8 @@ if( defined('SUNRISE') ) {
 				
 				//check_admin_referer('domain_mapping');
 				//load the api class
-				include_once(WPE_PLUGIN_DIR.'/class.wpeapi.php');
-				$api = new WpeAPI();
+				include_once(WPE_PLUGIN_DIR.'/class-wpeapi.php');
+				$api = new WPE_API();
 				
 				//set the method and domain
 				$api->set_arg('method','domain-remove');

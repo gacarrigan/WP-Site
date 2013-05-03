@@ -4,7 +4,7 @@
   Plugin URI: http://wpengine.com/plugins
   Description: WP Engine-specific services and options
   Author: WP Engine
-  Version: 2.0.41
+  Version: 2.0.42
   Changelog: (see changelog.txt)
  */
 
@@ -12,11 +12,8 @@
 define( 'WPE_PLUGIN_BASE', __FILE__ );
 
 // Allow changing the version number in only one place (the header above)
-add_action('wp_loaded','wpe_define_version');
-function wpe_define_version() {
-	$plugin_data = get_plugin_data( WPE_PLUGIN_BASE );
-	define( 'WPE_PLUGIN_VERSION', $plugin_data['Version'] );
-}
+$plugin_data = get_file_data( WPE_PLUGIN_BASE, array( 'Version' => 'Version' ) );
+define( 'WPE_PLUGIN_VERSION', $plugin_data['Version'] );
 
 //setup wpe plugin url
 if(is_multisite()) {

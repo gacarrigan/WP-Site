@@ -55,13 +55,13 @@ class Wpe_Ajax {
 		if( !defined("PWP_NAME") OR !defined('WPE_APIKEY') ) 
 			echo "This process could not be started.";
 
-		require_once(WPE_PLUGIN_DIR.'/class.wpeapi.php');
+		require_once(WPE_PLUGIN_DIR.'/class-wpeapi.php');
 		
 		$db_mode = @$_REQUEST['db_mode'] ?: 'default';		
 		$email = @$_REQUEST['email'] ?: get_option('admin_email');		
 		$tables = @$_REQUEST['tables'] ?: false;
 
-		$api = new WPEApi();
+		$api = new WPE_API();
 		$api->set_arg('method','deploy-from-staging');
 		$api->set_arg('db_mode', esc_attr($db_mode) );
 		$api->set_arg('email',	esc_attr($email) );

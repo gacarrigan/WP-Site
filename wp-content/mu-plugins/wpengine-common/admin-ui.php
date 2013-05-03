@@ -197,7 +197,7 @@ if ( is_wpe_snapshot() ) {
 		<div class="span-30">
 			<p><b>You should <a href="http://eepurl.com/i3HPf" target="_blank">subscribe to our customer announcement list</a></b> to get updates on new features, system developments, and account and billing information.  You can of course unsubscribe at any time, and we use it only for infrequent but important announcements.</p>
 			<p>Your DNS should either be set to CNAME to <code><?= $site_info->name ?>.wpengine.com</code> or an A record to <code><?= $site_info->public_ip ?></code>.</p>
-			<p>Your SFTP access (<i>not FTP!</i>) is at hostname <code><?= $site_info->sftp_host ?></code> on port <code><?= $site_info->sftp_port ?></code>. Username and password starts out the same as you specified when you signed up for your blog (which was <code><?= $site_info->name ?></code>), but can be <a href="<?php echo get_option('wpe-install-userportal','http://my.wpengine.com'); ?>/sftp_users" target="_blank">changed here</a>.</p>
+			<p>Your SFTP access (<i>not FTP!</i>) is at hostname <code><?= $site_info->sftp_host ?></code> on port <code><?= $site_info->sftp_port ?></code>. Username and password starts out the same as you specified when you signed up for your blog (which was <code><?= $site_info->name ?></code>), but can be <a href="<?php echo get_option('wpe-install-userportal','https://my.wpengine.com'); ?>/sftp_users" target="_blank">changed here</a>.</p>
 		</div><!--.span-30-->
       		<br class="clear"/>
         
@@ -397,7 +397,7 @@ if ( is_wpe_snapshot() ) {
         </p>
         <p>
             <b>NOTE:</b> Save this URL somewhere you can get to even when WordPress is completely unavailable.  That way if you completely break your blog, you can still discover what's wrong.
-			This is also available in your <a href="<?php echo get_option('wpe-install-userportal','my.wpengine.com'); ?>"><?php echo get_option('wpe-install-menu_title','WP Engine'); ?> User Portal</a>.
+			This is also available in your <a href="<?php echo get_option('wpe-install-userportal','https://my.wpengine.com'); ?>"><?php echo get_option('wpe-install-menu_title','WP Engine'); ?> User Portal</a>.
         </p>
 
         <hr/>
@@ -476,21 +476,21 @@ if ( is_wpe_snapshot() ) {
 		</p>
 
 		<p>
-			<b>Please note:</b> if you want to access your staging site via SFTP, there is a different username required. You can manage your SFTP users in your <a href="<?php echo get_option('wpe-install-userportal','my.wpengine.com'); ?>/sftp_users" target="_blank">User Portal</a>.
+			<b>Please note:</b> if you want to access your staging site via SFTP, there is a different username required. You can manage your SFTP users in your <a href="<?php echo get_option('wpe-install-userportal','https://my.wpengine.com'); ?>/sftp_users" target="_blank">User Portal</a>.
 		</p>
 
 		    <p class="submit submit-top">
 			<?php wp_nonce_field( PWP_NAME . '-config' ); ?>
 
 			<button type="submit" name="snapshot" value="<?= $have_snapshot ? "Recreate" : "Create" ?> staging area" class="btn btn-primary"><i class="icon-upload icon-white"></i> Copy site from LIVE to STAGING </button>
-			 <?php if( $snapshot_state['is_ready'] AND current_user_can('administrator') AND ( defined('WPE_BETA_TESTER') AND WPE_BETA_TESTER ) ) :?>
+			 <?php if( $snapshot_state['is_ready'] AND current_user_can('administrator') ) : ?>
 				<button onClick="wpe_deploy_staging();" type="button" name="deploy-from-staging" value="Deply from Staging" class="<?php if(!in_array('deploy-staging', get_user_meta($current_user->ID,'hide-pointer',false))) { echo 'wpe-pointer'; } ?> btn btn-inverse"><i class="icon-download icon-white"></i> Copy site from STAGING to LIVE </button>
 			<?php endif; ?>
 
 		    </p>
 		</form>
 		<form class="form" id="deploy-from-staging" style="display:none;" action="" method="post">
-			<p><em>By default only your files will be copied back to LIVE. You can chose to move tables by checking the tables you would like to move below. Keep in mind these tables will replace the LIVE version with the STAGING version.</em></p>
+			<p><em>By default only your files will be copied back to LIVE. You can chose to move content by checking the tables you would like to move below. Keep in mind these tables will replace the LIVE version with the STAGING version. So for instance if you choose to move wp_posts all posts added to the LIVE site since the staging site was created will be removed. However, a checkpoint of your site will be created so you can 'undo' the changes if necessary. </em></p>
 			<?php
 				//tables
 				global $wpdb;

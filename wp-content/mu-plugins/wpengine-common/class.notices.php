@@ -95,8 +95,8 @@ class Wpe_Notices extends WpeCommon {
 	 **/
 	function from_remote ()
 	{
-		include_once(WPE_PLUGIN_DIR.'/class.wpeapi.php');
-		$api = new WpeAPINotices();
+		include_once(WPE_PLUGIN_DIR.'/class-wpeapi.php');
+		$api = new WPE_API_Notices();
 		$this->notices['messages'] = $api->get();
 	}
 

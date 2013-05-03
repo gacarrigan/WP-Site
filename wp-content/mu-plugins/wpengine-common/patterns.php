@@ -161,6 +161,20 @@ class Patterns
 		$c = preg_replace( $re, $repl, substr( $src, $ignore_end ) );
 		return $a . $b . $c;
 	}
+
+	//Return an array of regexes for matching wp-admin
+	static public function regex_wp_admin() {
+		return array(
+			"/wp-admin$",
+			"/wp-admin\/(?!admin-ajax)",
+			"/(wp-)?signup",
+			"/(wp-)?login(\.php)?",
+			"/wp-content",
+			"/wp-includes",
+			"/files",
+		);
+	}
+
 }
 
 // Given a regular expression which matches the path-part of a URL, returns a regular expression
