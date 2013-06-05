@@ -81,7 +81,7 @@ jQuery(document).ready(function($) {
 				$('.modal-body #progress').progressbar({'value':5}).addClass('active progress progress-info progress-striped');
 				//$('.ui-progressbar-value').css({'background':'rgb(140, 186, 169)'});
 				$('.ui-progressbar-value').addClass('bar loading');
-				$('#status').html('<pre>Beginning Depoy ...\n</pre>');	
+				$('#status').html('<pre>Beginning Deploy ...\n</pre>');	
 				$('.progress-label').text('Beginning Deploy ...');
 				$('.progress-label').effect("slide", 300);
 				update();

@@ -51,3 +51,29 @@ if ( is_multisite() ) {
         }
     }
 }
+
+//temporary location for login-protection script
+//@TODO should be it's own plugin probably
+
+add_filter( 'site_url', 'wpe_filter_site_url', 0, 4 );
+/**
+ * Filter the value returned for 'site_url'
+ *
+ * This function will only filter the url if it is the 'login_post' scheme. If
+ * not, then the value is unchanged
+ *
+ * @since 1.0
+ *
+ * @param string $url The unfiltered URL to return
+ * @param string $path The relative path
+ * @param string $scheme The scheme to use, such as http vs. https
+ * @param int $blog_id The blog ID for the URL
+ * @return string The new URL
+ */
+function wpe_filter_site_url( $url, $path, $scheme, $blog_id ) {
+    // We only want to filter the login_post scheme
+    if ( $scheme == 'login_post' ) {
+	$url = add_query_arg( array( 'wpe-login'=> PWP_NAME ) , $url );
+    }
+    return $url;
+}
