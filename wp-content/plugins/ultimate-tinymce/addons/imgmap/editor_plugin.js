@@ -1,7 +1,7 @@
 
 
 (function() {
-	tinymce.PluginManager.requireLangPack('imgmap');
+	//tinymce.PluginManager.requireLangPack('imgmap');
 	
 	tinymce.create('tinymce.plugins.imgmapPlugin', {
 		init : function(ed, url) {
@@ -14,7 +14,7 @@
 					return;
 
 				ed.windowManager.open({
-					file : url + '/popup.php',
+					file : url + '/popup.html',
 					width : 700,
 					height : 560,
 					inline : 1
@@ -26,7 +26,7 @@
 			// Register buttons
 			//tinyMCE.getButtonHTML(cn, 'lang_imgmap_desc', '{$pluginurl}/images/tinymce_button.gif', 'mceimgmapPopup');
 			ed.addButton('imgmap', {
-				title : 'imgmap.desc',
+				title : ed.getLang('imgmap.desc'),
 				cmd : 'mceimgmapPopup',
 				image : url + '/images/tinymce_button.gif'
 			});
@@ -101,7 +101,7 @@ var TinyMCE_imgmapPlugin = {
 		}
 		return false;
 	},
-
+
 	handleNodeChange : function(editor_id, node, undo_index, undo_levels, visual_aid, any_selection) {
 
 		if (node == null)

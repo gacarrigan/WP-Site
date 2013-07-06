@@ -1,5 +1,7 @@
 <?php
 
+if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
+
 $root_dir = dirname(__FILE__) . DIRECTORY_SEPARATOR;
 
 // Require the mijireh library classes
@@ -29,7 +31,7 @@ class Mijireh {
   /**
    * Return the job id of the slurp
    */
-  public static function slurp($url) {
+  public static function slurp($url, $page_id, $return_url) {
     $url_format = '/^(https?):\/\/'.                           // protocol
     '(([a-z0-9$_\.\+!\*\'\(\),;\?&=-]|%[0-9a-f]{2})+'.         // username
     '(:([a-z0-9$_\.\+!\*\'\(\),;\?&=-]|%[0-9a-f]{2})+)?'.      // password
@@ -51,10 +53,10 @@ class Mijireh {
 
     try {
       $rest = new Mijireh_Rest($url);
-      $html = $rest->get('');
       $data = array(
         'url' => $url,
-        'html' => $html,
+        'page_id' => $page_id,
+        'return_url' => $return_url
       );
       $rest = new Mijireh_RestJSON(self::$url);
       $rest->setupAuth(self::$access_key, '');

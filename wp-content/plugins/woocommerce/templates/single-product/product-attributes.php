@@ -6,8 +6,10 @@
  *
  * @author 		WooThemes
  * @package 	WooCommerce/Templates
- * @version     1.6.4
+ * @version     2.0.8
  */
+
+if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
 global $woocommerce;
 
@@ -20,35 +22,33 @@ if ( empty( $attributes ) && ( ! $product->enable_dimensions_display() || ( ! $p
 
 	<?php if ( $product->enable_dimensions_display() ) : ?>
 
-		<?php if ( $product->has_weight() ) : $alt = $alt * -1; ?>
+		<?php if ( $product->has_weight() ) : ?>
 
-			<tr class="<?php if ( $alt == 1 ) echo 'alt'; ?>">
-				<th><?php _e('Weight', 'woocommerce') ?></th>
-				<td><?php echo $product->get_weight() . ' ' . get_option('woocommerce_weight_unit'); ?></td>
+			<tr class="<?php if ( ( $alt = $alt * -1 ) == 1 ) echo 'alt'; ?>">
+				<th><?php _e( 'Weight', 'woocommerce' ) ?></th>
+				<td class="product_weight"><?php echo $product->get_weight() . ' ' . esc_attr( get_option('woocommerce_weight_unit') ); ?></td>
 			</tr>
 
 		<?php endif; ?>
 
-		<?php if ($product->has_dimensions()) : $alt = $alt * -1; ?>
+		<?php if ( $product->has_dimensions() ) : ?>
 
-			<tr class="<?php if ( $alt == 1 ) echo 'alt'; ?>">
-				<th><?php _e('Dimensions', 'woocommerce') ?></th>
-				<td><?php echo $product->get_dimensions(); ?></td>
+			<tr class="<?php if ( ( $alt = $alt * -1 ) == 1 ) echo 'alt'; ?>">
+				<th><?php _e( 'Dimensions', 'woocommerce' ) ?></th>
+				<td class="product_dimensions"><?php echo $product->get_dimensions(); ?></td>
 			</tr>
 
 		<?php endif; ?>
 
 	<?php endif; ?>
 
-	<?php foreach ($attributes as $attribute) :
+	<?php foreach ( $attributes as $attribute ) :
 
-		if ( ! isset( $attribute['is_visible'] ) || ! $attribute['is_visible'] ) continue;
-		if ( $attribute['is_taxonomy'] && ! taxonomy_exists( $attribute['name'] ) ) continue;
-
-		$alt = $alt * -1;
+		if ( empty( $attribute['is_visible'] ) || ( $attribute['is_taxonomy'] && ! taxonomy_exists( $attribute['name'] ) ) )
+			continue;
 		?>
 
-		<tr class="<?php if ( $alt == 1 ) echo 'alt'; ?>">
+		<tr class="<?php if ( ( $alt = $alt * -1 ) == 1 ) echo 'alt'; ?>">
 			<th><?php echo $woocommerce->attribute_label( $attribute['name'] ); ?></th>
 			<td><?php
 				if ( $attribute['is_taxonomy'] ) {
@@ -59,7 +59,7 @@ if ( empty( $attributes ) && ( ! $product->enable_dimensions_display() || ( ! $p
 				} else {
 
 					// Convert pipes to commas and display values
-					$values = explode( '|', $attribute['value'] );
+					$values = array_map( 'trim', explode( '|', $attribute['value'] ) );
 					echo apply_filters( 'woocommerce_attribute', wpautop( wptexturize( implode( ', ', $values ) ) ), $attribute, $values );
 
 				}

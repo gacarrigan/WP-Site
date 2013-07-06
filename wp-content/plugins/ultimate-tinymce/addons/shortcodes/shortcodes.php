@@ -1,17 +1,14 @@
+<?php ob_start(); ?>
 <?php
-// Hook into Wordpress so we can use all the custom functions and global variables
-$file = dirname(__FILE__);
-$file = substr($file, 0, stripos($file, "wp-content") );
-// Added for multisite
-require( $file . "/wp-load.php");
-//require( $file . "/wp-admin/admin.php");
-//require( $file . "/wp-admin/includes/admin.php");
+include ('../../includes/tinymce_addon_scripts.php');
 // Now we can use Wordpress
 global $shortcode_tags;
 ?>
 <head>
 <title>{#shortcodes_dlg.title}</title>
+<!--
 <script type="text/javascript" src="../../tinymce/tiny_mce_popup.js"></script>
+-->
 <script type="text/javascript" src="js/dialog.js"></script>
 </head>
 

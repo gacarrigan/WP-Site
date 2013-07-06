@@ -3,7 +3,7 @@
 
 (function() {
 	// Load plugin specific language pack
-	tinymce.PluginManager.requireLangPack('ezimage');
+	//tinymce.PluginManager.requireLangPack('ezimage');
 
 	tinymce.create('tinymce.plugins.ezimagePlugin', {
 		/**
@@ -18,7 +18,7 @@
 			// Register the command so that it can be invoked by using tinyMCE.activeEditor.execCommand('mceezimage');
 			ed.addCommand('mceezimage', function() {
 				ed.windowManager.open({
-					file : url + '/ezimage.php',
+					file : url + '/ezimage.htm',
 					width : 460 + parseInt(ed.getLang('ezimage.delta_width', 0)),
 					height : 450 + parseInt(ed.getLang('ezimage.delta_height', 0)),
 					inline : 1
@@ -30,7 +30,7 @@
 
 			// Register ezimage button
 			ed.addButton('ezimage', {
-				title : 'ezimage.desc',
+				title : ed.getLang('ezimage.desc'),
 				cmd : 'mceezimage',
 				image : url + '/img/ezimage.gif'
 			});

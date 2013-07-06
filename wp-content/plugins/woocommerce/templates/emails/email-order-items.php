@@ -1,13 +1,13 @@
 <?php
 /**
- * Email Order Item
- *
- * Shows a line item inside the order emails table
+ * Email Order Items
  *
  * @author 		WooThemes
  * @package 	WooCommerce/Templates/Emails
- * @version     1.6.4
+ * @version     2.0.3
  */
+
+if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
 global $woocommerce;
 
@@ -20,7 +20,7 @@ foreach ($items as $item) :
 
 	?>
 	<tr>
-		<td style="text-align:left; vertical-align:middle; border: 1px solid #eee;"><?php
+		<td style="text-align:left; vertical-align:middle; border: 1px solid #eee; word-wrap:break-word;"><?php
 
 			// Show title/image etc
 			echo 	apply_filters( 'woocommerce_order_product_image', $image, $_product, $show_image);
@@ -31,8 +31,28 @@ foreach ($items as $item) :
 			// SKU
 			echo 	($show_sku && $_product->get_sku()) ? ' (#' . $_product->get_sku() . ')' : '';
 
-			// File URL
-			echo 	( $show_download_links && $_product->exists() && $_product->is_downloadable() && $_product->has_file() ) ? '<br/><small>' . __( 'Download:', 'woocommerce' ) . ' <a href="' . $order->get_downloadable_file_url( $item['id'], $item['variation_id'] ) . '" target="_blank">' . $order->get_downloadable_file_url( $item['id'], $item['variation_id'] ) . '</a></small>' : '';
+			// File URLs
+			if ( $show_download_links && $_product->exists() && $_product->is_downloadable() ) {
+
+				$download_file_urls = $order->get_downloadable_file_urls( $item['product_id'], $item['variation_id'], $item );
+
+				$i = 0;
+
+				foreach ( $download_file_urls as $file_url => $download_file_url ) {
+					echo '<br/><small>';
+
+					$filename = woocommerce_get_filename_from_url( $file_url );
+
+					if ( count( $download_file_urls ) > 1 ) {
+						echo sprintf( __('Download %d:', 'woocommerce' ), $i + 1 );
+					} elseif ( $i == 0 )
+						echo __( 'Download:', 'woocommerce' );
+
+					echo ' <a href="' . $download_file_url . '" target="_blank">' . $filename . '</a></small>';
+
+					$i++;
+				}
+			}
 
 			// Variation
 			echo 	($item_meta->meta) ? '<br/><small>' . nl2br( $item_meta->display( true, true ) ) . '</small>' : '';

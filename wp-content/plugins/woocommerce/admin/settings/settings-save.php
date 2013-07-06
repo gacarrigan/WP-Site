@@ -10,6 +10,7 @@
  * @version     1.6.4
  */
 
+if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
 /**
  * Update all settings which are passed.
@@ -18,171 +19,178 @@
  * @param array $options
  * @return void
  */
-function woocommerce_update_options($options) {
+function woocommerce_update_options( $options ) {
 
-    if ( empty( $_POST ) ) return false;
+    if ( empty( $_POST ) )
+    	return false;
 
+    // Options to update will be stored here
+    $update_options = array();
+
+    // Loop options and get values to save
     foreach ( $options as $value ) {
-    	if ( isset( $value['id'] ) && $value['id'] == 'woocommerce_tax_rates' ) {
 
-    		// Tax rates saving
-    		$tax_rates 			= array();
-    		$tax_classes 		= (isset($_POST['tax_class'])) ? $_POST['tax_class'] : array();
-    		$tax_countries 		= (isset($_POST['tax_country'])) ? $_POST['tax_country'] : array();
-    		$tax_rate 			= (isset($_POST['tax_rate'])) ? $_POST['tax_rate'] : array();
-    		$tax_shipping 		= (isset($_POST['tax_shipping'])) ? $_POST['tax_shipping'] : array();
-    		$tax_postcode 		= (isset($_POST['tax_postcode'])) ? $_POST['tax_postcode'] : array();
-    		$tax_compound 		= (isset($_POST['tax_compound'])) ? $_POST['tax_compound'] : array();
-    		$tax_label 			= (isset($_POST['tax_label'])) ? $_POST['tax_label'] : array();
-			$tax_classes_count	= sizeof( $tax_classes );
-			for ($i=0; $i<$tax_classes_count; $i++) :
+    	if ( ! isset( $value['id'] ) )
+    		continue;
 
-				if (isset($tax_classes[$i]) && isset($tax_countries[$i]) && isset($tax_rate[$i]) && is_numeric($tax_rate[$i])) :
+    	$type = isset( $value['type'] ) ? sanitize_title( $value['type'] ) : '';
 
-					$rate = esc_attr(trim($tax_rate[$i]));
-					$rate = number_format($rate, 4, '.', '');
+    	// Get the option name
+    	$option_value = null;
 
-					$class = woocommerce_clean($tax_classes[$i]);
+    	switch ( $type ) {
 
-					if (isset($tax_shipping[$i]) && $tax_shipping[$i]) $shipping = 'yes'; else $shipping = 'no';
-					if (isset($tax_compound[$i]) && $tax_compound[$i]) $compound = 'yes'; else $compound = 'no';
+	    	// Standard types
+	    	case "checkbox" :
 
-					// Handle countries
-					$counties_array = array();
-					$countries = $tax_countries[$i];
-					if ($countries) foreach ($countries as $country) :
+	    		if ( isset( $_POST[$value['id']] ) ) {
+	    			$option_value = 'yes';
+	            } else {
+	            	$option_value = 'no';
+	            }
 
-						$country = woocommerce_clean($country);
-						$state = '*';
+	    	break;
 
-						if (strstr($country, ':')) :
-							$cr = explode(':', $country);
-							$country = current($cr);
-							$state = end($cr);
-						endif;
+	    	case "textarea" :
 
-						$counties_array[trim($country)][] = trim($state);
+		    	if ( isset( $_POST[$value['id']] ) ) {
+		    		$option_value = wp_kses_post( $_POST[ $value['id'] ] );
+	            } else {
+	                $option_value = '';
+	            }
 
-					endforeach;
+	    	break;
 
-					$tax_rates[] = array(
-						'countries' => $counties_array,
-						'rate' => $rate,
-						'shipping' => $shipping,
-						'compound' => $compound,
-						'class' => $class,
-						'label' => esc_attr($tax_label[$i])
-					);
+	    	case "text" :
+	    	case 'email':
+            case 'number':
+	    	case "select" :
+	    	case "color" :
+            case 'password' :
+	    	case "single_select_page" :
+	    	case "single_select_country" :
+	    	case 'radio' :
 
-				endif;
+	    		if ( $value['id'] == 'woocommerce_price_thousand_sep' || $value['id'] == 'woocommerce_price_decimal_sep' ) {
 
-			endfor;
+					// price separators get a special treatment as they should allow a spaces (don't trim)
+					if ( isset( $_POST[ $value['id'] ] )  ) {
+						$option_value = esc_attr( $_POST[ $value['id'] ] );
+					} else {
+		            	$option_value = '';
+		            }
 
-			update_option( 'woocommerce_tax_rates', $tax_rates );
+	    		} elseif ( $value['id'] == 'woocommerce_price_num_decimals' ) {
 
-    		// Local tax rates saving
-    		$local_tax_rates 	= array();
-    		$tax_classes 		= (isset($_POST['local_tax_class'])) ? $_POST['local_tax_class'] : array();
-    		$tax_countries 		= (isset($_POST['local_tax_country'])) ? $_POST['local_tax_country'] : array();
-    		$tax_postcode		= (isset($_POST['local_tax_postcode'])) ? $_POST['local_tax_postcode'] : array();
-    		$tax_rate 			= (isset($_POST['local_tax_rate'])) ? $_POST['local_tax_rate'] : array();
-    		$tax_shipping 		= (isset($_POST['local_tax_shipping'])) ? $_POST['local_tax_shipping'] : array();
-    		$tax_postcode 		= (isset($_POST['local_tax_postcode'])) ? $_POST['local_tax_postcode'] : array();
-    		$tax_compound 		= (isset($_POST['local_tax_compound'])) ? $_POST['local_tax_compound'] : array();
-    		$tax_label 			= (isset($_POST['local_tax_label'])) ? $_POST['local_tax_label'] : array();
-			$tax_classes_count	= sizeof( $tax_classes );
-			for ($i=0; $i<$tax_classes_count; $i++) :
+					// price separators get a special treatment as they should allow a spaces (don't trim)
+					if ( isset( $_POST[ $value['id'] ] )  ) {
+						$option_value = absint( esc_attr( $_POST[ $value['id'] ] ) );
+					} else {
+		               $option_value = 2;
+		            }
 
-				if (isset($tax_classes[$i]) && isset($tax_countries[$i]) && isset($tax_rate[$i]) && is_numeric($tax_rate[$i])) :
+	    		} elseif ( $value['id'] == 'woocommerce_hold_stock_minutes' ) {
 
-					$rate = esc_attr(trim($tax_rate[$i]));
-					$rate = number_format($rate, 4, '.', '');
+		            if ( isset( $_POST[ $value['id'] ] )  ) {
+						$option_value = esc_attr( $_POST[ $value['id'] ] );
+					} else {
+		            	$option_value = '';
+		            }
 
-					$class = woocommerce_clean($tax_classes[$i]);
+		            wp_clear_scheduled_hook( 'woocommerce_cancel_unpaid_orders' );
 
-					if (isset($tax_shipping[$i]) && $tax_shipping[$i]) $shipping = 'yes'; else $shipping = 'no';
-					if (isset($tax_compound[$i]) && $tax_compound[$i]) $compound = 'yes'; else $compound = 'no';
+		            if ( $option_value != '' )
+		            	wp_schedule_single_event( time() + ( absint( $option_value ) * 60 ), 'woocommerce_cancel_unpaid_orders' );
 
-					// Handle country
-					$country = woocommerce_clean($tax_countries[$i]);
-					$state = '*';
+		        } else {
 
-					if (strstr($country, ':')) :
-						$cr = explode(':', $country);
-						$country = current($cr);
-						$state = end($cr);
-					endif;
+			       if ( isset( $_POST[$value['id']] ) ) {
+		            	$option_value = woocommerce_clean( $_POST[ $value['id'] ] );
+		            } else {
+		                $option_value = '';
+		            }
 
-					// Handle postcodes
-					$postcodes = explode(';', $tax_postcode[$i]);
-					$postcodes = array_filter(array_map('trim', $postcodes));
+		        }
 
-					$local_tax_rates[] = array(
-						'country' => $country,
-						'state' => $state,
-						'postcode' => $postcodes,
-						'rate' => $rate,
-						'shipping' => $shipping,
-						'compound' => $compound,
-						'class' => $class,
-						'label' => esc_attr($tax_label[$i])
-					);
+	    	break;
 
-				endif;
+	    	// Special types
+	    	case "multiselect" :
+	    	case "multi_select_countries" :
 
-			endfor;
+	    		// Get countries array
+				if ( isset( $_POST[ $value['id'] ] ) )
+					$selected_countries = array_map( 'woocommerce_clean', (array) $_POST[ $value['id'] ] );
+				else
+					$selected_countries = array();
 
-			update_option( 'woocommerce_local_tax_rates', $local_tax_rates );
+				$option_value = $selected_countries;
 
-		} elseif ( isset( $value['type'] ) && $value['type'] == 'multi_select_countries' ) {
+	    	break;
 
-			// Get countries array
-			if (isset($_POST[$value['id']])) $selected_countries = $_POST[$value['id']]; else $selected_countries = array();
-			update_option($value['id'], $selected_countries);
+	    	case "image_width" :
 
-		} elseif ( isset( $value['id'] ) && ( $value['id'] == 'woocommerce_price_thousand_sep' || $value['id'] == 'woocommerce_price_decimal_sep' ) ) {
+		    	if ( isset( $_POST[$value['id'] ]['width'] ) ) {
 
-			// price separators get a special treatment as they should allow a spaces (don't trim)
-			if ( isset( $_POST[ $value['id'] ] )  ) {
-				update_option($value['id'], $_POST[$value['id']] );
+	              	$update_options[ $value['id'] ]['width'] = woocommerce_clean( $_POST[$value['id'] ]['width'] );
+	              	$update_options[ $value['id'] ]['height'] = woocommerce_clean( $_POST[$value['id'] ]['height'] );
+
+					if ( isset( $_POST[ $value['id'] ]['crop'] ) )
+						$update_options[ $value['id'] ]['crop'] = 1;
+					else
+						$update_options[ $value['id'] ]['crop'] = 0;
+
+	            } else {
+	            	$update_options[ $value['id'] ]['width'] 	= $value['default']['width'];
+	            	$update_options[ $value['id'] ]['height'] 	= $value['default']['height'];
+	            	$update_options[ $value['id'] ]['crop'] 	= $value['default']['crop'];
+	            }
+
+	    	break;
+
+	    	// Custom handling
+	    	default :
+
+	    		do_action( 'woocommerce_update_option_' . $type, $value );
+
+	    	break;
+
+    	}
+
+    	if ( ! is_null( $option_value ) ) {
+	    	// Check if option is an array
+			if ( strstr( $value['id'], '[' ) ) {
+
+				parse_str( $value['id'], $option_array );
+
+	    		// Option name is first key
+	    		$option_name = current( array_keys( $option_array ) );
+
+	    		// Get old option value
+	    		if ( ! isset( $update_options[ $option_name ] ) )
+	    			 $update_options[ $option_name ] = get_option( $option_name, array() );
+
+	    		if ( ! is_array( $update_options[ $option_name ] ) )
+	    			$update_options[ $option_name ] = array();
+
+	    		// Set keys and value
+	    		$key = key( $option_array[ $option_name ] );
+
+	    		$update_options[ $option_name ][ $key ] = $option_value;
+
+			// Single value
 			} else {
-                delete_option($value['id']);
-            }
-
-        } elseif ( isset( $value['type'] ) && $value['type'] == 'checkbox' ) {
-
-            if ( isset( $value['id'] ) && isset( $_POST[$value['id']] ) ) {
-            	update_option($value['id'], 'yes');
-            } else {
-                update_option($value['id'], 'no');
-            }
-
-        } elseif (isset( $value['type'] ) && $value['type'] == 'image_width' ) {
-
-            if ( isset( $value['id'] ) && isset( $_POST[$value['id'] . '_width'] ) ) {
-              	update_option($value['id'].'_width', woocommerce_clean($_POST[$value['id'].'_width']));
-            	update_option($value['id'].'_height', woocommerce_clean($_POST[$value['id'].'_height']));
-				if (isset($_POST[$value['id'].'_crop'])) :
-					update_option($value['id'].'_crop', 1);
-				else :
-					update_option($value['id'].'_crop', 0);
-				endif;
-            } else {
-                update_option($value['id'].'_width', $value['std']);
-            	update_option($value['id'].'_height', $value['std']);
-            	update_option($value['id'].'_crop', 1);
-            }
-
-    	} else {
-
-    		if ( isset( $value['id'] ) && isset( $_POST[$value['id']] ) ) {
-            	update_option($value['id'], woocommerce_clean($_POST[$value['id']]));
-            } elseif( isset( $value['id'] ) ) {
-                delete_option($value['id']);
-            }
-
+				$update_options[ $value['id'] ] = $option_value;
+			}
 		}
 
+    	// Custom handling
+    	do_action( 'woocommerce_update_option', $value );
     }
+
+    // Now save the options
+    foreach( $update_options as $name => $value )
+    	update_option( $name, $value );
+
     return true;
 }

@@ -10,6 +10,8 @@
  * @version     1.6.4
  */
 
+if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
+
 /**
  * Checks which method we're using to serve downloads
  *
@@ -18,33 +20,29 @@
  * @access public
  * @return void
  */
-function woocomerce_check_download_folder_protection() {
+function woocommerce_check_download_folder_protection() {
 	$upload_dir 		= wp_upload_dir();
 	$downloads_url 		= $upload_dir['basedir'] . '/woocommerce_uploads';
 	$download_method	= get_option('woocommerce_file_download_method');
 
-	if ($download_method=='redirect') :
+	if ( $download_method == 'redirect' ) {
 
 		// Redirect method - don't protect
-		if (file_exists($downloads_url.'/.htaccess')) :
+		if ( file_exists( $downloads_url . '/.htaccess' ) )
 			unlink( $downloads_url . '/.htaccess' );
-		endif;
 
-		flush_rewrite_rules( true );
-
-	else :
+	} else {
 
 		// Force method - protect, add rules to the htaccess file
-		if (!file_exists($downloads_url.'/.htaccess')) :
-			if ($file_handle = @fopen( $downloads_url . '/.htaccess', 'w' )) :
-				fwrite($file_handle, 'deny from all');
-				fclose($file_handle);
-			endif;
-		endif;
+		if ( ! file_exists( $downloads_url . '/.htaccess' ) ) {
+			if ( $file_handle = @fopen( $downloads_url . '/.htaccess', 'w' ) ) {
+				fwrite( $file_handle, 'deny from all' );
+				fclose( $file_handle );
+			}
+		}
+	}
 
-		flush_rewrite_rules( true );
-
-	endif;
+	flush_rewrite_rules();
 }
 
 
@@ -81,30 +79,97 @@ function woocommerce_ms_protect_download_rewite_rules( $rewrite ) {
  * @return void
  */
 function woocommerce_delete_post( $id ) {
+	global $woocommerce, $wpdb;
 
-	if ( ! current_user_can( 'delete_posts' ) ) return;
+	if ( ! current_user_can( 'delete_posts' ) )
+		return;
 
-	if ( $id > 0 ) :
+	if ( $id > 0 ) {
 
-		if ( $children_products =& get_children( 'post_parent='.$id.'&post_type=product_variation' ) ) :
+		$post_type = get_post_type( $id );
 
-			if ($children_products) :
+		switch( $post_type ) {
+			case 'product' :
 
-				foreach ($children_products as $child) :
+				if ( $child_product_variations =& get_children( 'post_parent=' . $id . '&post_type=product_variation' ) )
+					if ( $child_product_variations )
+						foreach ( $child_product_variations as $child )
+							wp_delete_post( $child->ID, true );
 
-					wp_delete_post( $child->ID, true );
+				if ( $child_products =& get_children( 'post_parent=' . $id . '&post_type=product' ) )
+					if ( $child_products )
+						foreach ( $child_products as $child ) {
+							$child_post = array();
+							$child_post['ID'] = $child->ID;
+							$child_post['post_parent'] = 0;
+							wp_update_post( $child_post );
+						}
 
-				endforeach;
+				$woocommerce->clear_product_transients();
 
-			endif;
+			break;
+			case 'product_variation' :
 
-		endif;
+				$woocommerce->clear_product_transients();
 
-	endif;
-
-	delete_transient( 'woocommerce_processing_order_count' );
+			break;
+		}
+	}
 }
 
+/**
+ * woocommerce_trash_post function.
+ *
+ * @access public
+ * @param mixed $id
+ * @return void
+ */
+function woocommerce_trash_post( $id ) {
+	if ( $id > 0 ) {
+
+		$post_type = get_post_type( $id );
+
+		if ( 'shop_order' == $post_type ) {
+
+			// Delete count - meta doesn't work on trashed posts
+			$user_id = get_post_meta( $id, '_customer_user', true );
+
+			if ( $user_id > 0 ) {
+				delete_user_meta( $user_id, '_order_count' );
+			}
+
+			delete_transient( 'woocommerce_processing_order_count' );
+		}
+
+	}
+}
+
+/**
+ * woocommerce_untrash_post function.
+ *
+ * @access public
+ * @param mixed $id
+ * @return void
+ */
+function woocommerce_untrash_post( $id ) {
+	if ( $id > 0 ) {
+
+		$post_type = get_post_type( $id );
+
+		if ( 'shop_order' == $post_type ) {
+
+			// Delete count - meta doesn't work on trashed posts
+			$user_id = get_post_meta( $id, '_customer_user', true );
+
+			if ( $user_id > 0 ) {
+				delete_user_meta( $user_id, '_order_count' );
+			}
+
+			delete_transient( 'woocommerce_processing_order_count' );
+		}
+
+	}
+}
 
 /**
  * Preview Emails in WP admin
@@ -122,19 +187,19 @@ function woocommerce_preview_emails() {
 
 		$mailer = $woocommerce->mailer();
 
-		$email_heading = __('Order Received', 'woocommerce');
+		$email_heading = __( 'Order Received', 'woocommerce' );
 
-		$message  = wpautop( __("Thank you, we are now processing your order. Your order's details are below.", 'woocommerce') );
+		$message  = wpautop( __( 'Thank you, we are now processing your order. Your order\'s details are below.', 'woocommerce' ) );
 
-		$message .= '<h2>' . __('Order:', 'woocommerce') . ' ' . '#1000</h2>';
+		$message .= '<h2>' . __( 'Order:', 'woocommerce' ) . ' ' . '#1000</h2>';
 
 		$message .= '
 		<table cellspacing="0" cellpadding="6" style="width: 100%; border: 1px solid #eee; margin: 0 0 20px" border="1" bordercolor="#eee">
 			<thead>
 				<tr>
-					<th scope="col" style="text-align:left; border: 1px solid #eee;">' . __('Product', 'woocommerce') . '</th>
-					<th scope="col" style="text-align:left; border: 1px solid #eee;">' . __('Quantity', 'woocommerce') . '</th>
-					<th scope="col" style="text-align:left; border: 1px solid #eee;">' . __('Price', 'woocommerce') . '</th>
+					<th scope="col" style="text-align:left; border: 1px solid #eee;">' . __( 'Product', 'woocommerce' ) . '</th>
+					<th scope="col" style="text-align:left; border: 1px solid #eee;">' . __( 'Quantity', 'woocommerce' ) . '</th>
+					<th scope="col" style="text-align:left; border: 1px solid #eee;">' . __( 'Price', 'woocommerce' ) . '</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -152,20 +217,20 @@ function woocommerce_preview_emails() {
 			</tfoot>
 		</table>';
 
-		$message .= '<h2>' . __('Customer details', 'woocommerce') . '</h2>';
+		$message .= '<h2>' . __( 'Customer details', 'woocommerce' ) . '</h2>';
 
 		$message .= '
 		<table cellspacing="0" cellpadding="0" style="width: 100%; vertical-align: top;" border="0">
 			<tr>
 				<td valign="top" width="50%">
-					<h3>' . __('Billing address', 'woocommerce') . '</h3>
+					<h3>' . __( 'Billing address', 'woocommerce' ) . '</h3>
 					<p>Some Guy
 					1 infinite loop
 					Cupertino
 					CA 95014</p>
 				</td>
 				<td valign="top" width="50%">
-					<h3>' . __('Shipping address', 'woocommerce') . '</h3>
+					<h3>' . __( 'Shipping address', 'woocommerce' ) . '</h3>
 					<p>Some Guy
 					1 infinite loop
 					Cupertino
@@ -189,25 +254,11 @@ function woocommerce_preview_emails() {
  * @return void
  */
 function woocommerce_prevent_admin_access() {
-	if ( get_option('woocommerce_lock_down_admin') == 'yes' && ! is_ajax() && ! current_user_can('edit_posts') ) {
+	if ( get_option('woocommerce_lock_down_admin') == 'yes' && ! is_ajax() && ! ( current_user_can('edit_posts') || current_user_can('manage_woocommerce') ) ) {
 		wp_safe_redirect(get_permalink(woocommerce_get_page_id('myaccount')));
 		exit;
 	}
 }
-
-
-/**
- * Fix 'insert into post' buttons for images
- *
- * @access public
- * @param mixed $vars
- * @return array
- */
-function woocommerce_allow_img_insertion( $vars ) {
-    $vars['send'] = true; // 'send' as in "Send to Editor"
-    return($vars);
-}
-
 
 /**
  * Filter the directory for uploads.
@@ -218,16 +269,15 @@ function woocommerce_allow_img_insertion( $vars ) {
  */
 function woocommerce_downloads_upload_dir( $pathdata ) {
 
-	if (isset($_POST['type']) && $_POST['type'] == 'downloadable_product') :
-
+	// Change upload dir
+	if ( isset( $_POST['type'] ) && $_POST['type'] == 'downloadable_product' ) {
 		// Uploading a downloadable file
 		$subdir = '/woocommerce_uploads'.$pathdata['subdir'];
 	 	$pathdata['path'] = str_replace($pathdata['subdir'], $subdir, $pathdata['path']);
 	 	$pathdata['url'] = str_replace($pathdata['subdir'], $subdir, $pathdata['url']);
 		$pathdata['subdir'] = str_replace($pathdata['subdir'], $subdir, $pathdata['subdir']);
 		return $pathdata;
-
-	endif;
+	}
 
 	return $pathdata;
 }
@@ -257,6 +307,22 @@ function woocommerce_add_shortcode_button() {
 		add_filter('mce_buttons', 'woocommerce_register_shortcode_button');
 	endif;
 }
+
+
+/**
+ * woocommerce_add_tinymce_lang function.
+ *
+ * @access public
+ * @param mixed $arr
+ * @return void
+ */
+function woocommerce_add_tinymce_lang( $arr ) {
+	global $woocommerce;
+    $arr['WooCommerceShortcodes'] = $woocommerce->plugin_path() . '/assets/js/admin/editor_plugin_lang.php';
+    return $arr;
+}
+
+add_filter( 'mce_external_languages', 'woocommerce_add_tinymce_lang', 10, 1 );
 
 
 /**
@@ -300,7 +366,7 @@ function woocommerce_refresh_mce( $ver ) {
 
 
 /**
- * Order terms when a new term is created.
+ * Order term when created (put in position 0).
  *
  * @access public
  * @param mixed $term_id
@@ -308,30 +374,14 @@ function woocommerce_refresh_mce( $ver ) {
  * @param mixed $taxonomy
  * @return void
  */
-function woocommerce_create_term( $term_id, $tt_id, $taxonomy ) {
+function woocommerce_create_term( $term_id, $tt_id = '', $taxonomy = '' ) {
 
-	if (!$taxonomy=='product_cat' && !strstr($taxonomy, 'pa_')) return;
+	if ( ! $taxonomy == 'product_cat' && ! strstr( $taxonomy, 'pa_' ) )
+		return;
 
-	$next_id = null;
+	$meta_name = strstr( $taxonomy, 'pa_' ) ? 'order_' . esc_attr( $taxonomy ) : 'order';
 
-	$term = get_term($term_id, $taxonomy);
-
-	if ( $term != null ){
-	
-		// gets the sibling terms
-		$siblings = get_terms($taxonomy, "parent={$term->parent}&menu_order=ASC&hide_empty=0");
-	
-		foreach ($siblings as $sibling) {
-			if( $sibling->term_id == $term_id ) continue;
-			$next_id =  $sibling->term_id; // first sibling term of the hierarchy level
-			break;
-		}
-	
-		// reorder
-		woocommerce_order_terms( $term, $next_id, $taxonomy );		
-	
-	}
-
+	update_woocommerce_term_meta( $term_id, $meta_name, 0 );
 }
 
 
@@ -340,18 +390,17 @@ function woocommerce_create_term( $term_id, $tt_id, $taxonomy ) {
  *
  * @access public
  * @param mixed $term_id
- * @param mixed $tt_id
- * @param mixed $taxonomy
  * @return void
  */
-function woocommerce_delete_term( $term_id, $tt_id, $taxonomy ) {
+function woocommerce_delete_term( $term_id ) {
 
 	$term_id = (int) $term_id;
 
-	if(!$term_id) return;
+	if ( ! $term_id )
+		return;
 
 	global $wpdb;
-	$wpdb->query("DELETE FROM {$wpdb->woocommerce_termmeta} WHERE `woocommerce_term_id` = " . $term_id);
+	$wpdb->query( "DELETE FROM {$wpdb->woocommerce_termmeta} WHERE `woocommerce_term_id` = " . $term_id );
 }
 
 
@@ -364,7 +413,7 @@ function woocommerce_delete_term( $term_id, $tt_id, $taxonomy ) {
 function woocommerce_compile_less_styles() {
 	global $woocommerce;
 
-	$colors 		= get_option( 'woocommerce_frontend_css_colors' );
+	$colors 		= array_map( 'esc_attr', (array) get_option( 'woocommerce_frontend_css_colors' ) );
 	$base_file		= $woocommerce->plugin_path() . '/assets/css/woocommerce-base.less';
 	$less_file		= $woocommerce->plugin_path() . '/assets/css/woocommerce.less';
 	$css_file		= $woocommerce->plugin_path() . '/assets/css/woocommerce.css';
@@ -374,9 +423,9 @@ function woocommerce_compile_less_styles() {
 
 		// Colours changed - recompile less
 		if ( ! class_exists( 'lessc' ) )
-			include_once('includes/lessc.inc.php');
+			include_once('includes/class-lessc.php');
 		if ( ! class_exists( 'cssmin' ) )
-			include_once('includes/cssmin.inc.php');
+			include_once('includes/class-cssmin.php');
 
 		try {
 			// Set default if colours not set
@@ -413,7 +462,7 @@ function woocommerce_compile_less_styles() {
 		    	file_put_contents( $css_file, $compiled_css );
 
 		} catch ( exception $ex ) {
-			wp_die( __('Could not compile woocommerce.less:', 'woocommerce') . ' ' . $ex->getMessage() );
+			wp_die( __( 'Could not compile woocommerce.less:', 'woocommerce' ) . ' ' . $ex->getMessage() );
 		}
 	}
 }
@@ -471,7 +520,9 @@ function woocommerce_order_bulk_action() {
 
 	$changed = 0;
 
-	foreach( $_REQUEST['post'] as $post_id ) {
+	$post_ids = array_map( 'absint', (array) $_REQUEST['post'] );
+
+	foreach( $post_ids as $post_id ) {
 		$order = new WC_Order( $post_id );
 		$order->update_status( $new_status, __( 'Order status changed by bulk edit:', 'woocommerce' ) );
 		$changed++;
@@ -493,7 +544,7 @@ function woocommerce_order_bulk_admin_notices() {
 	global $post_type, $pagenow;
 
 	if ( isset( $_REQUEST['marked_completed'] ) || isset( $_REQUEST['marked_processing'] ) ) {
-		$number = isset( $_REQUEST['marked_processing'] ) ? $_REQUEST['marked_processing'] : $_REQUEST['marked_completed'];
+		$number = isset( $_REQUEST['marked_processing'] ) ? absint( $_REQUEST['marked_processing'] ) : absint( $_REQUEST['marked_completed'] );
 
 		if ( 'edit.php' == $pagenow && 'shop_order' == $post_type ) {
 			$message = sprintf( _n( 'Order status changed.', '%s order statuses changed.', $number ), number_format_i18n( $number ) );

@@ -183,7 +183,7 @@
 				}
 
 				ed.windowManager.open({
-					file : url + '/media.php',
+					file : url + '/media.htm',
 					width : 430 + parseInt(ed.getLang('media.delta_width', 0)),
 					height : 500 + parseInt(ed.getLang('media.delta_height', 0)),
 					inline : 1
@@ -194,7 +194,7 @@
 			});
 
 			// Register buttons
-			ed.addButton('media', {title : 'media.desc', cmd : 'mceMedia'});
+			ed.addButton('media', {title : ed.getLang('media.desc'), cmd : 'mceMedia'});
 
 			// Update media selection status
 			ed.onNodeChange.add(function(ed, cm, node) {
@@ -264,7 +264,7 @@
 			return img;
 		},
 
-		/**
+		/**
 		 * Converts the JSON data object to a HTML string.
 		 */
 		dataToHtml : function(data, force_absolute) {

@@ -7,7 +7,7 @@
 
 (function() {
   // Load plugin specific language pack
-  tinymce.PluginManager.requireLangPack('clker');
+  //tinymce.PluginManager.requireLangPack('clker');
 
   tinymce.create('tinymce.plugins.clkerPlugin', {
       /**
@@ -22,7 +22,7 @@
 	// Register the command so that it can be invoked by using tinyMCE.activeEditor.execCommand('mceExample');
 	ed.addCommand('mceclker', function() {
 	    ed.windowManager.open({
-	      file : url + '/dialog.php',
+	      file : url + '/dialog.htm',
 		  width : 700 + parseInt(ed.getLang('clker.delta_width', 0)),
 		  height : 450 + parseInt(ed.getLang('clker.delta_height', 0)),
 		  inline : 1
@@ -34,7 +34,8 @@
 
 	// Register clker button
 	ed.addButton('clker', {
-	  title : 'clker.desc',
+	  /*title : 'Clker ClipArt Gallery',*/
+	  title: ed.getLang('clker.gallery'),
 	      cmd : 'mceclker',
 	      image : url + '/img/clker.gif'
 	      });

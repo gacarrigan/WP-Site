@@ -1,4 +1,7 @@
 <?php
+
+if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
+
 /**
  * ShareThis Integration
  *
@@ -27,27 +30,23 @@ class WC_ShareThis extends WC_Integration {
         $this->method_description	= __( 'ShareThis offers a sharing widget which will allow customers to share links to products with their friends.', 'woocommerce' );
 
 		$this->default_code = '<div class="social">
-	<iframe src="https://www.facebook.com/plugins/like.php?href={permalink}&amp;layout=button_count&amp;show_faces=false&amp;width=100&amp;action=like&amp;colorscheme=light&amp;height=21" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:100px; height:21px;" allowTransparency="true"></iframe>
+	<iframe src="https://www.facebook.com/plugins/like.php?href={permalink}&layout=button_count&show_faces=false&width=100&action=like&colorscheme=light&height=21" style="border:none; overflow:hidden; width:100px; height:21px;"></iframe>
 	<span class="st_twitter"></span><span class="st_email"></span><span class="st_sharethis" st_image="{image}"></span><span class="st_plusone_button"></span>
 </div>';
 
-		// Load the form fields.
-		$this->init_form_fields();
-
 		// Load the settings.
+		$this->init_form_fields();
 		$this->init_settings();
 
 		// Define user set variables
-		$this->publisher_id 	= $this->settings['publisher_id'];
-		$this->sharethis_code 	= $this->settings['sharethis_code'];
-
-		if ( ! $this->sharethis_code ) $this->settings['sharethis_code'] = $this->sharethis_code = $this->default_code;
+		$this->publisher_id 	= $this->get_option( 'publisher_id' );
+		$this->sharethis_code 	= $this->get_option( 'sharethis_code', $this->default_code );
 
 		// Actions
-		add_action( 'woocommerce_update_options_integration_sharethis', array( &$this, 'process_admin_options') );
+		add_action( 'woocommerce_update_options_integration_sharethis', array( $this, 'process_admin_options' ) );
 
 		// Share widget
-		add_action( 'woocommerce_share', array( &$this, 'sharethis_code') );
+		add_action( 'woocommerce_share', array( $this, 'sharethis_code' ) );
     }
 
 
@@ -95,7 +94,7 @@ class WC_ShareThis extends WC_Integration {
     		$sharethis_code = str_replace( '{permalink}', urlencode( get_permalink( $post->ID ) ), $this->sharethis_code );
     		if ( isset( $thumbnail ) ) $sharethis_code = str_replace( '{image}', urlencode( $thumbnail ), $sharethis_code );
 
-    		echo $sharethis_code;
+    		echo str_replace( '&', '&amp;', $sharethis_code );
 
     		echo '<script type="text/javascript">var switchTo5x=true;</script><script type="text/javascript" src="' . $sharethis . '"></script>';
 			echo '<script type="text/javascript">stLight.options({publisher:"' . $this->publisher_id . '"});</script>';

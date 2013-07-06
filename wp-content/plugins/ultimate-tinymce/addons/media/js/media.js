@@ -1,8 +1,10 @@
 (function() {
 	var url;
-
+	
+	/*
 	if (url = tinyMCEPopup.getParam("media_external_list_url"))
 		document.write('<script language="javascript" type="text/javascript" src="' + tinyMCEPopup.editor.documentBaseURI.toAbsolute(url) + '"></script>');
+	*/
 
 	function get(id) {
 		return document.getElementById(id);
@@ -457,7 +459,7 @@
 		}
 	};
 
-	tinyMCEPopup.requireLangPack();
+	//tinyMCEPopup.requireLangPack();
 	tinyMCEPopup.onInit.add(function() {
 		Media.init();
 	});

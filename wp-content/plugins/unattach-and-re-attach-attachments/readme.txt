@@ -3,8 +3,8 @@ Contributors: davidn.de
 Donate link: http://davidn.de/donate/
 Tags: image,attachment,attachments,media,library,unattach,detach,reattach,unattached,un-attach,attach,assign
 Requires at least: 3.0.0
-Tested up to: 3.3.2
-Stable tag: 1.1
+Tested up to: 3.5.1
+Stable tag: 1.2
 
 Allows to unattach and reattach images and other attachments from within the
 media library page.
@@ -23,6 +23,11 @@ This plugin fills this gap by providing two additional links next to "Attach" in
 *   **Re-Attach**: Allows to choose a new post to attach the file to
 *   **Unattach**: Totally removes an existing relation between an attachment and a post
 
+= Bulk Actions =
+The plugin also provides bulk actions for unattaching and re-attaching
+multiple files at once! Just mark the files you want to change, select your
+desired action from the *Bulk Actions* dropdown and hit *Apply*.
+
 == Installation ==
 
 Upload the plugin to your blog and activate it as any other plugin. **It will 
@@ -38,10 +43,14 @@ Nothing yet.
 
 == Screenshots ==
 1. The extended "Parent" col in the Media Library
+1. Bulk actions "Unattach" and "Re-Attach"
 
 == Changelog ==
 
 Version format is: major.minor.bugfix
+
+= Version 1.2.0 (17.06.2013) =
+* Added support for bulk actions (unattach & re-attach)
 
 = Version 1.1.0 (30.05.2012) =
 * Added plugin credits

@@ -22,7 +22,7 @@
 
 			ed.addCommand('mcePreview', function() {
 				ed.windowManager.open({
-					file : ed.getParam("plugin_preview_pageurl", url + "/preview.php"),
+					file : ed.getParam("plugin_preview_pageurl", url + "/preview.html"),
 					width : parseInt(ed.getParam("plugin_preview_width", "550")),
 					height : parseInt(ed.getParam("plugin_preview_height", "600")),
 					resizable : "yes",
@@ -34,7 +34,7 @@
 				});
 			});
 
-			ed.addButton('preview', {title : 'preview.preview_desc', cmd : 'mcePreview'});
+			ed.addButton('preview', {title : ed.getLang('preview.preview_desc'), cmd : 'mcePreview'});
 		},
 
 		getInfo : function() {

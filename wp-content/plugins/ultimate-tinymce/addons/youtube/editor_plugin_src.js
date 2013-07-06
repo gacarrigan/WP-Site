@@ -10,7 +10,7 @@
 
 (function() {
 	// Load plugin specific language pack
-	tinymce.PluginManager.requireLangPack('youtube');
+	//tinymce.PluginManager.requireLangPack('youtube');
 
 	tinymce.create('tinymce.plugins.YouTubePlugin', {
 		/**
@@ -29,7 +29,7 @@
 			// Register the command so that it can be invoked by using tinyMCE.activeEditor.execCommand('mceYouTube');
 			ed.addCommand('mceYouTube', function() {
 				ed.windowManager.open({
-					file : url + '/youtube.php',
+					file : url + '/youtube.htm',
 					width : 400 + parseInt(ed.getLang('youtube.delta_width', 0)),
 					height : 400 + parseInt(ed.getLang('youtube.delta_height', 0)),
 					inline : 1
@@ -41,7 +41,7 @@
 
 			// Register youtube button
 			ed.addButton('youtube', {
-				title : 'youtube.desc',
+				title : ed.getLang('youtube.desc'),
 				cmd : 'mceYouTube',
 				image : url + '/img/youtube.gif'
 			});

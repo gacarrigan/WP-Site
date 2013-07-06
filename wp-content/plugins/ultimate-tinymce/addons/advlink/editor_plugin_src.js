@@ -22,7 +22,7 @@
 					return;
 
 				ed.windowManager.open({
-					file : url + '/link.php',
+					file : url + '/link.htm',
 					width : 480 + parseInt(ed.getLang('advlink.delta_width', 0)),
 					height : 400 + parseInt(ed.getLang('advlink.delta_height', 0)),
 					inline : 1
@@ -33,7 +33,8 @@
 
 			// Register buttons
 			ed.addButton('advlink', {
-				title : 'advlink.link_desc',
+				/*title : 'advlink.link_desc',*/
+				title: ed.getLang('advlink.link_desc'),
 				cmd : 'mceAdvLink',
 				image: url + '/img/advlink.png'
 			});

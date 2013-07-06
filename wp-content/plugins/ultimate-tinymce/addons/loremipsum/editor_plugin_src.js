@@ -11,7 +11,7 @@
 
 (function() {
 	// Load plugin specific language pack
-	tinymce.PluginManager.requireLangPack('loremipsum');
+	//tinymce.PluginManager.requireLangPack('loremipsum');
 
 	tinymce.create('tinymce.plugins.LoremIpsum', {
 		/**
@@ -26,7 +26,7 @@
 			// Register the command so that it can be invoked by using tinyMCE.activeEditor.execCommand('mceExample');
 			ed.addCommand('mceLoremIpsum', function() {
 				ed.windowManager.open({
-					file : url + '/loremipsum.php',
+					file : url + '/loremipsum.html',
 					width : 320 + ed.getLang('loremipsum.delta_width', 0),
 					height : 140 + ed.getLang('loremipsum.delta_height', 0),
 					inline : 1
@@ -37,7 +37,7 @@
 
 			// Register LoremIpsum button
 			ed.addButton('loremipsum', {
-				title : 'loremipsum.desc',
+				title : ed.getLang('loremipsum.desc'),
 				cmd : 'mceLoremIpsum',
 				image : url + '/img/loremipsum.gif'
 			});

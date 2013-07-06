@@ -10,77 +10,58 @@
  * @version     1.6.4
  */
 
-$localisation_setting = ( defined('WPLANG') ) ? array(
-	'name' => __('Localisation', 'woocommerce'),
-	'desc' 		=> __('Use informal localisation file if it exists', 'woocommerce'),
+if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
+
+global $woocommerce;
+
+$localisation_setting = defined( 'WPLANG' ) && file_exists( $woocommerce->plugin_path() . '/i18n/languages/informal/woocommerce-' . WPLANG . '.mo' ) ? array(
+	'title' => __( 'Localisation', 'woocommerce' ),
+	'desc' 		=> sprintf( __( 'Use informal localisation for %s', 'woocommerce' ), WPLANG ),
 	'id' 		=> 'woocommerce_informal_localisation_type',
 	'type' 		=> 'checkbox',
-	'std' 		=> 'no',
+	'default'	=> 'no',
 ) : array();
+
+$currency_code_options = get_woocommerce_currencies();
+
+foreach ( $currency_code_options as $code => $name ) {
+	$currency_code_options[ $code ] = $name . ' (' . get_woocommerce_currency_symbol( $code ) . ')';
+}
 
 $woocommerce_settings['general'] = apply_filters('woocommerce_general_settings', array(
 
-	array( 'name' => __( 'General Options', 'woocommerce' ), 'type' => 'title', 'desc' => '', 'id' => 'general_options' ),
+	array( 'title' => __( 'General Options', 'woocommerce' ), 'type' => 'title', 'desc' => '', 'id' => 'general_options' ),
 
 	array(
-		'name' => __( 'Base Country/Region', 'woocommerce' ),
-		'desc' 		=> __( 'This is the base country for your business. Tax rates will be based on this country.', 'woocommerce' ),
+		'title' 	=> __( 'Base Location', 'woocommerce' ),
+		'desc' 		=> __( 'This is the base location for your business. Tax rates will be based on this country.', 'woocommerce' ),
 		'id' 		=> 'woocommerce_default_country',
-		'css' 		=> 'min-width:300px;',
-		'std' 		=> 'GB',
+		'css' 		=> 'min-width:350px;',
+		'default'	=> 'GB',
 		'type' 		=> 'single_select_country',
 		'desc_tip'	=>  true,
 	),
 
 	array(
-		'name' => __( 'Currency', 'woocommerce' ),
-		'desc' 		=> __("This controls what currency prices are listed at in the catalog and which currency gateways will take payments in.", 'woocommerce' ),
+		'title' 	=> __( 'Currency', 'woocommerce' ),
+		'desc' 		=> __( "This controls what currency prices are listed at in the catalog and which currency gateways will take payments in.", 'woocommerce' ),
 		'id' 		=> 'woocommerce_currency',
-		'css' 		=> 'min-width:300px;',
-		'std' 		=> 'GBP',
+		'css' 		=> 'min-width:350px;',
+		'default'	=> 'GBP',
 		'type' 		=> 'select',
 		'class'		=> 'chosen_select',
 		'desc_tip'	=>  true,
-		'options' => array_unique(apply_filters('woocommerce_currencies', array(
-			'USD' => __( 'US Dollars (&#36;)', 'woocommerce' ),
-			'EUR' => __( 'Euros (&euro;)', 'woocommerce' ),
-			'GBP' => __( 'Pounds Sterling (&pound;)', 'woocommerce' ),
-			'AUD' => __( 'Australian Dollars (&#36;)', 'woocommerce' ),
-			'BRL' => __( 'Brazilian Real (&#36;)', 'woocommerce' ),
-			'CAD' => __( 'Canadian Dollars (&#36;)', 'woocommerce' ),
-			'CZK' => __( 'Czech Koruna (&#75;&#269;)', 'woocommerce' ),
-			'DKK' => __( 'Danish Krone', 'woocommerce' ),
-			'HKD' => __( 'Hong Kong Dollar (&#36;)', 'woocommerce' ),
-			'HUF' => __( 'Hungarian Forint', 'woocommerce' ),
-			'ILS' => __( 'Israeli Shekel', 'woocommerce' ),
-			'RMB' => __( 'Chinese Yuan (&yen;)', 'woocommerce' ),
-			'JPY' => __( 'Japanese Yen (&yen;)', 'woocommerce' ),
-			'MYR' => __( 'Malaysian Ringgits (RM)', 'woocommerce' ),
-			'MXN' => __( 'Mexican Peso (&#36;)', 'woocommerce' ),
-			'NZD' => __( 'New Zealand Dollar (&#36;)', 'woocommerce' ),
-			'NOK' => __( 'Norwegian Krone', 'woocommerce' ),
-			'PHP' => __( 'Philippine Pesos', 'woocommerce' ),
-			'PLN' => __( 'Polish Zloty', 'woocommerce' ),
-			'SGD' => __( 'Singapore Dollar (&#36;)', 'woocommerce' ),
-			'SEK' => __( 'Swedish Krona', 'woocommerce' ),
-			'CHF' => __( 'Swiss Franc', 'woocommerce' ),
-			'TWD' => __( 'Taiwan New Dollars', 'woocommerce' ),
-			'THB' => __( 'Thai Baht', 'woocommerce' ),
-			'TRY' => __( 'Turkish Lira (TL)', 'woocommerce' ),
-			'ZAR' => __( 'South African rand (R)', 'woocommerce' ),
-			'RON' => __( 'Romanian Leu (RON)', 'woocommerce' ),
-			))
-		)
+		'options'   => $currency_code_options
 	),
 
 	array(
-		'name' => __( 'Allowed Countries', 'woocommerce' ),
+		'title' => __( 'Allowed Countries', 'woocommerce' ),
 		'desc' 		=> __( 'These are countries that you are willing to ship to.', 'woocommerce' ),
 		'id' 		=> 'woocommerce_allowed_countries',
-		'std' 		=> 'all',
+		'default'	=> 'all',
 		'type' 		=> 'select',
 		'class'		=> 'chosen_select',
-		'css' 		=> 'min-width:300px;',
+		'css' 		=> 'min-width:350px;',
 		'desc_tip'	=>  true,
 		'options' => array(
 			'all'  => __( 'All Countries', 'woocommerce' ),
@@ -89,90 +70,87 @@ $woocommerce_settings['general'] = apply_filters('woocommerce_general_settings',
 	),
 
 	array(
-		'name' => __( 'Specific Countries', 'woocommerce' ),
+		'title' => __( 'Specific Countries', 'woocommerce' ),
 		'desc' 		=> '',
 		'id' 		=> 'woocommerce_specific_allowed_countries',
 		'css' 		=> '',
-		'std' 		=> '',
+		'default'	=> '',
 		'type' 		=> 'multi_select_countries'
 	),
 
 	$localisation_setting,
 
-	array( 'type' => 'sectionend', 'id' => 'general_options'),
-
-	array(	'name' => __( 'Checkout and Accounts', 'woocommerce' ), 'type' => 'title','desc' => __('The following options control the behaviour of the checkout process and customer accounts.', 'woocommerce'), 'id' => 'checkout_account_options' ),
+	array(
+		'title' => __( 'Store Notice', 'woocommerce' ),
+		'desc' 		=> __( 'Enable site-wide store notice text', 'woocommerce' ),
+		'id' 		=> 'woocommerce_demo_store',
+		'default'	=> 'no',
+		'type' 		=> 'checkbox'
+	),
 
 	array(
-		'name' => __( 'Checkout', 'woocommerce' ),
+		'title' => __( 'Store Notice Text', 'woocommerce' ),
+		'desc' 		=> '',
+		'id' 		=> 'woocommerce_demo_store_notice',
+		'default'	=> __( 'This is a demo store for testing purposes &mdash; no orders shall be fulfilled.', 'woocommerce' ),
+		'type' 		=> 'text',
+		'css' 		=> 'min-width:300px;',
+	),
+
+	array( 'type' => 'sectionend', 'id' => 'general_options'),
+
+	array(	'title' => __( 'Cart, Checkout and Accounts', 'woocommerce' ), 'type' => 'title', 'id' => 'checkout_account_options' ),
+
+	array(
+		'title' => __( 'Coupons', 'woocommerce' ),
+		'desc'          => __( 'Enable the use of coupons', 'woocommerce' ),
+		'id'            => 'woocommerce_enable_coupons',
+		'default'       => 'yes',
+		'type'          => 'checkbox',
+		'desc_tip'		=>  __( 'Coupons can be applied from the cart and checkout pages.', 'woocommerce' ),
+	),
+
+	array(
+		'title' => __( 'Checkout', 'woocommerce' ),
 		'desc' 		=> __( 'Enable guest checkout (no account required)', 'woocommerce' ),
 		'id' 		=> 'woocommerce_enable_guest_checkout',
-		'std' 		=> 'yes',
+		'default'	=> 'yes',
 		'type' 		=> 'checkbox',
 		'checkboxgroup'	=> 'start'
 	),
 
 	array(
-		'desc' 		=> __( 'Show order comments section', 'woocommerce' ),
+		'desc' 		=> __( 'Enable customer note field on checkout', 'woocommerce' ),
 		'id' 		=> 'woocommerce_enable_order_comments',
-		'std' 		=> 'yes',
+		'default'	=> 'yes',
 		'type' 		=> 'checkbox',
-		'checkboxgroup'		=> 'end'
+		'checkboxgroup'		=> ''
 	),
 
 	array(
-		'name' => __( 'Security', 'woocommerce' ),
 		'desc' 		=> __( 'Force secure checkout', 'woocommerce' ),
 		'id' 		=> 'woocommerce_force_ssl_checkout',
-		'std' 		=> 'no',
+		'default'	=> 'no',
 		'type' 		=> 'checkbox',
-		'checkboxgroup'		=> 'start',
+		'checkboxgroup'		=> '',
 		'show_if_checked' => 'option',
-		'desc_tip'	=>  __('Force SSL (HTTPS) on the checkout pages (an SSL Certificate is required)', 'woocommerce'),
+		'desc_tip'	=>  __( 'Force SSL (HTTPS) on the checkout pages (an SSL Certificate is required).', 'woocommerce' ),
 	),
 
 	array(
 		'desc' 		=> __( 'Un-force HTTPS when leaving the checkout', 'woocommerce' ),
 		'id' 		=> 'woocommerce_unforce_ssl_checkout',
-		'std' 		=> 'no',
+		'default'	=> 'no',
 		'type' 		=> 'checkbox',
 		'checkboxgroup'		=> 'end',
 		'show_if_checked' => 'yes',
 	),
 
 	array(
-		'name' => __( 'Coupons', 'woocommerce' ),
-		'desc'          => __( 'Enable coupons', 'woocommerce' ),
-		'id'            => 'woocommerce_enable_coupons',
-		'std'           => 'yes',
-		'type'          => 'checkbox',
-		'checkboxgroup' => 'start',
-		'show_if_checked' => 'option'
-	),
-
-	array(
-		'desc' 		=> __( 'Enable coupon form on cart', 'woocommerce' ),
-		'id' 		=> 'woocommerce_enable_coupon_form_on_cart',
-		'std' 		=> 'yes',
-		'type' 		=> 'checkbox',
-		'checkboxgroup'	=> '',
-		'show_if_checked' => 'yes'
-	),
-
-	array(
-		'desc' 		=> __( 'Enable coupon form on checkout', 'woocommerce' ),
-		'id' 		=> 'woocommerce_enable_coupon_form_on_checkout',
-		'std' 		=> 'no',
-		'type' 		=> 'checkbox',
-		'checkboxgroup'	=> 'end',
-		'show_if_checked' => 'yes'
-	),
-
-	array(
-		'name' => __( 'Registration', 'woocommerce' ),
+		'title' => __( 'Registration', 'woocommerce' ),
 		'desc' 		=> __( 'Allow registration on the checkout page', 'woocommerce' ),
 		'id' 		=> 'woocommerce_enable_signup_and_login_from_checkout',
-		'std' 		=> 'yes',
+		'default'	=> 'yes',
 		'type' 		=> 'checkbox',
 		'checkboxgroup'		=> 'start'
 	),
@@ -180,7 +158,7 @@ $woocommerce_settings['general'] = apply_filters('woocommerce_general_settings',
 	array(
 		'desc' 		=> __( 'Allow registration on the "My Account" page', 'woocommerce' ),
 		'id' 		=> 'woocommerce_enable_myaccount_registration',
-		'std' 		=> 'no',
+		'default'	=> 'no',
 		'type' 		=> 'checkbox',
 		'checkboxgroup'		=> ''
 	),
@@ -188,16 +166,16 @@ $woocommerce_settings['general'] = apply_filters('woocommerce_general_settings',
 	array(
 		'desc' 		=> __( 'Register using the email address for the username', 'woocommerce' ),
 		'id' 		=> 'woocommerce_registration_email_for_username',
-		'std' 		=> 'no',
+		'default'	=> 'no',
 		'type' 		=> 'checkbox',
 		'checkboxgroup'		=> 'end'
 	),
 
 	array(
-		'name' => __( 'Customer Accounts', 'woocommerce' ),
+		'title' => __( 'Customer Accounts', 'woocommerce' ),
 		'desc' 		=> __( 'Prevent customers from accessing WordPress admin', 'woocommerce' ),
 		'id' 		=> 'woocommerce_lock_down_admin',
-		'std' 		=> 'no',
+		'default'	=> 'no',
 		'type' 		=> 'checkbox',
 		'checkboxgroup'		=> 'start'
 	),
@@ -205,28 +183,28 @@ $woocommerce_settings['general'] = apply_filters('woocommerce_general_settings',
 	array(
 		'desc' 		=> __( 'Clear cart when logging out', 'woocommerce' ),
 		'id' 		=> 'woocommerce_clear_cart_on_logout',
-		'std' 		=> 'no',
+		'default'	=> 'no',
 		'type' 		=> 'checkbox',
 		'checkboxgroup'		=> ''
 	),
 
 	array(
-		'desc' 		=> __( 'Allow customers to repurchase past orders', 'woocommerce' ),
+		'desc' 		=> __( 'Allow customers to repurchase orders from their account page', 'woocommerce' ),
 		'id' 		=> 'woocommerce_allow_customers_to_reorder',
-		'std' 		=> 'no',
+		'default'	=> 'no',
 		'type' 		=> 'checkbox',
 		'checkboxgroup'		=> 'end'
 	),
 
 	array( 'type' => 'sectionend', 'id' => 'checkout_account_options'),
 
-	array(	'name' => __( 'Styles and Scripts', 'woocommerce' ), 'type' => 'title', 'desc' => __('The following options affect the styling of your store, as well as how certain features behave.', 'woocommerce'), 'id' => 'script_styling_options' ),
+	array(	'title' => __( 'Styles and Scripts', 'woocommerce' ), 'type' => 'title', 'id' => 'script_styling_options' ),
 
 	array(
-		'name' => __( 'Styling', 'woocommerce' ),
-		'desc' 		=> __( 'Enable WooCommerce CSS styles', 'woocommerce' ),
+		'title' => __( 'Styling', 'woocommerce' ),
+		'desc' 		=> __( 'Enable WooCommerce CSS', 'woocommerce' ),
 		'id' 		=> 'woocommerce_frontend_css',
-		'std' 		=> 'yes',
+		'default'	=> 'yes',
 		'type' 		=> 'checkbox'
 	),
 
@@ -235,59 +213,36 @@ $woocommerce_settings['general'] = apply_filters('woocommerce_general_settings',
 	),
 
 	array(
-		'name' => __( 'Store Notice', 'woocommerce' ),
-		'desc' 		=> __( 'Enable the "Demo Store" notice on your site', 'woocommerce' ),
-		'id' 		=> 'woocommerce_demo_store',
-		'std' 		=> 'no',
-		'type' 		=> 'checkbox'
-	),
-
-	array(
-		'name' => __( 'Store Notice Text', 'woocommerce' ),
-		'desc' 		=> '',
-		'id' 		=> 'woocommerce_demo_store_notice',
-		'std' 		=> __( 'This is a demo store for testing purposes &mdash; no orders shall be fulfilled.', 'woocommerce' ),
-		'type' 		=> 'text',
-		'css' 		=> 'min-width:300px;',
-	),
-
-	array(
-		'name' => __( 'Scripts', 'woocommerce' ),
-		'desc' 		=> __( 'Enable AJAX add to cart buttons on product archives', 'woocommerce' ),
-		'id' 		=> 'woocommerce_enable_ajax_add_to_cart',
-		'std' 		=> 'yes',
+		'title' => __( 'Scripts', 'woocommerce' ),
+		'desc' 	=> __( 'Enable Lightbox', 'woocommerce' ),
+		'id' 		=> 'woocommerce_enable_lightbox',
+		'default'	=> 'yes',
+		'desc_tip'	=> __( 'Include WooCommerce\'s lightbox. Product gallery images and the add review form will open in a lightbox.', 'woocommerce' ),
 		'type' 		=> 'checkbox',
 		'checkboxgroup'		=> 'start'
 	),
 
 	array(
-		'desc' 		=> __( 'Enable WooCommerce lightbox on the product page', 'woocommerce' ),
-		'id' 		=> 'woocommerce_enable_lightbox',
-		'std' 		=> 'yes',
-		'type' 		=> 'checkbox',
-		'checkboxgroup'		=> ''
-	),
-
-	array(
 		'desc' 		=> __( 'Enable enhanced country select boxes', 'woocommerce' ),
 		'id' 		=> 'woocommerce_enable_chosen',
-		'std' 		=> 'yes',
+		'default'	=> 'yes',
 		'type' 		=> 'checkbox',
-		'checkboxgroup'		=> 'end'
+		'checkboxgroup'		=> 'end',
+		'desc_tip'	=> __( 'This will enable a script allowing the country fields to be searchable.', 'woocommerce' ),
 	),
 
 	array( 'type' => 'sectionend', 'id' => 'script_styling_options'),
 
-	array(	'name' => __( 'Digital Downloads', 'woocommerce' ), 'type' => 'title','desc' => __('The following options are specific to downloadable products.', 'woocommerce'), 'id' => 'digital_download_options' ),
+	array(	'title' => __( 'Downloadable Products', 'woocommerce' ), 'type' => 'title', 'id' => 'digital_download_options' ),
 
 	array(
-		'name' => __('File download method', 'woocommerce'),
-		'desc' 		=> __('Forcing downloads will keep URLs hidden, but some servers may serve large files unreliably. If supported, <code>X-Accel-Redirect</code>/ <code>X-Sendfile</code> can be used to serve downloads instead (server requires <code>mod_xsendfile</code>).', 'woocommerce'),
+		'title' => __( 'File Download Method', 'woocommerce' ),
+		'desc' 		=> __( 'Forcing downloads will keep URLs hidden, but some servers may serve large files unreliably. If supported, <code>X-Accel-Redirect</code>/ <code>X-Sendfile</code> can be used to serve downloads instead (server requires <code>mod_xsendfile</code>).', 'woocommerce' ),
 		'id' 		=> 'woocommerce_file_download_method',
 		'type' 		=> 'select',
 		'class'		=> 'chosen_select',
 		'css' 		=> 'min-width:300px;',
-		'std'		=> 'force',
+		'default'	=> 'force',
 		'desc_tip'	=>  true,
 		'options' => array(
 			'force'  	=> __( 'Force Downloads', 'woocommerce' ),
@@ -297,30 +252,22 @@ $woocommerce_settings['general'] = apply_filters('woocommerce_general_settings',
 	),
 
 	array(
-		'name' => __('Access Restrictions', 'woocommerce'),
-		'desc' 		=> __('Must be logged in to download files', 'woocommerce'),
+		'title' => __( 'Access Restriction', 'woocommerce' ),
+		'desc' 		=> __( 'Downloads require login', 'woocommerce' ),
 		'id' 		=> 'woocommerce_downloads_require_login',
 		'type' 		=> 'checkbox',
-		'std' 		=> 'no',
-		'desc_tip'	=> __('This setting does not apply to guest downloads.', 'woocommerce'),
+		'default'	=> 'no',
+		'desc_tip'	=> __( 'This setting does not apply to guest purchases.', 'woocommerce' ),
 		'checkboxgroup'		=> 'start'
 	),
 
 	array(
-		'desc' 		=> __('Grant access to downloadable products after payment', 'woocommerce'),
+		'desc' 		=> __( 'Grant access to downloadable products after payment', 'woocommerce' ),
 		'id' 		=> 'woocommerce_downloads_grant_access_after_payment',
 		'type' 		=> 'checkbox',
-		'std' 		=> 'yes',
-		'desc_tip'	=> __('Turn this option off to only grant access when an order is "complete", rather than "processing"', 'woocommerce'),
+		'default'	=> 'yes',
+		'desc_tip'	=> __( 'Enable this option to grant access to downloads when orders are "processing", rather than "completed".', 'woocommerce' ),
 		'checkboxgroup'		=> 'end'
-	),
-
-	array(
-		'name' => __('Limit quantity', 'woocommerce'),
-		'desc' 		=> __( 'Limit the purchasable quantity of downloadable-virtual items to 1', 'woocommerce' ),
-		'id' 		=> 'woocommerce_limit_downloadable_product_qty',
-		'std' 		=> 'yes',
-		'type' 		=> 'checkbox'
 	),
 
 	array( 'type' => 'sectionend', 'id' => 'digital_download_options' ),
@@ -335,305 +282,270 @@ $base_slug = ($shop_page_id > 0 && get_page( $shop_page_id )) ? get_page_uri( $s
 $woocommerce_prepend_shop_page_to_products_warning = '';
 
 if ( $shop_page_id > 0 && sizeof(get_pages("child_of=$shop_page_id")) > 0 )
-	$woocommerce_prepend_shop_page_to_products_warning = ' <mark class="notice">' . __('Note: The shop page has children - child pages will not work if you enable this option.', 'woocommerce') . '</mark>';
+	$woocommerce_prepend_shop_page_to_products_warning = ' <mark class="notice">' . __( 'Note: The shop page has children - child pages will not work if you enable this option.', 'woocommerce' ) . '</mark>';
 
 $woocommerce_settings['pages'] = apply_filters('woocommerce_page_settings', array(
 
-	array( 'name' => __( 'Page Setup', 'woocommerce' ), 'type' => 'title', 'desc' => '', 'id' => 'page_options' ),
+	array(
+		'title' => __( 'Page Setup', 'woocommerce' ),
+		'type' => 'title',
+		'desc' => sprintf( __( 'Set up core WooCommerce pages here, for example the base page. The base page can also be used in your %sproduct permalinks%s.', 'woocommerce' ), '<a target="_blank" href="' . admin_url( 'options-permalink.php' ) . '">', '</a>' ),
+		'id' => 'page_options'
+	),
 
 	array(
-		'name' => __( 'Shop Base Page', 'woocommerce' ),
-		'desc' 		=> sprintf( __( 'This sets the base page of your shop - this is where your product archive will be.', 'woocommerce' ), '<a target="_blank" href="options-permalink.php">', '</a>' ),
+		'title' => __( 'Shop Base Page', 'woocommerce' ),
+		'desc' 		=> __( 'This sets the base page of your shop - this is where your product archive will be.', 'woocommerce' ),
 		'id' 		=> 'woocommerce_shop_page_id',
 		'type' 		=> 'single_select_page',
-		'std' 		=> '',
+		'default'	=> '',
 		'class'		=> 'chosen_select_nostd',
 		'css' 		=> 'min-width:300px;',
-		'desc_tip'	=>  true,
+		'desc_tip'	=>  true
 	),
 
 	array(
-		'name' => __( 'Base Page Title', 'woocommerce' ),
-		'desc' 		=> __( 'This title to show on the shop base page. Leave blank to use the page title.', 'woocommerce' ),
-		'id' 		=> 'woocommerce_shop_page_title',
-		'type' 		=> 'text',
-		'css' 		=> 'min-width:300px;',
-		'std' 		=> 'All Products', // Default value for the page title - changed in settings
-		'desc_tip'	=>  true,
-	),
-
-	array(
-		'name' => __( 'Terms page ID', 'woocommerce' ),
+		'title' => __( 'Terms Page ID', 'woocommerce' ),
 		'desc' 		=> __( 'If you define a "Terms" page the customer will be asked if they accept them when checking out.', 'woocommerce' ),
-		'tip' 		=> '',
 		'id' 		=> 'woocommerce_terms_page_id',
-		'std' 		=> '',
+		'default'	=> '',
 		'class'		=> 'chosen_select_nostd',
 		'css' 		=> 'min-width:300px;',
 		'type' 		=> 'single_select_page',
 		'desc_tip'	=>  true,
-	),
-
-	array(
-		'name' => __( 'Logout link', 'woocommerce' ),
-		'desc' 		=> sprintf(__( 'Append a logout link to menus containing "My Account"', 'woocommerce' ), $base_slug),
-		'id' 		=> 'woocommerce_menu_logout_link',
-		'std' 		=> 'yes',
-		'type' 		=> 'checkbox',
 	),
 
 	array( 'type' => 'sectionend', 'id' => 'page_options' ),
 
-	array( 'name' => __( 'Permalinks', 'woocommerce' ), 'type' => 'title', 'desc' => '', 'id' => 'permalink_options' ),
+	array( 'title' => __( 'Shop Pages', 'woocommerce' ), 'type' => 'title', 'desc' => __( 'The following pages need selecting so that WooCommerce knows where they are. These pages should have been created upon installation of the plugin, if not you will need to create them.', 'woocommerce' ) ),
 
 	array(
-		'name' => __( 'Taxonomy base page', 'woocommerce' ),
-		'desc' 		=> sprintf(__( 'Prepend shop categories/tags with shop base page (<code>%s</code>)', 'woocommerce' ), $base_slug),
-		'id' 		=> 'woocommerce_prepend_shop_page_to_urls',
-		'std' 		=> 'no',
-		'type' 		=> 'checkbox',
-	),
-
-	array(
-		'name' => __( 'Product category slug', 'woocommerce' ),
-		'desc' 		=> __( 'Shows in the product category URLs. Leave blank to use the default slug.', 'woocommerce' ),
-		'id' 		=> 'woocommerce_product_category_slug',
-		'type' 		=> 'text',
-		'css' 		=> 'min-width:300px;',
-		'std' 		=> '',
-		'desc_tip'	=>  true,
-	),
-
-	array(
-		'name' => __( 'Product tag slug', 'woocommerce' ),
-		'desc' 		=> __( 'Shows in the product tag URLs. Leave blank to use the default slug.', 'woocommerce' ),
-		'id' 		=> 'woocommerce_product_tag_slug',
-		'type' 		=> 'text',
-		'css' 		=> 'min-width:300px;',
-		'std' 		=> '',
-		'desc_tip'	=>  true,
-	),
-
-	array(
-		'name' => __( 'Product base page', 'woocommerce' ),
-		'desc' 		=> sprintf(__( 'Prepend product permalinks with shop base page (<code>%s</code>)', 'woocommerce' ), $base_slug) . $woocommerce_prepend_shop_page_to_products_warning,
-		'id' 		=> 'woocommerce_prepend_shop_page_to_products',
-		'std' 		=> 'yes',
-		'type' 		=> 'checkbox',
-		'checkboxgroup'		=> 'start'
-	),
-
-	array(
-		'name' => __( 'Product base category', 'woocommerce' ),
-		'desc' 		=> __( 'Prepend product permalinks with product category', 'woocommerce' ),
-		'id' 		=> 'woocommerce_prepend_category_to_products',
-		'std' 		=> 'no',
-		'type' 		=> 'checkbox',
-		'checkboxgroup'		=> 'end'
-	),
-
-	array( 'type' => 'sectionend', 'id' => 'permalink_options' ),
-
-	array( 'name' => __( 'Shop Pages', 'woocommerce' ), 'type' => 'title', 'desc' => __( 'The following pages need selecting so that WooCommerce knows where they are. These pages should have been created upon installation of the plugin, if not you will need to create them.', 'woocommerce' ) ),
-
-	array(
-		'name' => __( 'Cart Page', 'woocommerce' ),
+		'title' => __( 'Cart Page', 'woocommerce' ),
 		'desc' 		=> __( 'Page contents: [woocommerce_cart]', 'woocommerce' ),
 		'id' 		=> 'woocommerce_cart_page_id',
 		'type' 		=> 'single_select_page',
-		'std' 		=> '',
+		'default'	=> '',
 		'class'		=> 'chosen_select_nostd',
 		'css' 		=> 'min-width:300px;',
 		'desc_tip'	=>  true,
 	),
 
 	array(
-		'name' => __( 'Checkout Page', 'woocommerce' ),
+		'title' => __( 'Checkout Page', 'woocommerce' ),
 		'desc' 		=> __( 'Page contents: [woocommerce_checkout]', 'woocommerce' ),
 		'id' 		=> 'woocommerce_checkout_page_id',
 		'type' 		=> 'single_select_page',
-		'std' 		=> '',
+		'default'	=> '',
 		'class'		=> 'chosen_select_nostd',
 		'css' 		=> 'min-width:300px;',
 		'desc_tip'	=>  true,
 	),
 
 	array(
-		'name' => __( 'Pay Page', 'woocommerce' ),
+		'title' => __( 'Pay Page', 'woocommerce' ),
 		'desc' 		=> __( 'Page contents: [woocommerce_pay] Parent: "Checkout"', 'woocommerce' ),
 		'id' 		=> 'woocommerce_pay_page_id',
 		'type' 		=> 'single_select_page',
-		'std' 		=> '',
+		'default'	=> '',
 		'class'		=> 'chosen_select_nostd',
 		'css' 		=> 'min-width:300px;',
 		'desc_tip'	=>  true,
 	),
 
 	array(
-		'name' => __('Thanks Page', 'woocommerce'),
+		'title' => __( 'Thanks Page', 'woocommerce' ),
 		'desc' 		=> __( 'Page contents: [woocommerce_thankyou] Parent: "Checkout"', 'woocommerce' ),
 		'id' 		=> 'woocommerce_thanks_page_id',
 		'type' 		=> 'single_select_page',
-		'std' 		=> '',
+		'default'	=> '',
 		'class'		=> 'chosen_select_nostd',
 		'css' 		=> 'min-width:300px;',
 		'desc_tip'	=>  true,
 	),
 
 	array(
-		'name' => __( 'My Account Page', 'woocommerce' ),
+		'title' => __( 'My Account Page', 'woocommerce' ),
 		'desc' 		=> __( 'Page contents: [woocommerce_my_account]', 'woocommerce' ),
 		'id' 		=> 'woocommerce_myaccount_page_id',
 		'type' 		=> 'single_select_page',
-		'std' 		=> '',
+		'default'	=> '',
 		'class'		=> 'chosen_select_nostd',
 		'css' 		=> 'min-width:300px;',
 		'desc_tip'	=>  true,
 	),
 
 	array(
-		'name' => __( 'Edit Address Page', 'woocommerce' ),
+		'title' => __( 'Edit Address Page', 'woocommerce' ),
 		'desc' 		=> __( 'Page contents: [woocommerce_edit_address] Parent: "My Account"', 'woocommerce' ),
 		'id' 		=> 'woocommerce_edit_address_page_id',
 		'type' 		=> 'single_select_page',
-		'std' 		=> '',
+		'default'	=> '',
 		'class'		=> 'chosen_select_nostd',
 		'css' 		=> 'min-width:300px;',
 		'desc_tip'	=>  true,
 	),
 
 	array(
-		'name' => __( 'View Order Page', 'woocommerce' ),
+		'title' => __( 'View Order Page', 'woocommerce' ),
 		'desc' 		=> __( 'Page contents: [woocommerce_view_order] Parent: "My Account"', 'woocommerce' ),
 		'id' 		=> 'woocommerce_view_order_page_id',
 		'type' 		=> 'single_select_page',
-		'std' 		=> '',
+		'default'	=> '',
 		'class'		=> 'chosen_select_nostd',
 		'css' 		=> 'min-width:300px;',
 		'desc_tip'	=>  true,
 	),
 
 	array(
-		'name' => __( 'Change Password Page', 'woocommerce' ),
+		'title' => __( 'Change Password Page', 'woocommerce' ),
 		'desc' 		=> __( 'Page contents: [woocommerce_change_password] Parent: "My Account"', 'woocommerce' ),
 		'id' 		=> 'woocommerce_change_password_page_id',
 		'type' 		=> 'single_select_page',
-		'std' 		=> '',
+		'default'	=> '',
 		'class'		=> 'chosen_select_nostd',
 		'css' 		=> 'min-width:300px;',
 		'desc_tip'	=>  true,
 	),
 
-	array( 'type' => 'sectionend', 'id' => 'page_options'),
+	array(
+		'title' => __( 'Logout Page', 'woocommerce' ),
+		'desc' 		=> __( 'Parent: "My Account"', 'woocommerce' ),
+		'id' 		=> 'woocommerce_logout_page_id',
+		'type' 		=> 'single_select_page',
+		'default'	=> '',
+		'class'		=> 'chosen_select_nostd',
+		'css' 		=> 'min-width:300px;',
+		'desc_tip'	=>  true,
+	),
+
+	array(
+		'title' => __( 'Lost Password Page', 'woocommerce' ),
+		'desc' 		=> __( 'Page contents: [woocommerce_lost_password] Parent: "My Account"', 'woocommerce' ),
+		'id' 		=> 'woocommerce_lost_password_page_id',
+		'type' 		=> 'single_select_page',
+		'default'	=> '',
+		'class'		=> 'chosen_select_nostd',
+		'css' 		=> 'min-width:300px;',
+		'desc_tip'	=>  true,
+	),
+
+	array( 'type' => 'sectionend', 'id' => 'page_options')
 
 )); // End pages settings
 
 
 $woocommerce_settings['catalog'] = apply_filters('woocommerce_catalog_settings', array(
 
-	array(	'name' => __( 'Catalog Options', 'woocommerce' ), 'type' => 'title','desc' => '', 'id' => 'catalog_options' ),
+	array(	'title' => __( 'Catalog Options', 'woocommerce' ), 'type' => 'title','desc' => '', 'id' => 'catalog_options' ),
 
 	array(
-		'name' => __( 'Default product sorting', 'woocommerce' ),
+		'title' => __( 'Default Product Sorting', 'woocommerce' ),
 		'desc' 		=> __( 'This controls the default sort order of the catalog.', 'woocommerce' ),
 		'id' 		=> 'woocommerce_default_catalog_orderby',
 		'css' 		=> 'min-width:150px;',
-		'std' 		=> 'title',
+		'default'	=> 'title',
 		'type' 		=> 'select',
 		'options' => apply_filters('woocommerce_default_catalog_orderby_options', array(
-			'menu_order'  	=> __( 'Default sorting', 'woocommerce' ),
-			'title'  		=> __( 'Sort alphabetically', 'woocommerce' ),
-			'date'   		=> __( 'Sort by most recent', 'woocommerce' ),
-			'price' 		=> __( 'Sort by price', 'woocommerce' ),
+			'menu_order' => __( 'Default sorting (custom ordering + name)', 'woocommerce' ),
+			'popularity' => __( 'Popularity (sales)', 'woocommerce' ),
+			'rating'     => __( 'Average Rating', 'woocommerce' ),
+			'date'       => __( 'Sort by most recent', 'woocommerce' ),
+			'price'      => __( 'Sort by price (asc)', 'woocommerce' ),
+			'price-desc' => __( 'Sort by price (desc)', 'woocommerce' ),
 		)),
 		'desc_tip'	=>  true,
 	),
 
 	array(
-		'name' => __( 'Show subcategories', 'woocommerce' ),
-		'desc' 		=> __( 'Show subcategories on category pages', 'woocommerce' ),
-		'id' 		=> 'woocommerce_show_subcategories',
-		'std' 		=> 'no',
-		'type' 		=> 'checkbox',
-		'checkboxgroup'		=> 'start'
+		'title' => __( 'Shop Page Display', 'woocommerce' ),
+		'desc' 		=> __( 'This controls what is shown on the product archive.', 'woocommerce' ),
+		'id' 		=> 'woocommerce_shop_page_display',
+		'css' 		=> 'min-width:150px;',
+		'default'	=> '',
+		'type' 		=> 'select',
+		'options' => array(
+			''  			=> __( 'Show products', 'woocommerce' ),
+			'subcategories' => __( 'Show subcategories', 'woocommerce' ),
+			'both'   		=> __( 'Show both', 'woocommerce' ),
+		),
+		'desc_tip'	=>  true,
 	),
 
 	array(
-		'desc' 		=> __( 'Show subcategories on the shop page', 'woocommerce' ),
-		'id' 		=> 'woocommerce_shop_show_subcategories',
-		'std' 		=> 'no',
-		'type' 		=> 'checkbox',
-		'checkboxgroup'		=> ''
+		'title' => __( 'Default Category Display', 'woocommerce' ),
+		'desc' 		=> __( 'This controls what is shown on category archives.', 'woocommerce' ),
+		'id' 		=> 'woocommerce_category_archive_display',
+		'css' 		=> 'min-width:150px;',
+		'default'	=> '',
+		'type' 		=> 'select',
+		'options' => array(
+			''  			=> __( 'Show products', 'woocommerce' ),
+			'subcategories' => __( 'Show subcategories', 'woocommerce' ),
+			'both'   		=> __( 'Show both', 'woocommerce' ),
+		),
+		'desc_tip'	=>  true,
 	),
 
 	array(
-		'desc' 		=> __( 'When showing subcategories, hide products', 'woocommerce' ),
-		'id' 		=> 'woocommerce_hide_products_when_showing_subcategories',
-		'std' 		=> 'no',
-		'type' 		=> 'checkbox',
-		'checkboxgroup'		=> 'end'
-	),
-
-	array(
-		'name' => __( 'Redirects', 'woocommerce' ),
-		'desc' 		=> __( 'Redirect to cart after adding a product to the cart (on single product pages)', 'woocommerce' ),
+		'title' => __( 'Add to cart', 'woocommerce' ),
+		'desc' 		=> __( 'Redirect to the cart page after successful addition', 'woocommerce' ),
 		'id' 		=> 'woocommerce_cart_redirect_after_add',
-		'std' 		=> 'no',
+		'default'	=> 'no',
 		'type' 		=> 'checkbox',
 		'checkboxgroup'		=> 'start'
 	),
 
 	array(
-		'desc' 		=> __( 'Redirect to the product page on a single matching search result', 'woocommerce' ),
-		'id' 		=> 'woocommerce_redirect_on_single_search_result',
-		'std' 		=> 'no',
+		'desc' 		=> __( 'Enable AJAX add to cart buttons on archives', 'woocommerce' ),
+		'id' 		=> 'woocommerce_enable_ajax_add_to_cart',
+		'default'	=> 'yes',
 		'type' 		=> 'checkbox',
 		'checkboxgroup'		=> 'end'
 	),
 
 	array( 'type' => 'sectionend', 'id' => 'catalog_options' ),
 
-	array(	'name' => __( 'Product Data', 'woocommerce' ), 'type' => 'title', 'desc' => __('The following options affect the fields available on the edit product page.', 'woocommerce'), 'id' => 'product_data_options' ),
+	array(	'title' => __( 'Product Data', 'woocommerce' ), 'type' => 'title', 'desc' => __( 'The following options affect the fields available on the edit product page.', 'woocommerce' ), 'id' => 'product_data_options' ),
 
 	array(
-		'name' => __( 'Product fields', 'woocommerce' ),
-		'desc' 		=> __( 'Enable the SKU field for products', 'woocommerce' ),
+		'title' => __( 'Product Fields', 'woocommerce' ),
+		'desc' 		=> __( 'Enable the <strong>SKU</strong> field for products', 'woocommerce' ),
 		'id' 		=> 'woocommerce_enable_sku',
-		'std' 		=> 'yes',
+		'default'	=> 'yes',
 		'type' 		=> 'checkbox',
 		'checkboxgroup'		=> 'start'
 	),
 
 	array(
-		'desc' 		=> __( 'Enable the weight field for products', 'woocommerce' ),
+		'desc' 		=> __( 'Enable the <strong>weight</strong> field for products (some shipping methods may require this)', 'woocommerce' ),
 		'id' 		=> 'woocommerce_enable_weight',
-		'std' 		=> 'yes',
+		'default'	=> 'yes',
 		'type' 		=> 'checkbox',
 		'checkboxgroup'		=> ''
 	),
 
 	array(
-		'desc' 		=> __( 'Enable the dimension fields for products', 'woocommerce' ),
+		'desc' 		=> __( 'Enable the <strong>dimension</strong> fields for products (some shipping methods may require this)', 'woocommerce' ),
 		'id' 		=> 'woocommerce_enable_dimensions',
-		'std' 		=> 'yes',
+		'default'	=> 'yes',
 		'type' 		=> 'checkbox',
 		'checkboxgroup'		=> ''
 	),
 
 	array(
-		'desc' 		=> __( 'Show weight and dimension fields in product attributes tab', 'woocommerce' ),
+		'desc' 		=> __( 'Show <strong>weight and dimension</strong> values on the <strong>Additional Information</strong> tab', 'woocommerce' ),
 		'id' 		=> 'woocommerce_enable_dimension_product_attributes',
-		'std' 		=> 'yes',
+		'default'	=> 'yes',
 		'type' 		=> 'checkbox',
 		'checkboxgroup'		=> 'end'
 	),
 
 	array(
-		'name' => __( 'Weight Unit', 'woocommerce' ),
+		'title' => __( 'Weight Unit', 'woocommerce' ),
 		'desc' 		=> __( 'This controls what unit you will define weights in.', 'woocommerce' ),
 		'id' 		=> 'woocommerce_weight_unit',
 		'css' 		=> 'min-width:150px;',
-		'std' 		=> 'kg',
+		'default'	=> 'kg',
 		'type' 		=> 'select',
 		'options' => array(
 			'kg'  => __( 'kg', 'woocommerce' ),
@@ -645,11 +557,11 @@ $woocommerce_settings['catalog'] = apply_filters('woocommerce_catalog_settings',
 	),
 
 	array(
-		'name' => __( 'Dimensions Unit', 'woocommerce' ),
+		'title' => __( 'Dimensions Unit', 'woocommerce' ),
 		'desc' 		=> __( 'This controls what unit you will define lengths in.', 'woocommerce' ),
 		'id' 		=> 'woocommerce_dimension_unit',
 		'css' 		=> 'min-width:150px;',
-		'std' 		=> 'cm',
+		'default'	=> 'cm',
 		'type' 		=> 'select',
 		'options' => array(
 			'm'  => __( 'm', 'woocommerce' ),
@@ -662,10 +574,10 @@ $woocommerce_settings['catalog'] = apply_filters('woocommerce_catalog_settings',
 	),
 
 	array(
-		'name' => __( 'Product Ratings', 'woocommerce' ),
-		'desc' 		=> __( 'Enable the star rating field on the review form', 'woocommerce' ),
+		'title' => __( 'Product Ratings', 'woocommerce' ),
+		'desc' 		=> __( 'Enable ratings on reviews', 'woocommerce' ),
 		'id' 		=> 'woocommerce_enable_review_rating',
-		'std' 		=> 'yes',
+		'default'	=> 'yes',
 		'type' 		=> 'checkbox',
 		'checkboxgroup'		=> 'start',
 		'show_if_checked' => 'option',
@@ -674,7 +586,7 @@ $woocommerce_settings['catalog'] = apply_filters('woocommerce_catalog_settings',
 	array(
 		'desc' 		=> __( 'Ratings are required to leave a review', 'woocommerce' ),
 		'id' 		=> 'woocommerce_review_rating_required',
-		'std' 		=> 'yes',
+		'default'	=> 'yes',
 		'type' 		=> 'checkbox',
 		'checkboxgroup'		=> '',
 		'show_if_checked' => 'yes',
@@ -683,7 +595,7 @@ $woocommerce_settings['catalog'] = apply_filters('woocommerce_catalog_settings',
 	array(
 		'desc' 		=> __( 'Show "verified owner" label for customer reviews', 'woocommerce' ),
 		'id' 		=> 'woocommerce_review_rating_verification_label',
-		'std' 		=> 'yes',
+		'default'	=> 'yes',
 		'type' 		=> 'checkbox',
 		'checkboxgroup'		=> 'end',
 		'show_if_checked' => 'yes',
@@ -691,15 +603,14 @@ $woocommerce_settings['catalog'] = apply_filters('woocommerce_catalog_settings',
 
 	array( 'type' => 'sectionend', 'id' => 'product_review_options' ),
 
-	array(	'name' => __( 'Pricing Options', 'woocommerce' ), 'type' => 'title', 'desc' => __('The following options affect how prices are displayed on the frontend.', 'woocommerce'), 'id' => 'pricing_options' ),
+	array(	'title' => __( 'Pricing Options', 'woocommerce' ), 'type' => 'title', 'desc' => __( 'The following options affect how prices are displayed on the frontend.', 'woocommerce' ), 'id' => 'pricing_options' ),
 
 	array(
-		'name' => __( 'Currency Position', 'woocommerce' ),
+		'title' => __( 'Currency Position', 'woocommerce' ),
 		'desc' 		=> __( 'This controls the position of the currency symbol.', 'woocommerce' ),
-		'tip' 		=> '',
 		'id' 		=> 'woocommerce_currency_pos',
 		'css' 		=> 'min-width:150px;',
-		'std' 		=> 'left',
+		'default'	=> 'left',
 		'type' 		=> 'select',
 		'options' => array(
 			'left' => __( 'Left', 'woocommerce' ),
@@ -711,77 +622,90 @@ $woocommerce_settings['catalog'] = apply_filters('woocommerce_catalog_settings',
 	),
 
 	array(
-		'name' => __( 'Thousand separator', 'woocommerce' ),
+		'title' => __( 'Thousand Separator', 'woocommerce' ),
 		'desc' 		=> __( 'This sets the thousand separator of displayed prices.', 'woocommerce' ),
-		'tip' 		=> '',
 		'id' 		=> 'woocommerce_price_thousand_sep',
-		'css' 		=> 'width:30px;',
-		'std' 		=> ',',
+		'css' 		=> 'width:50px;',
+		'default'	=> ',',
 		'type' 		=> 'text',
 		'desc_tip'	=>  true,
 	),
 
 	array(
-		'name' => __( 'Decimal separator', 'woocommerce' ),
+		'title' => __( 'Decimal Separator', 'woocommerce' ),
 		'desc' 		=> __( 'This sets the decimal separator of displayed prices.', 'woocommerce' ),
-		'tip' 		=> '',
 		'id' 		=> 'woocommerce_price_decimal_sep',
-		'css' 		=> 'width:30px;',
-		'std' 		=> '.',
+		'css' 		=> 'width:50px;',
+		'default'	=> '.',
 		'type' 		=> 'text',
 		'desc_tip'	=>  true,
 	),
 
 	array(
-		'name' => __( 'Number of decimals', 'woocommerce' ),
+		'title' => __( 'Number of Decimals', 'woocommerce' ),
 		'desc' 		=> __( 'This sets the number of decimal points shown in displayed prices.', 'woocommerce' ),
-		'tip' 		=> '',
 		'id' 		=> 'woocommerce_price_num_decimals',
-		'css' 		=> 'width:30px;',
-		'std' 		=> '2',
-		'type' 		=> 'text',
+		'css' 		=> 'width:50px;',
+		'default'	=> '2',
 		'desc_tip'	=>  true,
+		'type' 		=> 'number',
+		'custom_attributes' => array(
+			'min' 	=> 0,
+			'step' 	=> 1
+		)
 	),
 
 	array(
-		'name'		=> __( 'Trailing zeros', 'woocommerce' ),
+		'title'		=> __( 'Trailing Zeros', 'woocommerce' ),
 		'desc' 		=> __( 'Remove zeros after the decimal point. e.g. <code>$10.00</code> becomes <code>$10</code>', 'woocommerce' ),
 		'id' 		=> 'woocommerce_price_trim_zeros',
-		'std' 		=> 'yes',
+		'default'	=> 'yes',
 		'type' 		=> 'checkbox'
 	),
 
 	array( 'type' => 'sectionend', 'id' => 'pricing_options' ),
 
-	array(	'name' => __( 'Image Options', 'woocommerce' ), 'type' => 'title','desc' => sprintf(__('These settings affect the actual dimensions of images in your catalog - the display on the front-end will still be affected by CSS styles. After changing these settings you may need to <a href="%s">regenerate your thumbnails</a>.', 'woocommerce'), 'http://wordpress.org/extend/plugins/regenerate-thumbnails/'), 'id' => 'image_options' ),
+	array(	'title' => __( 'Image Options', 'woocommerce' ), 'type' => 'title','desc' => sprintf(__( 'These settings affect the actual dimensions of images in your catalog - the display on the front-end will still be affected by CSS styles. After changing these settings you may need to <a href="%s">regenerate your thumbnails</a>.', 'woocommerce' ), 'http://wordpress.org/extend/plugins/regenerate-thumbnails/'), 'id' => 'image_options' ),
 
 	array(
-		'name' => __( 'Catalog Images', 'woocommerce' ),
-		'desc' 		=> __('This size is usually used in product listings', 'woocommerce'),
-		'id' 		=> 'woocommerce_catalog_image',
+		'title' => __( 'Catalog Images', 'woocommerce' ),
+		'desc' 		=> __( 'This size is usually used in product listings', 'woocommerce' ),
+		'id' 		=> 'shop_catalog_image_size',
 		'css' 		=> '',
 		'type' 		=> 'image_width',
-		'std' 		=> '150',
+		'default'	=> array(
+			'width' 	=> '150',
+			'height'	=> '150',
+			'crop'		=> true
+		),
 		'desc_tip'	=>  true,
 	),
 
 	array(
-		'name' => __( 'Single Product Image', 'woocommerce' ),
-		'desc' 		=> __('This is the size used by the main image on the product page.', 'woocommerce'),
-		'id' 		=> 'woocommerce_single_image',
+		'title' => __( 'Single Product Image', 'woocommerce' ),
+		'desc' 		=> __( 'This is the size used by the main image on the product page.', 'woocommerce' ),
+		'id' 		=> 'shop_single_image_size',
 		'css' 		=> '',
 		'type' 		=> 'image_width',
-		'std' 		=> '300',
+		'default'	=> array(
+			'width' 	=> '300',
+			'height'	=> '300',
+			'crop'		=> 1
+		),
 		'desc_tip'	=>  true,
 	),
 
 	array(
-		'name' => __( 'Product Thumbnails', 'woocommerce' ),
-		'desc' 		=> __('This size is usually used for the gallery of images on the product page.', 'woocommerce'),
-		'id' 		=> 'woocommerce_thumbnail_image',
+		'title' => __( 'Product Thumbnails', 'woocommerce' ),
+		'desc' 		=> __( 'This size is usually used for the gallery of images on the product page.', 'woocommerce' ),
+		'id' 		=> 'shop_thumbnail_image_size',
 		'css' 		=> '',
 		'type' 		=> 'image_width',
-		'std' 		=> '90',
+		'default'	=> array(
+			'width' 	=> '90',
+			'height'	=> '90',
+			'crop'		=> 1
+		),
 		'desc_tip'	=>  true,
 	),
 
@@ -792,21 +716,34 @@ $woocommerce_settings['catalog'] = apply_filters('woocommerce_catalog_settings',
 
 $woocommerce_settings['inventory'] = apply_filters('woocommerce_inventory_settings', array(
 
-	array(	'name' => __( 'Inventory Options', 'woocommerce' ), 'type' => 'title','desc' => '', 'id' => 'inventory_options' ),
+	array(	'title' => __( 'Inventory Options', 'woocommerce' ), 'type' => 'title','desc' => '', 'id' => 'inventory_options' ),
 
 	array(
-		'name' => __( 'Manage stock', 'woocommerce' ),
+		'title' => __( 'Manage Stock', 'woocommerce' ),
 		'desc' 		=> __( 'Enable stock management', 'woocommerce' ),
 		'id' 		=> 'woocommerce_manage_stock',
-		'std' 		=> 'yes',
+		'default'	=> 'yes',
 		'type' 		=> 'checkbox'
 	),
 
 	array(
-		'name' => __( 'Notifications', 'woocommerce' ),
+		'title' => __( 'Hold Stock (minutes)', 'woocommerce' ),
+		'desc' 		=> __( 'Hold stock (for unpaid orders) for x minutes. When this limit is reached, the pending order will be cancelled. Leave blank to disable.', 'woocommerce' ),
+		'id' 		=> 'woocommerce_hold_stock_minutes',
+		'type' 		=> 'number',
+		'custom_attributes' => array(
+			'min' 	=> 0,
+			'step' 	=> 1
+		),
+		'css' 		=> 'width:50px;',
+		'default'	=> '60'
+	),
+
+	array(
+		'title' => __( 'Notifications', 'woocommerce' ),
 		'desc' 		=> __( 'Enable low stock notifications', 'woocommerce' ),
 		'id' 		=> 'woocommerce_notify_low_stock',
-		'std' 		=> 'yes',
+		'default'	=> 'yes',
 		'type' 		=> 'checkbox',
 		'checkboxgroup' => 'start'
 	),
@@ -814,45 +751,59 @@ $woocommerce_settings['inventory'] = apply_filters('woocommerce_inventory_settin
 	array(
 		'desc' 		=> __( 'Enable out of stock notifications', 'woocommerce' ),
 		'id' 		=> 'woocommerce_notify_no_stock',
-		'std' 		=> 'yes',
+		'default'	=> 'yes',
 		'type' 		=> 'checkbox',
 		'checkboxgroup' => 'end'
 	),
 
 	array(
-		'name' => __( 'Low stock threshold', 'woocommerce' ),
+		'title' => __( 'Notification Recipient', 'woocommerce' ),
 		'desc' 		=> '',
-		'tip' 		=> '',
+		'id' 		=> 'woocommerce_stock_email_recipient',
+		'type' 		=> 'email',
+		'default'	=> get_option( 'admin_email' )
+	),
+
+	array(
+		'title' => __( 'Low Stock Threshold', 'woocommerce' ),
+		'desc' 		=> '',
 		'id' 		=> 'woocommerce_notify_low_stock_amount',
-		'css' 		=> 'width:30px;',
-		'type' 		=> 'text',
-		'std' 		=> '2'
+		'css' 		=> 'width:50px;',
+		'type' 		=> 'number',
+		'custom_attributes' => array(
+			'min' 	=> 0,
+			'step' 	=> 1
+		),
+		'default'	=> '2'
 	),
 
 	array(
-		'name' => __( 'Out of stock threshold', 'woocommerce' ),
+		'title' => __( 'Out Of Stock Threshold', 'woocommerce' ),
 		'desc' 		=> '',
-		'tip' 		=> '',
 		'id' 		=> 'woocommerce_notify_no_stock_amount',
-		'css' 		=> 'width:30px;',
-		'type' 		=> 'text',
-		'std' 		=> '0'
+		'css' 		=> 'width:50px;',
+		'type' 		=> 'number',
+		'custom_attributes' => array(
+			'min' 	=> 0,
+			'step' 	=> 1
+		),
+		'default'	=> '0'
 	),
 
 	array(
-		'name' => __( 'Out of stock visibility', 'woocommerce' ),
-		'desc' 		=> __('Hide out of stock items from the catalog', 'woocommerce'),
+		'title' => __( 'Out Of Stock Visibility', 'woocommerce' ),
+		'desc' 		=> __( 'Hide out of stock items from the catalog', 'woocommerce' ),
 		'id' 		=> 'woocommerce_hide_out_of_stock_items',
-		'std' 		=> 'no',
+		'default'	=> 'no',
 		'type' 		=> 'checkbox'
 	),
 
 	array(
-		'name' => __( 'Stock display format', 'woocommerce' ),
+		'title' => __( 'Stock Display Format', 'woocommerce' ),
 		'desc' 		=> __( 'This controls how stock is displayed on the frontend.', 'woocommerce' ),
 		'id' 		=> 'woocommerce_stock_format',
 		'css' 		=> 'min-width:150px;',
-		'std' 		=> '',
+		'default'	=> '',
 		'type' 		=> 'select',
 		'options' => array(
 			''  			=> __( 'Always show stock e.g. "12 in stock"', 'woocommerce' ),
@@ -869,13 +820,13 @@ $woocommerce_settings['inventory'] = apply_filters('woocommerce_inventory_settin
 
 $woocommerce_settings['shipping'] = apply_filters('woocommerce_shipping_settings', array(
 
-	array( 'name' => __( 'Shipping Options', 'woocommerce' ), 'type' => 'title', 'id' => 'shipping_options' ),
+	array( 'title' => __( 'Shipping Options', 'woocommerce' ), 'type' => 'title', 'id' => 'shipping_options' ),
 
 	array(
-		'name' 		=> __( 'Shipping calculations', 'woocommerce' ),
+		'title' 		=> __( 'Shipping Calculations', 'woocommerce' ),
 		'desc' 		=> __( 'Enable shipping', 'woocommerce' ),
 		'id' 		=> 'woocommerce_calc_shipping',
-		'std' 		=> 'yes',
+		'default'	=> 'yes',
 		'type' 		=> 'checkbox',
 		'checkboxgroup'		=> 'start'
 	),
@@ -883,7 +834,7 @@ $woocommerce_settings['shipping'] = apply_filters('woocommerce_shipping_settings
 	array(
 		'desc' 		=> __( 'Enable the shipping calculator on the cart page', 'woocommerce' ),
 		'id' 		=> 'woocommerce_enable_shipping_calc',
-		'std' 		=> 'yes',
+		'default'	=> 'yes',
 		'type' 		=> 'checkbox',
 		'checkboxgroup'		=> ''
 	),
@@ -891,17 +842,17 @@ $woocommerce_settings['shipping'] = apply_filters('woocommerce_shipping_settings
 	array(
 		'desc' 		=> __( 'Hide shipping costs until an address is entered', 'woocommerce' ),
 		'id' 		=> 'woocommerce_shipping_cost_requires_address',
-		'std' 		=> 'no',
+		'default'	=> 'no',
 		'type' 		=> 'checkbox',
 		'checkboxgroup'		=> 'end'
 	),
 
 	array(
-		'name' => __( 'Shipping method display', 'woocommerce' ),
+		'title' 	=> __( 'Shipping Method Display', 'woocommerce' ),
 		'desc' 		=> __( 'This controls how multiple shipping methods are displayed on the frontend.', 'woocommerce' ),
 		'id' 		=> 'woocommerce_shipping_method_format',
 		'css' 		=> 'min-width:150px;',
-		'std' 		=> '',
+		'default'	=> '',
 		'type' 		=> 'select',
 		'options' => array(
 			''  			=> __( 'Radio buttons', 'woocommerce' ),
@@ -911,10 +862,10 @@ $woocommerce_settings['shipping'] = apply_filters('woocommerce_shipping_settings
 	),
 
 	array(
-		'name' 		=> __( 'Shipping Destination', 'woocommerce' ),
+		'title' 	=> __( 'Shipping Destination', 'woocommerce' ),
 		'desc' 		=> __( 'Only ship to the users billing address', 'woocommerce' ),
 		'id' 		=> 'woocommerce_ship_to_billing_address_only',
-		'std' 		=> 'no',
+		'default'	=> 'no',
 		'type' 		=> 'checkbox',
 		'checkboxgroup'		=> 'start'
 	),
@@ -922,7 +873,7 @@ $woocommerce_settings['shipping'] = apply_filters('woocommerce_shipping_settings
 	array(
 		'desc' 		=> __( 'Ship to billing address by default', 'woocommerce' ),
 		'id' 		=> 'woocommerce_ship_to_same_address',
-		'std' 		=> 'yes',
+		'default'	=> 'yes',
 		'type' 		=> 'checkbox',
 		'checkboxgroup'		=> ''
 	),
@@ -930,7 +881,7 @@ $woocommerce_settings['shipping'] = apply_filters('woocommerce_shipping_settings
 	array(
 		'desc' 		=> __( 'Collect shipping address even when not required', 'woocommerce' ),
 		'id' 		=> 'woocommerce_require_shipping_address',
-		'std' 		=> 'no',
+		'default'	=> 'no',
 		'type' 		=> 'checkbox',
 		'checkboxgroup'		=> 'end'
 	),
@@ -946,7 +897,7 @@ $woocommerce_settings['shipping'] = apply_filters('woocommerce_shipping_settings
 
 $woocommerce_settings['payment_gateways'] = apply_filters('woocommerce_payment_gateways_settings', array(
 
-	array( 'name' => __( 'Payment Gateways', 'woocommerce' ), 'desc' => __('Installed payment gateways are displayed below. Drag and drop payment gateways to control their display order on the checkout.', 'woocommerce'), 'type' => 'title', 'id' => 'payment_gateways_options' ),
+	array( 'title' => __( 'Payment Gateways', 'woocommerce' ), 'desc' => __( 'Installed payment gateways are displayed below. Drag and drop payment gateways to control their display order on the checkout.', 'woocommerce' ), 'type' => 'title', 'id' => 'payment_gateways_options' ),
 
 	array(
 		'type' 		=> 'payment_gateways',
@@ -956,90 +907,98 @@ $woocommerce_settings['payment_gateways'] = apply_filters('woocommerce_payment_g
 
 )); // End payment_gateway settings
 
+$tax_classes = array_filter( array_map( 'trim', explode( "\n", get_option( 'woocommerce_tax_classes' ) ) ) );
+$classes_options = array();
+if ( $tax_classes )
+	foreach ( $tax_classes as $class )
+		$classes_options[ sanitize_title( $class ) ] = esc_html( $class );
 
 $woocommerce_settings['tax'] = apply_filters('woocommerce_tax_settings', array(
 
-	array(	'name' => __( 'Tax Options', 'woocommerce' ), 'type' => 'title','desc' => '', 'id' => 'tax_options' ),
+	array(	'title' => __( 'Tax Options', 'woocommerce' ), 'type' => 'title','desc' => '', 'id' => 'tax_options' ),
 
 	array(
-		'name' => __( 'Tax calculations', 'woocommerce' ),
+		'title' => __( 'Enable Taxes', 'woocommerce' ),
 		'desc' 		=> __( 'Enable taxes and tax calculations', 'woocommerce' ),
 		'id' 		=> 'woocommerce_calc_taxes',
-		'std' 		=> 'yes',
-		'type' 		=> 'checkbox',
-		'checkboxgroup'		=> 'start'
+		'default'	=> 'no',
+		'type' 		=> 'checkbox'
 	),
 
 	array(
-		'desc' 		=> __( 'Display taxes on cart page', 'woocommerce' ),
-		'id' 		=> 'woocommerce_display_cart_taxes',
-		'std' 		=> 'yes',
-		'type' 		=> 'checkbox',
-		'checkboxgroup'		=> ''
-	),
-
-	array(
-		'desc'          => __( 'Display taxes even when the amount is zero', 'woocommerce' ),
-		'id'            => 'woocommerce_display_cart_taxes_if_zero',
-		'std'           => 'no',
-		'type'          => 'checkbox',
-		'checkboxgroup' => '',
-	),
-
-	array(
-		'desc' 		=> __( 'Round tax at subtotal level, instead of per line', 'woocommerce' ),
-		'id' 		=> 'woocommerce_tax_round_at_subtotal',
-		'std' 		=> 'no',
-		'type' 		=> 'checkbox',
-		'checkboxgroup'		=> 'end'
-	),
-
-	array(
-		'name' => __( 'Catalog Prices', 'woocommerce' ),
-		'desc' 		=> __( 'Catalog prices defined including tax', 'woocommerce' ),
+		'title' => __( 'Prices Entered With Tax', 'woocommerce' ),
 		'id' 		=> 'woocommerce_prices_include_tax',
-		'std' 		=> 'no',
-		'type' 		=> 'checkbox',
-		'checkboxgroup'		=> 'start',
-		'show_if_checked' => 'option',
+		'default'	=> 'no',
+		'type' 		=> 'radio',
+		'desc_tip'	=>  __( 'This option is important as it will affect how you input prices. Changing it will not update existing products.', 'woocommerce' ),
+		'options'	=> array(
+			'yes' => __( 'Yes, I will enter prices inclusive of tax', 'woocommerce' ),
+			'no' => __( 'No, I will enter prices exclusive of tax', 'woocommerce' )
+		),
 	),
 
 	array(
-		'desc' 		=> __( 'Display cart contents excluding tax', 'woocommerce' ),
-		'id' 		=> 'woocommerce_display_cart_prices_excluding_tax',
-		'std' 		=> 'yes',
-		'type' 		=> 'checkbox',
-		'checkboxgroup'		=> '',
-		'show_if_checked' => 'yes',
+		'title'     => __( 'Calculate Tax Based On:', 'woocommerce' ),
+		'id'        => 'woocommerce_tax_based_on',
+		'desc_tip'	=>  __( 'This option determines which address is used to calculate tax.', 'woocommerce' ),
+		'default'   => 'shipping',
+		'type'      => 'select',
+		'options'   => array(
+			'shipping' => __( 'Customer shipping address', 'woocommerce' ),
+			'billing'  => __( 'Customer billing address', 'woocommerce' ),
+			'base'     => __( 'Shop base address', 'woocommerce' )
+		),
 	),
 
 	array(
-		'desc' 		=> __( 'Display cart totals excluding tax', 'woocommerce' ),
-		'id' 		=> 'woocommerce_display_totals_excluding_tax',
-		'std' 		=> 'yes',
-		'type' 		=> 'checkbox',
-		'checkboxgroup'		=> 'end',
-		'show_if_checked' => 'yes',
+		'title'     => __( 'Default Customer Address:', 'woocommerce' ),
+		'id'        => 'woocommerce_default_customer_address',
+		'desc_tip'	=>  __( 'This option determines the customers default address (before they input their own).', 'woocommerce' ),
+		'default'   => 'base',
+		'type'      => 'select',
+		'options'   => array(
+			''     => __( 'No address', 'woocommerce' ),
+			'base' => __( 'Shop base address', 'woocommerce' ),
+		),
 	),
 
 	array(
-		'name' => __( 'Additional Tax classes', 'woocommerce' ),
-		'desc' 		=> __( 'List 1 per line. This is in addition to the default <em>Standard Rate</em>.', 'woocommerce' ),
-		'tip' 		=> __( 'List product and shipping tax classes here, e.g. Zero Tax, Reduced Rate.', 'woocommerce' ),
+		'title' 		=> __( 'Shipping Tax Class:', 'woocommerce' ),
+		'desc' 		=> __( 'Optionally control which tax class shipping gets, or leave it so shipping tax is based on the cart items themselves.', 'woocommerce' ),
+		'id' 		=> 'woocommerce_shipping_tax_class',
+		'css' 		=> 'min-width:150px;',
+		'default'	=> 'title',
+		'type' 		=> 'select',
+		'options' 	=> array( '' => __( 'Shipping tax class based on cart items', 'woocommerce' ), 'standard' => __( 'Standard', 'woocommerce' ) ) + $classes_options,
+		'desc_tip'	=>  true,
+	),
+
+	array(
+		'title' => __( 'Rounding', 'woocommerce' ),
+		'desc' 		=> __( 'Round tax at subtotal level, instead of rounding per line', 'woocommerce' ),
+		'id' 		=> 'woocommerce_tax_round_at_subtotal',
+		'default'	=> 'no',
+		'type' 		=> 'checkbox',
+	),
+
+	array(
+		'title' 		=> __( 'Additional Tax Classes', 'woocommerce' ),
+		'desc' 		=> __( 'List additonal tax classes below (1 per line). This is in addition to the default <code>Standard Rate</code>. Tax classes can be assigned to products.', 'woocommerce' ),
 		'id' 		=> 'woocommerce_tax_classes',
-		'css' 		=> 'width:100%; height: 75px;',
+		'css' 		=> 'width:100%; height: 65px;',
 		'type' 		=> 'textarea',
-		'std' 		=> sprintf( __( 'Reduced Rate%sZero Rate', 'woocommerce' ), PHP_EOL )
+		'default'	=> sprintf( __( 'Reduced Rate%sZero Rate', 'woocommerce' ), PHP_EOL )
 	),
 
 	array(
-		'name' => __( 'Tax rates', 'woocommerce' ),
-		'desc' 		=> __( 'All fields are required.', 'woocommerce' ),
-		'tip' 		=> __( 'To avoid rounding errors, insert tax rates with 4 decimal places.', 'woocommerce' ),
-		'id' 		=> 'woocommerce_tax_rates',
-		'css' 		=> 'min-width:50px;',
-		'type' 		=> 'tax_rates',
-		'std' 		=> ''
+		'title'   => __( 'Display prices during cart/checkout:', 'woocommerce' ),
+		'id'      => 'woocommerce_tax_display_cart',
+		'default' => 'excl',
+		'type'    => 'select',
+		'options' => array(
+			'incl'   => __( 'Including tax', 'woocommerce' ),
+			'excl'   => __( 'Excluding tax', 'woocommerce' ),
+		),
 	),
 
 	array( 'type' => 'sectionend', 'id' => 'tax_options' ),
@@ -1048,104 +1007,87 @@ $woocommerce_settings['tax'] = apply_filters('woocommerce_tax_settings', array(
 
 $woocommerce_settings['email'] = apply_filters('woocommerce_email_settings', array(
 
-	array(	'name' => __( 'Email Recipient Options', 'woocommerce' ), 'type' => 'title', '', 'id' => 'email_recipient_options' ),
-
-	array(
-		'name' => __( 'New order notifications', 'woocommerce' ),
-		'desc' 		=> __( 'The recipient of new order emails. Defaults to the admin email.', 'woocommerce' ),
-		'id' 		=> 'woocommerce_new_order_email_recipient',
-		'type' 		=> 'text',
-		'css' 		=> 'min-width:300px;',
-		'std' 		=> esc_attr(get_option('admin_email'))
-	),
-
-	array(
-		'name' => __( 'Inventory notifications', 'woocommerce' ),
-		'desc' 		=> __( 'The recipient of stock emails. Defaults to the admin email.', 'woocommerce' ),
-		'id' 		=> 'woocommerce_stock_email_recipient',
-		'type' 		=> 'text',
-		'css' 		=> 'min-width:300px;',
-		'std' 		=> esc_attr(get_option('admin_email'))
-	),
-
 	array( 'type' => 'sectionend', 'id' => 'email_recipient_options' ),
 
-	array(	'name' => __( 'Email Sender Options', 'woocommerce' ), 'type' => 'title', 'desc' => __('The following options affect the sender (email address and name) used in WooCommerce emails.', 'woocommerce'), 'id' => 'email_options' ),
+	array(	'title' => __( 'Email Sender Options', 'woocommerce' ), 'type' => 'title', 'desc' => __( 'The following options affect the sender (email address and name) used in WooCommerce emails.', 'woocommerce' ), 'id' => 'email_options' ),
 
 	array(
-		'name' => __( '"From" name', 'woocommerce' ),
+		'title' => __( '"From" Name', 'woocommerce' ),
 		'desc' 		=> '',
 		'id' 		=> 'woocommerce_email_from_name',
 		'type' 		=> 'text',
 		'css' 		=> 'min-width:300px;',
-		'std' 		=> esc_attr(get_bloginfo('name'))
+		'default'	=> esc_attr(get_bloginfo('title'))
 	),
 
 	array(
-		'name' => __( '"From" email address', 'woocommerce' ),
+		'title' => __( '"From" Email Address', 'woocommerce' ),
 		'desc' 		=> '',
 		'id' 		=> 'woocommerce_email_from_address',
-		'type' 		=> 'text',
+		'type' 		=> 'email',
+		'custom_attributes' => array(
+			'multiple' 	=> 'multiple'
+		),
 		'css' 		=> 'min-width:300px;',
-		'std' 		=> get_option('admin_email')
+		'default'	=> get_option('admin_email')
 	),
 
 	array( 'type' => 'sectionend', 'id' => 'email_options' ),
 
-	array(	'name' => __( 'Email template', 'woocommerce' ), 'type' => 'title', 'desc' => sprintf(__('This section lets you customise the WooCommerce emails. <a href="%s" target="_blank">Click here to preview your email template</a>. For more advanced control copy <code>woocommerce/templates/emails/</code> to <code>yourtheme/woocommerce/emails/</code>.', 'woocommerce'), wp_nonce_url(admin_url('?preview_woocommerce_mail=true'), 'preview-mail')), 'id' => 'email_template_options' ),
+	array(	'title' => __( 'Email Template', 'woocommerce' ), 'type' => 'title', 'desc' => sprintf(__( 'This section lets you customise the WooCommerce emails. <a href="%s" target="_blank">Click here to preview your email template</a>. For more advanced control copy <code>woocommerce/templates/emails/</code> to <code>yourtheme/woocommerce/emails/</code>.', 'woocommerce' ), wp_nonce_url(admin_url('?preview_woocommerce_mail=true'), 'preview-mail')), 'id' => 'email_template_options' ),
 
 	array(
-		'name' => __( 'Header image', 'woocommerce' ),
+		'title' => __( 'Header Image', 'woocommerce' ),
 		'desc' 		=> sprintf(__( 'Enter a URL to an image you want to show in the email\'s header. Upload your image using the <a href="%s">media uploader</a>.', 'woocommerce' ), admin_url('media-new.php')),
 		'id' 		=> 'woocommerce_email_header_image',
 		'type' 		=> 'text',
 		'css' 		=> 'min-width:300px;',
-		'std' 		=> ''
+		'default'	=> ''
 	),
 
 	array(
-		'name' => __( 'Email footer text', 'woocommerce' ),
+		'title' => __( 'Email Footer Text', 'woocommerce' ),
 		'desc' 		=> __( 'The text to appear in the footer of WooCommerce emails.', 'woocommerce' ),
 		'id' 		=> 'woocommerce_email_footer_text',
 		'css' 		=> 'width:100%; height: 75px;',
 		'type' 		=> 'textarea',
-		'std' 		=> get_bloginfo('name') . ' - ' . __('Powered by WooCommerce', 'woocommerce')
+		'default'	=> get_bloginfo('title') . ' - ' . __( 'Powered by WooCommerce', 'woocommerce' )
 	),
 
 	array(
-		'name' => __( 'Base colour', 'woocommerce' ),
+		'title' => __( 'Base Colour', 'woocommerce' ),
 		'desc' 		=> __( 'The base colour for WooCommerce email templates. Default <code>#557da1</code>.', 'woocommerce' ),
 		'id' 		=> 'woocommerce_email_base_color',
 		'type' 		=> 'color',
 		'css' 		=> 'width:6em;',
-		'std' 		=> '#557da1'
+		'default'	=> '#557da1'
 	),
 
 	array(
-		'name' => __( 'Background colour', 'woocommerce' ),
-		'desc' 		=> __( 'The background colour for WooCommerce email templates. Default <code>#eeeeee</code>.', 'woocommerce' ),
+		'title' => __( 'Background Colour', 'woocommerce' ),
+		'desc' 		=> __( 'The background colour for WooCommerce email templates. Default <code>#f5f5f5</code>.', 'woocommerce' ),
 		'id' 		=> 'woocommerce_email_background_color',
 		'type' 		=> 'color',
 		'css' 		=> 'width:6em;',
-		'std' 		=> '#eeeeee'
+		'default'	=> '#f5f5f5'
 	),
 
 	array(
-		'name' => __( 'Email body background colour', 'woocommerce' ),
+		'title' => __( 'Email Body Background Colour', 'woocommerce' ),
 		'desc' 		=> __( 'The main body background colour. Default <code>#fdfdfd</code>.', 'woocommerce' ),
 		'id' 		=> 'woocommerce_email_body_background_color',
 		'type' 		=> 'color',
 		'css' 		=> 'width:6em;',
-		'std' 		=> '#fdfdfd'
+		'default'	=> '#fdfdfd'
 	),
 
 	array(
-		'name' => __( 'Email body text colour', 'woocommerce' ),
+		'title' => __( 'Email Body Text Colour', 'woocommerce' ),
 		'desc' 		=> __( 'The main body text colour. Default <code>#505050</code>.', 'woocommerce' ),
 		'id' 		=> 'woocommerce_email_text_color',
 		'type' 		=> 'color',
 		'css' 		=> 'width:6em;',
-		'std' 		=> '#505050'
+		'default'	=> '#505050'
 	),
 
 	array( 'type' => 'sectionend', 'id' => 'email_template_options' ),

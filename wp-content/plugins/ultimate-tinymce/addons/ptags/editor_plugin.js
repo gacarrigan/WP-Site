@@ -8,7 +8,7 @@
  */
 (function(){
 
-    tinymce.PluginManager.requireLangPack('ptags');
+    //tinymce.PluginManager.requireLangPack('ptags');
     
     tinymce.create('tinymce.plugins.ptags', {
     
@@ -16,7 +16,7 @@
             ed.addCommand('jwlPtagsButton', function(){
 				
 				ed.windowManager.open({
-					file : url + '/ptags.php',
+					file : url + '/ptags.htm',
 					width : 400,
 					height : 300,
 					inline : 1
@@ -29,7 +29,7 @@
                 //tinyMCE.activeEditor.selection.setContent('<p class="none">' + ptags_sel_content + '</p>');
             });
             ed.addButton('ptags', {
-                title: 'ptags.title',
+                title: ed.getLang('ptags.title'),
                 image: url + '/ptags.png',
                 cmd: 'jwlPtagsButton'
             });

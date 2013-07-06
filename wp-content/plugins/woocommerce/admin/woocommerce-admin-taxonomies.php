@@ -10,61 +10,76 @@
  * @version     1.6.4
  */
 
+if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
+
 /**
  * Category thumbnail fields.
  *
  * @access public
  * @return void
  */
-function woocommerce_add_category_thumbnail_field() {
+function woocommerce_add_category_fields() {
 	global $woocommerce;
 	?>
 	<div class="form-field">
-		<label><?php _e('Thumbnail', 'woocommerce'); ?></label>
+		<label for="display_type"><?php _e( 'Display type', 'woocommerce' ); ?></label>
+		<select id="display_type" name="display_type" class="postform">
+			<option value=""><?php _e( 'Default', 'woocommerce' ); ?></option>
+			<option value="products"><?php _e( 'Products', 'woocommerce' ); ?></option>
+			<option value="subcategories"><?php _e( 'Subcategories', 'woocommerce' ); ?></option>
+			<option value="both"><?php _e( 'Both', 'woocommerce' ); ?></option>
+		</select>
+	</div>
+	<div class="form-field">
+		<label><?php _e( 'Thumbnail', 'woocommerce' ); ?></label>
 		<div id="product_cat_thumbnail" style="float:left;margin-right:10px;"><img src="<?php echo woocommerce_placeholder_img_src(); ?>" width="60px" height="60px" /></div>
 		<div style="line-height:60px;">
 			<input type="hidden" id="product_cat_thumbnail_id" name="product_cat_thumbnail_id" />
-			<button type="submit" class="upload_image_button button"><?php _e('Upload/Add image', 'woocommerce'); ?></button>
-			<button type="submit" class="remove_image_button button"><?php _e('Remove image', 'woocommerce'); ?></button>
+			<button type="submit" class="upload_image_button button"><?php _e( 'Upload/Add image', 'woocommerce' ); ?></button>
+			<button type="submit" class="remove_image_button button"><?php _e( 'Remove image', 'woocommerce' ); ?></button>
 		</div>
 		<script type="text/javascript">
-			
+
 			 // Only show the "remove image" button when needed
 			 if ( ! jQuery('#product_cat_thumbnail_id').val() )
 				 jQuery('.remove_image_button').hide();
 
-			window.send_to_editor_default = window.send_to_editor;
+			// Uploading files
+			var file_frame;
 
-			window.send_to_termmeta = function(html) {
+			jQuery(document).on( 'click', '.upload_image_button', function( event ){
 
-				jQuery('body').append('<div id="temp_image">' + html + '</div>');
+				event.preventDefault();
 
-				var img = jQuery('#temp_image').find('img');
+				// If the media frame already exists, reopen it.
+				if ( file_frame ) {
+					file_frame.open();
+					return;
+				}
 
-				imgurl 		= img.attr('src');
-				imgclass 	= img.attr('class');
-				imgid		= parseInt(imgclass.replace(/\D/g, ''), 10);
+				// Create the media frame.
+				file_frame = wp.media.frames.downloadable_file = wp.media({
+					title: '<?php _e( 'Choose an image', 'woocommerce' ); ?>',
+					button: {
+						text: '<?php _e( 'Use image', 'woocommerce' ); ?>',
+					},
+					multiple: false
+				});
 
-				jQuery('#product_cat_thumbnail_id').val(imgid);
-				jQuery('#product_cat_thumbnail img').attr('src', imgurl);
-				jQuery('.remove_image_button').show();
-				jQuery('#temp_image').remove();
+				// When an image is selected, run a callback.
+				file_frame.on( 'select', function() {
+					attachment = file_frame.state().get('selection').first().toJSON();
 
-				tb_remove();
+					jQuery('#product_cat_thumbnail_id').val( attachment.id );
+					jQuery('#product_cat_thumbnail img').attr('src', attachment.url );
+					jQuery('.remove_image_button').show();
+				});
 
-				window.send_to_editor = window.send_to_editor_default;
-			}
-
-			jQuery('.upload_image_button').live('click', function(){
-				var post_id = 0;
-
-				window.send_to_editor = window.send_to_termmeta;
-
-				tb_show('', 'media-upload.php?post_id=' + post_id + '&amp;type=image&amp;TB_iframe=true');
-				return false;
+				// Finally, open the modal.
+				file_frame.open();
 			});
 
-			jQuery('.remove_image_button').live('click', function(){
+			jQuery(document).on( 'click', '.remove_image_button', function( event ){
 				jQuery('#product_cat_thumbnail img').attr('src', '<?php echo woocommerce_placeholder_img_src(); ?>');
 				jQuery('#product_cat_thumbnail_id').val('');
 				jQuery('.remove_image_button').hide();
@@ -77,9 +92,7 @@ function woocommerce_add_category_thumbnail_field() {
 	<?php
 }
 
-add_action( 'product_cat_add_form_fields', 'woocommerce_add_category_thumbnail_field' );
-add_action( 'product_cat_edit_form_fields', 'woocommerce_edit_category_thumbnail_field', 10,2 );
-
+add_action( 'product_cat_add_form_fields', 'woocommerce_add_category_fields' );
 
 /**
  * Edit category thumbnail field.
@@ -89,11 +102,12 @@ add_action( 'product_cat_edit_form_fields', 'woocommerce_edit_category_thumbnail
  * @param mixed $taxonomy Taxonomy of the term being edited
  * @return void
  */
-function woocommerce_edit_category_thumbnail_field( $term, $taxonomy ) {
+function woocommerce_edit_category_fields( $term, $taxonomy ) {
 	global $woocommerce;
 
+	$display_type	= get_woocommerce_term_meta( $term->term_id, 'display_type', true );
 	$image 			= '';
-	$thumbnail_id 	= get_woocommerce_term_meta( $term->term_id, 'thumbnail_id', true );
+	$thumbnail_id 	= absint( get_woocommerce_term_meta( $term->term_id, 'thumbnail_id', true ) );
 	if ($thumbnail_id) :
 		$image = wp_get_attachment_url( $thumbnail_id );
 	else :
@@ -101,45 +115,66 @@ function woocommerce_edit_category_thumbnail_field( $term, $taxonomy ) {
 	endif;
 	?>
 	<tr class="form-field">
-		<th scope="row" valign="top"><label><?php _e('Thumbnail', 'woocommerce'); ?></label></th>
+		<th scope="row" valign="top"><label><?php _e( 'Display type', 'woocommerce' ); ?></label></th>
+		<td>
+			<select id="display_type" name="display_type" class="postform">
+				<option value="" <?php selected( '', $display_type ); ?>><?php _e( 'Default', 'woocommerce' ); ?></option>
+				<option value="products" <?php selected( 'products', $display_type ); ?>><?php _e( 'Products', 'woocommerce' ); ?></option>
+				<option value="subcategories" <?php selected( 'subcategories', $display_type ); ?>><?php _e( 'Subcategories', 'woocommerce' ); ?></option>
+				<option value="both" <?php selected( 'both', $display_type ); ?>><?php _e( 'Both', 'woocommerce' ); ?></option>
+			</select>
+		</td>
+	</tr>
+	<tr class="form-field">
+		<th scope="row" valign="top"><label><?php _e( 'Thumbnail', 'woocommerce' ); ?></label></th>
 		<td>
 			<div id="product_cat_thumbnail" style="float:left;margin-right:10px;"><img src="<?php echo $image; ?>" width="60px" height="60px" /></div>
 			<div style="line-height:60px;">
 				<input type="hidden" id="product_cat_thumbnail_id" name="product_cat_thumbnail_id" value="<?php echo $thumbnail_id; ?>" />
-				<button type="submit" class="upload_image_button button"><?php _e('Upload/Add image', 'woocommerce'); ?></button>
-				<button type="submit" class="remove_image_button button"><?php _e('Remove image', 'woocommerce'); ?></button>
+				<button type="submit" class="upload_image_button button"><?php _e( 'Upload/Add image', 'woocommerce' ); ?></button>
+				<button type="submit" class="remove_image_button button"><?php _e( 'Remove image', 'woocommerce' ); ?></button>
 			</div>
 			<script type="text/javascript">
 
-				window.send_to_termmeta = function(html) {
+				// Uploading files
+				var file_frame;
 
-					jQuery('body').append('<div id="temp_image">' + html + '</div>');
+				jQuery(document).on( 'click', '.upload_image_button', function( event ){
 
-					var img = jQuery('#temp_image').find('img');
+					event.preventDefault();
 
-					imgurl 		= img.attr('src');
-					imgclass 	= img.attr('class');
-					imgid		= parseInt(imgclass.replace(/\D/g, ''), 10);
+					// If the media frame already exists, reopen it.
+					if ( file_frame ) {
+						file_frame.open();
+						return;
+					}
 
-					jQuery('#product_cat_thumbnail_id').val(imgid);
-					jQuery('#product_cat_thumbnail img').attr('src', imgurl);
-					jQuery('#temp_image').remove();
+					// Create the media frame.
+					file_frame = wp.media.frames.downloadable_file = wp.media({
+						title: '<?php _e( 'Choose an image', 'woocommerce' ); ?>',
+						button: {
+							text: '<?php _e( 'Use image', 'woocommerce' ); ?>',
+						},
+						multiple: false
+					});
 
-					tb_remove();
-				}
+					// When an image is selected, run a callback.
+					file_frame.on( 'select', function() {
+						attachment = file_frame.state().get('selection').first().toJSON();
 
-				jQuery('.upload_image_button').live('click', function(){
-					var post_id = 0;
+						jQuery('#product_cat_thumbnail_id').val( attachment.id );
+						jQuery('#product_cat_thumbnail img').attr('src', attachment.url );
+						jQuery('.remove_image_button').show();
+					});
 
-					window.send_to_editor = window.send_to_termmeta;
-
-					tb_show('', 'media-upload.php?post_id=' + post_id + '&amp;type=image&amp;TB_iframe=true');
-					return false;
+					// Finally, open the modal.
+					file_frame.open();
 				});
 
-				jQuery('.remove_image_button').live('click', function(){
+				jQuery(document).on( 'click', '.remove_image_button', function( event ){
 					jQuery('#product_cat_thumbnail img').attr('src', '<?php echo woocommerce_placeholder_img_src(); ?>');
 					jQuery('#product_cat_thumbnail_id').val('');
+					jQuery('.remove_image_button').hide();
 					return false;
 				});
 
@@ -150,8 +185,11 @@ function woocommerce_edit_category_thumbnail_field( $term, $taxonomy ) {
 	<?php
 }
 
+add_action( 'product_cat_edit_form_fields', 'woocommerce_edit_category_fields', 10,2 );
+
+
 /**
- * woocommerce_category_thumbnail_field_save function.
+ * woocommerce_category_fields_save function.
  *
  * @access public
  * @param mixed $term_id Term ID being saved
@@ -159,13 +197,18 @@ function woocommerce_edit_category_thumbnail_field( $term, $taxonomy ) {
  * @param mixed $taxonomy Taxonomy of the term being saved
  * @return void
  */
-function woocommerce_category_thumbnail_field_save( $term_id, $tt_id, $taxonomy ) {
+function woocommerce_category_fields_save( $term_id, $tt_id, $taxonomy ) {
+	if ( isset( $_POST['display_type'] ) )
+		update_woocommerce_term_meta( $term_id, 'display_type', esc_attr( $_POST['display_type'] ) );
+
 	if ( isset( $_POST['product_cat_thumbnail_id'] ) )
-		update_woocommerce_term_meta( $term_id, 'thumbnail_id', $_POST['product_cat_thumbnail_id'] );
+		update_woocommerce_term_meta( $term_id, 'thumbnail_id', absint( $_POST['product_cat_thumbnail_id'] ) );
+
+	delete_transient( 'wc_term_counts' );
 }
 
-add_action( 'created_term', 'woocommerce_category_thumbnail_field_save', 10,3 );
-add_action( 'edit_term', 'woocommerce_category_thumbnail_field_save', 10,3 );
+add_action( 'created_term', 'woocommerce_category_fields_save', 10,3 );
+add_action( 'edit_term', 'woocommerce_category_fields_save', 10,3 );
 
 
 /**
@@ -191,7 +234,7 @@ add_action( 'product_cat_pre_add_form', 'woocommerce_product_cat_description' );
  */
 function woocommerce_shipping_class_description() {
 
-	echo wpautop(__('Shipping classes can be used to group products of similar type. These groups can then be used by certain shipping methods to provide different rates to different products.', 'woocommerce'));
+	echo wpautop(__( 'Shipping classes can be used to group products of similar type. These groups can then be used by certain shipping methods to provide different rates to different products.', 'woocommerce' ));
 
 }
 
@@ -251,7 +294,7 @@ add_filter( 'edit_posts_per_page', 'woocommerce_fix_edit_posts_per_page', 1, 2 )
 function woocommerce_product_cat_columns( $columns ) {
 	$new_columns = array();
 	$new_columns['cb'] = $columns['cb'];
-	$new_columns['thumb'] = __('Image', 'woocommerce');
+	$new_columns['thumb'] = __( 'Image', 'woocommerce' );
 
 	unset( $columns['cb'] );
 
@@ -301,7 +344,7 @@ add_filter( 'manage_product_cat_custom_column', 'woocommerce_product_cat_column'
  * @return void
  */
 function woocommerce_shipping_class_columns( $columns ) {
-	$columns['configure'] = '&nbsp;';
+	$columns['edit'] = '&nbsp;';
 	return $columns;
 }
 
@@ -318,8 +361,8 @@ add_filter( 'manage_edit-product_shipping_class_columns', 'woocommerce_shipping_
  * @return void
  */
 function woocommerce_shipping_class_column( $columns, $column, $id ) {
-	if ( $column == 'configure' )
-		$columns .= '<a href="'. admin_url( 'edit-tags.php?action=edit&taxonomy=product_shipping_class&tag_ID='. $id .'&post_type=product' ) .'" class="button alignright">'.__('Configure shipping class', 'woocommerce').'</a>';
+	if ( $column == 'edit' )
+		$columns .= '<a href="'. admin_url( 'edit-tags.php?action=edit&taxonomy=product_shipping_class&tag_ID='. $id .'&post_type=product' ) .'" class="button alignright">'.__( 'Edit Class', 'woocommerce' ).'</a>';
 
 	return $columns;
 }
