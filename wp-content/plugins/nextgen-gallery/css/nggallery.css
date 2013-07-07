@@ -53,7 +53,7 @@ html>body .ngg-album {
 
 .ngg-thumbnail {
 	float: left;
-	margin-right: 16px;
+	margin-right: 12px;
 }
 
 .ngg-thumbnail img {
@@ -76,7 +76,6 @@ html>body .ngg-album {
 
 .ngg-album-compact {
 	float:left;
-	height:180px;
 	padding-right:6px !important;
 	margin:0px !important;
 	text-align:left;
@@ -85,7 +84,7 @@ html>body .ngg-album {
 
 .ngg-album-compactbox {
 	background:transparent url(albumset.gif) no-repeat scroll 0%;
-	height:150px;
+	height:86px;
 	margin:0pt 0pt 6px !important;
 	padding:12px 0pt 0pt 7px !important;
 	width:120px;
@@ -96,7 +95,7 @@ html>body .ngg-album {
 	border:1px solid #000000;
 	margin:0px !important;
 	padding:0px !important;
-	width:100px;
+	width:91px;
 	height:68px;
 }
 
@@ -161,6 +160,7 @@ html>body .ngg-album {
 
 .ngg-clear {
 	clear: both;
+	float: none;
 }
 
 /* ----------- Gallery navigation -------------*/
@@ -266,6 +266,8 @@ html>body .ngg-album {
 .ngg-slideshow {
     overflow:hidden;
     position: relative;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .ngg-slideshow * {
@@ -336,8 +338,8 @@ html>body .ngg-album {
 	float: left;
 	margin: 0pt 3px;
 	padding: 2px;
-	height: 100px;
-	width:  100px;
+	height: 50px;
+	width:  50px;
 }
 
 .ngg-related-gallery img:hover {
@@ -380,13 +382,13 @@ html>body .ngg-album {
 }
 
 .ngg-gallery-list li img {
-	height:50px;
-	width:50px;
+	height:40px;
+	width:40px;
 }
 
 li.ngg-next, li.ngg-prev {
-	height:50px;
-	width:50px;
+	height:40px;
+	width:40px;
 	font-size:3.5em;
 }
 
