@@ -193,3 +193,6 @@ v2.0.41
 	- Fix staging refresh page link to point at staging tab.
 v2.0.42
 	- Updated method of defining WPE_PLUGIN_VERSION constant
+v2.0.43 
+	- Change plugin links to WPE User Portal
+

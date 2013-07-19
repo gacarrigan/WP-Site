@@ -40,7 +40,7 @@ jQuery(document).ready(function($) {
 			if( $(this).attr('name') != 'plugin-search-input' ) { 
 				e.preventDefault();
 				$(this).parent().attr('id','form-to-submit'); 
-				$('input[type="submit"]').attr('onclick','wpe_validate_install()');  	
+				wpe_validate_install();
 			}	
 		});
  	 }
@@ -157,7 +157,7 @@ function wpe_validate_upgrade(form) {
 			jQuery('form[name="'+form+'"]').append(append);
 			jQuery('form[name="'+form+'"]').submit(); 
 		} else {
-			window.location.href = 'https://my.wpengine.com/customers/'+wpe.account+'/checkpoints/new';
+			window.location.href = 'https://my.wpengine.com/installs/'+wpe.account+'/backup_points';
 		} 
   });
 }
@@ -169,7 +169,7 @@ function wpe_validate_install() {
 			jQuery('form').append(append);
 			jQuery('#form-to-submit').submit();
 		} else {
-			window.location.href = 'https://my.wpengine.com/customers/'+wpe.account+'/checkpoints/new';
+			window.location.href = 'https://my.wpengine.com/installs/'+wpe.account+'/backup_points';
 		} 
   });
 }
@@ -181,7 +181,7 @@ function wpe_validate_bulk_form() {
 			if(r != false) {
 				jQuery('#doaction').parent().parent().parent().submit();
 			} else {
-				window.location.href = 'https://my.wpengine.com/customers/'+wpe.account+'/checkpoints/new';
+				window.location.href = 'https://my.wpengine.com/installs/'+wpe.account+'/backup_points';
 			}
 		});
 	} else {
@@ -194,7 +194,7 @@ function wpe_upgrade_link(link) {
 		if(r != false) {
 			window.location.href = link;
 		} else {
-			window.location.href = 'https://my.wpengine.com/customers/'+wpe.account+'/checkpoints/new';
+			window.location.href = 'https://my.wpengine.com/installs/'+wpe.account+'/backup_points';
 		} 
   });
 } 

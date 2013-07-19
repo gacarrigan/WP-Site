@@ -197,7 +197,7 @@ if ( is_wpe_snapshot() ) {
 		<div class="span-30">
 			<p><b>You should <a href="http://eepurl.com/i3HPf" target="_blank">subscribe to our customer announcement list</a></b> to get updates on new features, system developments, and account and billing information.  You can of course unsubscribe at any time, and we use it only for infrequent but important announcements.</p>
 			<p>Your DNS should either be set to CNAME to <code><?= $site_info->name ?>.wpengine.com</code> or an A record to <code><?= $site_info->public_ip ?></code>.</p>
-			<p>Your SFTP access (<i>not FTP!</i>) is at hostname <code><?= $site_info->sftp_host ?></code> on port <code><?= $site_info->sftp_port ?></code>. Username and password starts out the same as you specified when you signed up for your blog (which was <code><?= $site_info->name ?></code>), but can be <a href="<?php echo get_option('wpe-install-userportal','https://my.wpengine.com'); ?>/sftp_users" target="_blank">changed here</a>.</p>
+			<p>Your SFTP access (<i>not FTP!</i>) is at hostname <code><?= $site_info->sftp_host ?></code> on port <code><?= $site_info->sftp_port ?></code>. Username and password starts out the same as you specified when you signed up for your blog (which was <code><?= $site_info->name ?></code>), but can be <a href="<?php echo get_option('wpe-install-userportal','https://my.wpengine.com'); ?>" target="_blank">changed here</a>.</p>
 		</div><!--.span-30-->
       		<br class="clear"/>
         
@@ -476,7 +476,7 @@ if ( is_wpe_snapshot() ) {
 		</p>
 
 		<p>
-			<b>Please note:</b> if you want to access your staging site via SFTP, there is a different username required. You can manage your SFTP users in your <a href="<?php echo get_option('wpe-install-userportal','https://my.wpengine.com'); ?>/sftp_users" target="_blank">User Portal</a>.
+			<b>Please note:</b> if you want to access your staging site via SFTP, there is a different username required. You can manage your SFTP users in your <a href="<?php echo get_option('wpe-install-userportal','https://my.wpengine.com'); ?>" target="_blank">User Portal</a>.
 		</p>
 
 		    <p class="submit submit-top">

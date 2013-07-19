@@ -373,7 +373,7 @@ class WpeCommon extends WpePlugin_common {
 		
 			//wpe ajax hook
 			add_action( 'wp_ajax_wpe-ajax', array( $this, 'do_ajax' ) );
-
+			add_action( 'activate_plugin', array( $this, 'activate_plugin') );
 		}
 
 		add_action('password_reset', array($this,'password_reset'),0,2);
@@ -413,6 +413,15 @@ class WpeCommon extends WpePlugin_common {
 		}
  	}
 	
+	//Some plugins need a custom site config, so communicate with our API when these are activated.
+	public function activate_plugin( $plugin ) {
+		//look for plugins that WP Engine Api needs to know about
+		include_once(__DIR__.'/class.plugins.php');
+		if( in_array( $plugin, PluginsConfig::$plugins ) ) {
+			PluginsConfig::config($plugin);
+		}	
+	}	
+
 	// Loads footer scripts in the admin
 	// hook: admin_print_footer_scripts
 	public function print_footer_scripts() {
@@ -1523,6 +1532,10 @@ class WpeCommon extends WpePlugin_common {
         }
 
         deactivate_plugins( $plugins );
+	
+	//look for plugins that WP Engine Api needs to know about
+	include_once(__DIR__.'/class.plugins.php');
+	PluginsConfig::sniff();
 
         // Activate all the plugins we require.  If already activated this won't do anything.
         if ( el( $config, 'profiler' ) )
