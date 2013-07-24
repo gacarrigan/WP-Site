@@ -29,6 +29,9 @@ wp-content/plugins/*/cache
 wp-content/w3tc-bak
 wp-content/backup*
 wp-content/temp*
+wp-content/debug.log
+wp-content/backups
+wp-content/managewp
 wp-content/upgrade/*
 wp-content/uploads
 wp-content/blogs.dir/*/*

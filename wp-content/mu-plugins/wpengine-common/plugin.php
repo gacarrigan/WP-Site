@@ -432,6 +432,9 @@ class WpeCommon extends WpePlugin_common {
 		//if a deployment is in progress load the modal
 		if( 'wpengine-common' == @$_GET['page'] || self::$deployment ) 
 			$this->view('modal');
+
+		if( 'wpengine-common' == @$_GET['page'] ) 
+			$this->view('staging-modal');
 	}
 
 	public function do_ajax() {

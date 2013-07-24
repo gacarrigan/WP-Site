@@ -454,12 +454,12 @@ if ( is_wpe_snapshot() ) {
 		</table>
            </form>
 	<?php elseif($active_tab == 'staging'): ?>	
-		<form method="post" name="options" action="<?php echo esc_url($form_url); ?>">
+		<form id="staging" method="post" name="options" action="<?php echo esc_url($form_url); ?>">
 
 
 		<? if ( $snapshot_state['have_snapshot'] ) { ?>
 			<div class="alert alert-message alert-success">
-				<h3 class="wpe-callout"><i class="icon-hdd"></i>  Staging Status: <?= htmlspecialchars( $snapshot_state['status'] ) ?></h3>
+				<h3 class="wpe-callout"><i class="wpe-icon-hdd icon-hdd"></i>  Staging Status: <?= htmlspecialchars( $snapshot_state['status'] ) ?></h3>
 			    	<p>
 				<? if ( $snapshot_state['is_ready'] ) { ?>
 				    Last staging snapshot was taken on <?= date( "Y-m-d g:i:sa", $snapshot_state['last_update'] + (get_option( "gmt_offset" ) * 60 * 60) ) ?>. Access it here: <a target="_blank" href="<?= $snapshot_state['staging_url'] ?>"><b><?= htmlspecialchars( $snapshot_state['staging_url'] ) ?></b></a>
@@ -470,7 +470,7 @@ if ( is_wpe_snapshot() ) {
 			</div>
 		<? } ?>
 			
-		<h2><i class="icon-large icon-hdd"></i> What is a Staging Area?</h2>
+		<h2><i class="wpe-icon-hdd icon-large icon-hdd"></i> What is a Staging Area?</h2>
 		<p>
 			This takes a snapshot of your blog and copies it to a "staging area" where you can test out changes without affecting your live site. There's only one staging area, so every time you click this button the old staging area is lost forever, replaced with a snapshot of your live blog.
 		</p>
@@ -482,8 +482,8 @@ if ( is_wpe_snapshot() ) {
 		    <p class="submit submit-top">
 			<?php wp_nonce_field( PWP_NAME . '-config' ); ?>
 
-			<button type="submit" name="snapshot" value="<?= $have_snapshot ? "Recreate" : "Create" ?> staging area" class="btn btn-primary"><i class="icon-upload icon-white"></i> Copy site from LIVE to STAGING </button>
-			 <?php if( $snapshot_state['is_ready'] AND current_user_can('administrator') ) : ?>
+			<button type="submit" <?php if( @$snapshot_state['is_ready'] ) { echo 'data-confirm="true"'; } ?> name="snapshot" value="<?= $have_snapshot ? "Recreate" : "Create" ?> staging area" class="btn btn-primary"><i class="icon-upload icon-white"></i> Copy site from LIVE to STAGING </button>
+			 <?php if( @$snapshot_state['is_ready'] AND current_user_can('administrator') ) : ?>
 				<button onClick="wpe_deploy_staging();" type="button" name="deploy-from-staging" value="Deply from Staging" class="<?php if(!in_array('deploy-staging', get_user_meta($current_user->ID,'hide-pointer',false))) { echo 'wpe-pointer'; } ?> btn btn-inverse"><i class="icon-download icon-white"></i> Copy site from STAGING to LIVE </button>
 			<?php endif; ?>
 

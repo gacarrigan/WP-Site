@@ -5,6 +5,17 @@ var warning = "Before taking this action, we at WP Engine recommend that you cre
 //runtime jQuery
 jQuery(document).ready(function($) {    	    			
 	
+	$('button[name="snapshot"]').click(function(e) {
+		check = $('button[name="snapshot"]').attr( 'data-confirm' );
+		if( check  === "true" ) {
+			e.preventDefault();
+			$('#stagingModal').modal().addClass('in');
+			$('button#staging-submit').live( 'click' ,function() {
+				$('form#staging').append("<input type='hidden' name='snapshot' value='true' />").submit();
+			});
+		}
+	});
+
 	if(filename == 'update-core.php' && $('form.upgrade').length > 0 && wpe.popup_disabled != 1 ) {
   		$('form[name="upgrade"] input[type=submit]').click(function(e) { e.preventDefault(); });
 	  	$('form[name="upgrade"] input[type=submit]').attr('onclick','wpe_validate_upgrade("upgrade");');
@@ -233,6 +244,7 @@ function wpe_deploy_staging() {
 	/**
 	* Displays popup
 	* http://thrivingkings.com/apprise/
+	* DON'T USE THIS. USE TWITTER BOOTSTRAP MODAL INSTEAD ... see deploy from staging for example
 	*/
           
 function apprise(string, args, callback) {

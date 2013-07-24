@@ -196,3 +196,5 @@ v2.0.42
 v2.0.43 
 	- Change plugin links to WPE User Portal
 
+v2.0.44
+	- Added confirmation modal to staging button and fixed styles
