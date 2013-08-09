@@ -236,7 +236,7 @@ CREATE TABLE `wp_options` (
   `autoload` varchar(20) COLLATE utf8_unicode_ci NOT NULL DEFAULT 'yes',
   PRIMARY KEY (`option_id`),
   UNIQUE KEY `option_name` (`option_name`)
-) ENGINE=InnoDB AUTO_INCREMENT=19004 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=19005 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -296,7 +296,7 @@ INSERT INTO `wp_options` VALUES (49,'comment_registration','','yes');
 INSERT INTO `wp_options` VALUES (50,'html_type','text/html','yes');
 INSERT INTO `wp_options` VALUES (51,'use_trackback','0','yes');
 INSERT INTO `wp_options` VALUES (52,'default_role','subscriber','yes');
-INSERT INTO `wp_options` VALUES (53,'db_version','22442','yes');
+INSERT INTO `wp_options` VALUES (53,'db_version','24448','yes');
 INSERT INTO `wp_options` VALUES (54,'uploads_use_yearmonth_folders','','yes');
 INSERT INTO `wp_options` VALUES (55,'upload_path','','yes');
 INSERT INTO `wp_options` VALUES (56,'blog_public','0','yes');
@@ -343,9 +343,9 @@ INSERT INTO `wp_options` VALUES (100,'widget_recent-comments','a:2:{i:2;a:2:{s:5
 INSERT INTO `wp_options` VALUES (101,'widget_archives','a:2:{i:2;a:3:{s:5:\"title\";s:0:\"\";s:5:\"count\";i:0;s:8:\"dropdown\";i:0;}s:12:\"_multiwidget\";i:1;}','yes');
 INSERT INTO `wp_options` VALUES (102,'widget_meta','a:2:{i:3;a:1:{s:5:\"title\";s:0:\"\";}s:12:\"_multiwidget\";i:1;}','yes');
 INSERT INTO `wp_options` VALUES (103,'sidebars_widgets','a:7:{s:19:\"wp_inactive_widgets\";a:16:{i:0;s:18:\"facebook-likebox-2\";i:1;s:12:\"ngg-images-2\";i:2;s:17:\"woo_embedwidget-2\";i:3;s:15:\"woo_subscribe-2\";i:4;s:7:\"links-3\";i:5;s:6:\"text-2\";i:6;s:6:\"text-3\";i:7;s:11:\"tag_cloud-2\";i:8;s:5:\"rss-2\";i:9;s:17:\"recent-comments-2\";i:10;s:14:\"recent-posts-2\";i:11;s:6:\"meta-3\";i:12;s:10:\"calendar-2\";i:13;s:12:\"categories-2\";i:14;s:10:\"nav_menu-2\";i:15;s:10:\"archives-2\";}s:9:\"pinterest\";a:1:{i:0;s:23:\"pretty_pinterest_pins-2\";}s:15:\"pinterest-badge\";a:0:{}s:7:\"primary\";a:0:{}s:8:\"footer-1\";a:0:{}s:8:\"footer-2\";a:0:{}s:13:\"array_version\";i:3;}','yes');
-INSERT INTO `wp_options` VALUES (105,'db_upgraded','','yes');
+INSERT INTO `wp_options` VALUES (105,'db_upgraded','1','yes');
 INSERT INTO `wp_options` VALUES (106,'cron','a:9:{i:1376007460;a:1:{s:20:\"jetpack_clean_nonces\";a:1:{s:32:\"40cd750bba9870f18aada2478b24840a\";a:3:{s:8:\"schedule\";s:6:\"hourly\";s:4:\"args\";a:0:{}s:8:\"interval\";i:3600;}}}i:1376007649;a:1:{s:32:\"woocommerce_cancel_unpaid_orders\";a:1:{s:32:\"40cd750bba9870f18aada2478b24840a\";a:2:{s:8:\"schedule\";b:0;s:4:\"args\";a:0:{}}}}i:1376008532;a:1:{s:14:\"yoast_tracking\";a:1:{s:32:\"40cd750bba9870f18aada2478b24840a\";a:3:{s:8:\"schedule\";s:5:\"daily\";s:4:\"args\";a:0:{}s:8:\"interval\";i:86400;}}}i:1376015424;a:1:{s:28:\"woocommerce_cleanup_sessions\";a:1:{s:32:\"40cd750bba9870f18aada2478b24840a\";a:3:{s:8:\"schedule\";s:10:\"twicedaily\";s:4:\"args\";a:0:{}s:8:\"interval\";i:43200;}}}i:1376020800;a:1:{s:27:\"woocommerce_scheduled_sales\";a:1:{s:32:\"40cd750bba9870f18aada2478b24840a\";a:3:{s:8:\"schedule\";s:5:\"daily\";s:4:\"args\";a:0:{}s:8:\"interval\";i:86400;}}}i:1376037864;a:3:{s:16:\"wp_version_check\";a:1:{s:32:\"40cd750bba9870f18aada2478b24840a\";a:3:{s:8:\"schedule\";s:10:\"twicedaily\";s:4:\"args\";a:0:{}s:8:\"interval\";i:43200;}}s:17:\"wp_update_plugins\";a:1:{s:32:\"40cd750bba9870f18aada2478b24840a\";a:3:{s:8:\"schedule\";s:10:\"twicedaily\";s:4:\"args\";a:0:{}s:8:\"interval\";i:43200;}}s:16:\"wp_update_themes\";a:1:{s:32:\"40cd750bba9870f18aada2478b24840a\";a:3:{s:8:\"schedule\";s:10:\"twicedaily\";s:4:\"args\";a:0:{}s:8:\"interval\";i:43200;}}}i:1376081173;a:1:{s:19:\"wp_scheduled_delete\";a:1:{s:32:\"40cd750bba9870f18aada2478b24840a\";a:3:{s:8:\"schedule\";s:5:\"daily\";s:4:\"args\";a:0:{}s:8:\"interval\";i:86400;}}}i:1376081403;a:1:{s:30:\"wp_scheduled_auto_draft_delete\";a:1:{s:32:\"40cd750bba9870f18aada2478b24840a\";a:3:{s:8:\"schedule\";s:5:\"daily\";s:4:\"args\";a:0:{}s:8:\"interval\";i:86400;}}}s:7:\"version\";i:2;}','yes');
-INSERT INTO `wp_options` VALUES (113,'_transient_random_seed','e5c81d8e77a27b5e87c6a8e61be171a0','yes');
+INSERT INTO `wp_options` VALUES (113,'_transient_random_seed','cc675779748bfed2a3141fa467383cde','yes');
 INSERT INTO `wp_options` VALUES (116,'dashboard_widget_options','a:4:{s:25:\"dashboard_recent_comments\";a:1:{s:5:\"items\";i:5;}s:24:\"dashboard_incoming_links\";a:5:{s:4:\"home\";s:29:\"http://www.westcoast-east.com\";s:4:\"link\";s:105:\"http://blogsearch.google.com/blogsearch?scoring=d&partner=wordpress&q=link:http://www.westcoast-east.com/\";s:3:\"url\";s:139:\"http://blogsearch.google.com/blogsearch_feeds?scoring=d&ie=utf-8&num=10&output=rss&partner=wordpress&q=link:http://gacarrigan.wpengine.com/\";s:5:\"items\";i:10;s:9:\"show_date\";b:0;}s:17:\"dashboard_primary\";a:7:{s:4:\"link\";s:26:\"http://wordpress.org/news/\";s:3:\"url\";s:31:\"http://wordpress.org/news/feed/\";s:5:\"title\";s:14:\"WordPress Blog\";s:5:\"items\";i:2;s:12:\"show_summary\";i:1;s:11:\"show_author\";i:0;s:9:\"show_date\";i:1;}s:19:\"dashboard_secondary\";a:7:{s:4:\"link\";s:28:\"http://planet.wordpress.org/\";s:3:\"url\";s:33:\"http://planet.wordpress.org/feed/\";s:5:\"title\";s:20:\"Other WordPress News\";s:5:\"items\";i:5;s:12:\"show_summary\";i:0;s:11:\"show_author\";i:0;s:9:\"show_date\";i:0;}}','yes');
 INSERT INTO `wp_options` VALUES (117,'wpe_notices','a:2:{s:4:\"read\";s:0:\"\";s:8:\"messages\";a:0:{}}','yes');
 INSERT INTO `wp_options` VALUES (118,'wpe_notices_ttl','1375635173','yes');
@@ -813,7 +813,6 @@ INSERT INTO `wp_options` VALUES (15974,'_transient_plugin_slugs','a:15:{i:0;s:19
 INSERT INTO `wp_options` VALUES (16569,'_transient_woocommerce_processing_order_count','0','yes');
 INSERT INTO `wp_options` VALUES (17007,'_site_transient_timeout_browser_c377e2a63b4081c4e742464989f7c475','1372508840','yes');
 INSERT INTO `wp_options` VALUES (17008,'_site_transient_browser_c377e2a63b4081c4e742464989f7c475','a:9:{s:8:\"platform\";s:9:\"Macintosh\";s:4:\"name\";s:7:\"Firefox\";s:7:\"version\";s:4:\"21.0\";s:10:\"update_url\";s:23:\"http://www.firefox.com/\";s:7:\"img_src\";s:50:\"http://s.wordpress.org/images/browsers/firefox.png\";s:11:\"img_src_ssl\";s:49:\"https://wordpress.org/images/browsers/firefox.png\";s:15:\"current_version\";s:2:\"16\";s:7:\"upgrade\";b:0;s:8:\"insecure\";b:0;}','yes');
-INSERT INTO `wp_options` VALUES (17021,'can_compress_scripts','0','yes');
 INSERT INTO `wp_options` VALUES (17076,'_transient_timeout_woodojo-settings','1371971941','no');
 INSERT INTO `wp_options` VALUES (17077,'_transient_woodojo-settings','O:8:\"stdClass\":8:{s:14:\"screenshot_url\";s:46:\"https://s3.amazonaws.com/woothemess3/woo_dojo/\";s:7:\"refresh\";i:0;s:12:\"checkout_url\";s:55:\"http://www.woothemes.com/payment/api_checkout_login.php\";s:10:\"product_id\";i:466;s:19:\"sidebars_product_id\";i:464;s:3:\"url\";s:33:\"http://www.woothemes.com/woodojo/\";s:12:\"download_url\";s:61:\"http://woodojo.s3.amazonaws.com/downloads/woodojo/woodojo.zip\";s:24:\"woosidebars_download_url\";s:53:\"http://downloads.wordpress.org/plugin/woosidebars.zip\";}','no');
 INSERT INTO `wp_options` VALUES (17078,'_transient_timeout_woodojo-products','1372533541','no');
@@ -850,7 +849,6 @@ INSERT INTO `wp_options` VALUES (17810,'_transient_timeout_woo_framework_critica
 INSERT INTO `wp_options` VALUES (17811,'_transient_woo_framework_critical_update_data','a:3:{s:9:\"is_update\";b:0;s:7:\"version\";s:5:\"1.0.0\";s:6:\"status\";s:4:\"none\";}','no');
 INSERT INTO `wp_options` VALUES (17815,'woocommerce_theme_support_check','artificer','yes');
 INSERT INTO `wp_options` VALUES (17822,'_site_transient_update_plugins','O:8:\"stdClass\":2:{s:12:\"last_checked\";i:1376004050;s:8:\"response\";a:5:{s:19:\"akismet/akismet.php\";O:8:\"stdClass\":5:{s:2:\"id\";s:2:\"15\";s:4:\"slug\";s:7:\"akismet\";s:11:\"new_version\";s:5:\"2.5.9\";s:3:\"url\";s:37:\"http://wordpress.org/plugins/akismet/\";s:7:\"package\";s:55:\"http://downloads.wordpress.org/plugin/akismet.2.5.9.zip\";}s:19:\"jetpack/jetpack.php\";O:8:\"stdClass\":5:{s:2:\"id\";s:5:\"20101\";s:4:\"slug\";s:7:\"jetpack\";s:11:\"new_version\";s:5:\"2.3.4\";s:3:\"url\";s:37:\"http://wordpress.org/plugins/jetpack/\";s:7:\"package\";s:55:\"http://downloads.wordpress.org/plugin/jetpack.2.3.4.zip\";}s:29:\"nextgen-gallery/nggallery.php\";O:8:\"stdClass\":5:{s:2:\"id\";s:3:\"592\";s:4:\"slug\";s:15:\"nextgen-gallery\";s:11:\"new_version\";s:5:\"2.0.0\";s:3:\"url\";s:45:\"http://wordpress.org/plugins/nextgen-gallery/\";s:7:\"package\";s:57:\"http://downloads.wordpress.org/plugin/nextgen-gallery.zip\";}s:25:\"ultimate-tinymce/main.php\";O:8:\"stdClass\":5:{s:2:\"id\";s:5:\"27096\";s:4:\"slug\";s:16:\"ultimate-tinymce\";s:11:\"new_version\";s:5:\"4.8.1\";s:3:\"url\";s:46:\"http://wordpress.org/plugins/ultimate-tinymce/\";s:7:\"package\";s:64:\"http://downloads.wordpress.org/plugin/ultimate-tinymce.4.8.1.zip\";}s:27:\"woocommerce/woocommerce.php\";O:8:\"stdClass\":5:{s:2:\"id\";s:5:\"25331\";s:4:\"slug\";s:11:\"woocommerce\";s:11:\"new_version\";s:6:\"2.0.13\";s:3:\"url\";s:41:\"http://wordpress.org/plugins/woocommerce/\";s:7:\"package\";s:60:\"http://downloads.wordpress.org/plugin/woocommerce.2.0.13.zip\";}}}','yes');
-INSERT INTO `wp_options` VALUES (17825,'_site_transient_update_core','O:8:\"stdClass\":3:{s:7:\"updates\";a:1:{i:0;O:8:\"stdClass\":9:{s:8:\"response\";s:7:\"upgrade\";s:8:\"download\";s:38:\"http://wordpress.org/wordpress-3.6.zip\";s:6:\"locale\";s:5:\"en_US\";s:8:\"packages\";O:8:\"stdClass\":4:{s:4:\"full\";s:38:\"http://wordpress.org/wordpress-3.6.zip\";s:10:\"no_content\";s:49:\"http://wordpress.org/wordpress-3.6-no-content.zip\";s:11:\"new_bundled\";s:50:\"http://wordpress.org/wordpress-3.6-new-bundled.zip\";s:7:\"partial\";b:0;}s:7:\"current\";s:3:\"3.6\";s:11:\"php_version\";s:5:\"5.2.4\";s:13:\"mysql_version\";s:3:\"5.0\";s:11:\"new_bundled\";s:3:\"3.6\";s:15:\"partial_version\";s:0:\"\";}}s:12:\"last_checked\";i:1376004050;s:15:\"version_checked\";s:5:\"3.5.2\";}','yes');
 INSERT INTO `wp_options` VALUES (17826,'wordpress_api_key','cdde0e10b4d1','yes');
 INSERT INTO `wp_options` VALUES (17827,'akismet_discard_month','true','yes');
 INSERT INTO `wp_options` VALUES (17828,'akismet_show_user_comments_approved','false','yes');
@@ -909,6 +907,7 @@ INSERT INTO `wp_options` VALUES (18994,'_wc_session_ghoSeP0rETZKPrM4lGc7cripKaA6
 INSERT INTO `wp_options` VALUES (18995,'_wc_session_expires_ghoSeP0rETZKPrM4lGc7cripKaA62HaL','1376121248','no');
 INSERT INTO `wp_options` VALUES (19002,'_site_transient_timeout_theme_roots','1376005850','yes');
 INSERT INTO `wp_options` VALUES (19003,'_site_transient_theme_roots','a:8:{s:21:\"artificer-child-theme\";s:7:\"/themes\";s:9:\"artificer\";s:7:\"/themes\";s:6:\"athena\";s:7:\"/themes\";s:7:\"mystile\";s:7:\"/themes\";s:9:\"pagelines\";s:7:\"/themes\";s:12:\"twentyeleven\";s:7:\"/themes\";s:9:\"twentyten\";s:7:\"/themes\";s:12:\"twentytwelve\";s:7:\"/themes\";}','yes');
+INSERT INTO `wp_options` VALUES (19004,'_transient_doing_cron','1376019037.9671061038970947265625','yes');
 /*!40000 ALTER TABLE `wp_options` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -5775,4 +5774,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2013-08-09  3:29:55
+-- Dump completed on 2013-08-09  3:30:42
