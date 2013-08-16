@@ -17,9 +17,12 @@ class WooDojo_Tab_Grouping {
 	 * @since  1.0.0
 	 */
 	public function __construct ( $file ) {
+		global $woodojo;
 		$this->assets_url = trailingslashit( trailingslashit( plugins_url( '', $file ) ) . 'assets' );
 		$this->screens_path = trailingslashit( trailingslashit( dirname( $file ) ) . 'screens' );
 		$this->classes_path = trailingslashit( dirname( __FILE__ ) );
+
+		add_action( 'admin_print_styles', array( &$woodojo->admin, 'admin_styles' ) );
 
 		$this->token = 'woodojo';
 		$this->id = $this->token;
@@ -28,6 +31,8 @@ class WooDojo_Tab_Grouping {
 		$this->page_slug = 'tab-grouping';
 
 		add_action( 'admin_menu', array( &$this, 'register_settings_screen' ) );
+
+		add_action( 'admin_init', array( &$this, 'form_actions' ) );
 
 		$this->capability = 'manage_options';
  		if ( is_admin() ) {
@@ -51,17 +56,13 @@ class WooDojo_Tab_Grouping {
 		add_action( 'admin_print_scripts-' . $hook, array( &$this, 'enqueue_scripts' ) );
 		add_action( 'admin_print_styles-' . $hook, array( &$this, 'enqueue_styles' ) );
 	} // End register_settings_screen()
-	
+
 	/**
 	 * Render the admin screen.
 	 * @access public
 	 * @return void
 	 */
-	public function settings_screen () {
-		if ( isset( $_REQUEST['action'] ) && in_array( $_REQUEST['action'], array( 'add-tab-grouping', 'edit-tab-grouping', 'delete-tab-grouping' ) ) ) {
-			$this->form_actions();
-		}
-?>
+	public function settings_screen () { ?>
 	<div id="woodojo" class="wrap woodojo-tab-grouping">
 	<?php screen_icon( 'woodojo' ); ?>
 	<h2><?php echo $this->menu_label; ?></h2>
@@ -73,7 +74,7 @@ class WooDojo_Tab_Grouping {
 		$tabs = $this->get_tabs();
 
 		$screen = 'list';
-		if ( isset( $_GET['screen'] ) && ( $_GET['screen'] == 'edit' ) && isset( $_GET['slug'] ) && ( $this->grouping_exists( esc_attr( $_GET['slug'] ) ) ) ) {
+		if ( isset( $_GET['screen'] ) && ( 'edit' == $_GET['screen']  ) && isset( $_GET['slug'] ) && ( $this->grouping_exists( esc_attr( $_GET['slug'] ) ) ) ) {
 			$screen = 'edit';
 		}
 
@@ -139,12 +140,12 @@ class WooDojo_Tab_Grouping {
 				$location = add_query_arg( 'message', 7, $location ); // We already have a group with that slug.
 			} else {
 				$inserted = $this->insert_grouping( array( 'title' => $title, 'slug' => $slug, 'tabs' => $selected_tabs ) );
-				if ( $inserted == 0 ) {
+				if ( 0 == $inserted ) {
 					$location = add_query_arg( 'message', 2, $location );
 				} else {
 					$location = add_query_arg( 'message', 1, $location );
 				}
-			} 
+			}
 
 			wp_redirect( $location );
 			exit;
@@ -177,16 +178,16 @@ class WooDojo_Tab_Grouping {
 			if ( ( strtolower( $slug ) != strtolower( $old_slug ) ) && $this->grouping_exists( $slug ) ) {
 				$location = add_query_arg( '_wpnonce', wp_create_nonce( 'woodojo-tab-grouping-edit-screen' ), $location );
 				$location = add_query_arg( 'slug', urlencode( $old_slug ), $location );
-				$location = add_query_arg( 'screen', 'edit', $location );
+				$location = add_query_arg( 'screen', $this->token . '-edit-screen', $location );
 				$location = add_query_arg( 'message', 7, $location ); // We already have a group with that slug.
 			} else {
-				$updated = $this->update_grouping( array( 'title' => $title, 'slug' => $slug, 'tabs' => $selected_tabs ) );
-				if ( $updated == 0 ) {
+				$updated = $this->update_grouping( array( 'title' => $title, 'slug' => $slug, 'tabs' => $selected_tabs, 'old-slug' => $old_slug ) );
+				if ( 0 == $updated ) {
 					$location = add_query_arg( 'message', 4, $location ); // Update Error.
 				} else {
 					$location = add_query_arg( 'message', 3, $location ); // Update Success.
 				}
-			} 
+			}
 
 			wp_redirect( $location );
 			exit;
@@ -196,7 +197,7 @@ class WooDojo_Tab_Grouping {
 			// Delete.
 			case 'delete-tab-grouping':
 
-			check_admin_referer( $this->token . '-delete-tab-grouping', '_wpnonce' );
+			check_admin_referer( $this->token . '-tab-grouping-delete-tab-grouping', '_wpnonce' );
 
 			if ( ! current_user_can( 'manage_options' ) )
 				wp_die( __( 'Cheatin&#8217; uh?' ) );
@@ -211,11 +212,11 @@ class WooDojo_Tab_Grouping {
 			$slug = sanitize_title_with_dashes( $_GET['slug'], '', 'save' );
 
 			$deleted = $this->delete_grouping( $slug );
-			if ( $deleted == 0 ) {
+			if ( 0 == $deleted ) {
 				$location = add_query_arg( 'message', 6, $location );
 			} else {
 				$location = add_query_arg( 'message', 5, $location );
-			} 
+			}
 
 			wp_redirect( $location );
 			exit;
@@ -297,12 +298,12 @@ class WooDojo_Tab_Grouping {
 	public function get_tabs () {
 		// Setup tab pieces to be loaded in below.
 		$tabs = array(
-						'latest' => __( 'Latest', 'woodojo' ), 
-						'popular' => __( 'Popular', 'woodojo' ), 
-						'comments' => __( 'Comments', 'woodojo' ), 
+						'latest' => __( 'Latest', 'woodojo' ),
+						'popular' => __( 'Popular', 'woodojo' ),
+						'comments' => __( 'Comments', 'woodojo' ),
 						'tags' => __( 'Tags', 'woodojo' )
 					);
-		
+
 		// Allow child themes/plugins to filter here.
 		$tabs = apply_filters( 'woodojo_tabs_headings', $tabs );
 
@@ -319,6 +320,8 @@ class WooDojo_Tab_Grouping {
 	 */
 	public function sanitize_tabs ( $posted, $order, $whitelist ) {
 		$tabs = array();
+
+		if( ! is_array( $posted )) return $tabs;
 
 		foreach ( $posted as $k => $v ) {
 			if ( ! in_array( $v, $whitelist ) ) { unset( $posted[$k] ); }
@@ -342,7 +345,7 @@ class WooDojo_Tab_Grouping {
 	 */
 	private function insert_grouping ( $data ) {
 		$response = 0;
-		if ( ! isset( $data['title'] ) || ! isset( $data['slug'] ) || ! isset( $data['tabs'] ) ) return $response;
+		if ( ! isset( $data['title'] ) || '' == $data['title'] || ! isset( $data['slug'] ) || '' == $data['slug'] || ! isset( $data['tabs'] ) ) return $response;
 
 		$tabs = $this->get_tab_groups();
 		$tabs[] = $data;
@@ -359,18 +362,33 @@ class WooDojo_Tab_Grouping {
 	 */
 	private function update_grouping ( $data ) {
 		$response = 0;
-		if ( ! isset( $data['title'] ) || ! isset( $data['slug'] ) || ! isset( $data['tabs'] ) ) return $response;
+		if ( ! isset( $data['title'] ) || ! isset( $data['slug'] ) || ! isset( $data['tabs'] ) ) { return $response; }
 
 		$tabs = $this->get_tab_groups();
-		foreach ( (array)$tabs as $k => $v ) {
-			if ( strtolower( $v['slug'] ) == strtolower( $data['slug'] ) ) {
-				$tabs[$k] = $data;
-				break;
+
+		if ( isset( $data['old-slug']) && $data['old-slug'] == $data['slug'] ) {
+			unset( $data['old-slug']);
+
+			foreach ( (array)$tabs as $k => $v ) {
+				if ( strtolower( $v['slug'] ) == strtolower( $data['slug'] ) ) {
+					$tabs[$k] = $data;
+					break;
+				}
 			}
+		} elseif( $data['old-slug'] != $data['slug'] ) {
+
+			//Unset the old slug key
+			foreach ( $tabs as $k => $value ) {
+				if (  $tabs[ $k ]['slug'] == $data['old-slug'] )
+					unset( $tabs[ $k ] );
+			}
+
+			unset( $data['old-slug']);
+
+			$tabs[] = $data;
 		}
 
 		$response = update_option( $this->token . '-tab-groups', $tabs );
-
 		return $response;
 	} // End update_grouping()
 
@@ -407,7 +425,7 @@ class WooDojo_Tab_Grouping {
 	private function grouping_exists( $slug ) {
 		$response = 0;
 
-		if ( $slug != '' ) {
+		if ( '' != $slug ) {
 			$tabs = $this->get_tab_groups();
 
 			foreach ( (array)$tabs as $k => $v ) {
@@ -430,9 +448,9 @@ class WooDojo_Tab_Grouping {
  	 * @return {array}           the instance
  	 */
  	public function filter_by_tab_group ( $instance, $obj, $args ) {
- 		if ( $obj->id_base != 'woodojo_tabs' ) return $instance;
+ 		if ( 'woodojo_tabs' != $obj->id_base  ) return $instance;
 
- 		if ( isset( $instance['woodojo_tab_group'] ) && ( $instance['woodojo_tab_group'] != '' ) ) {
+ 		if ( isset( $instance['woodojo_tab_group'] ) && ( '' != $instance['woodojo_tab_group'] ) ) {
  			$this->tab_group = esc_attr( $instance['woodojo_tab_group'] );
  		} else {
  			$this->tab_group = '';
@@ -505,9 +523,9 @@ class WooDojo_Tab_Grouping {
  	 */
  	public function widget_form_html ( $obj, $return, $instance ) {
  		global $return;
- 		if ( $obj->id_base != 'woodojo_tabs' ) return $return;
+ 		if ( 'woodojo_tabs' != $obj->id_base  ) return $return;
 
- 		if ( ! isset( $instance['woodojo_tab_group'] ) && $instance['woodojo_tab_group'] == '' ) {
+ 		if ( ! isset( $instance['woodojo_tab_group'] ) && '' == $instance['woodojo_tab_group']  ) {
  			$instance['woodojo_tab_group'] = false;
  		}
 

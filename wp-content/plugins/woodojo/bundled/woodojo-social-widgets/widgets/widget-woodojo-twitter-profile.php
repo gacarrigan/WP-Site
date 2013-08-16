@@ -335,7 +335,7 @@ class WooDojo_Widget_TwitterProfile extends WP_Widget {
 	 */
 	public function request_profile_data ( $args ) {
 		$data = array();
-		
+
 		$url = 'https://twitter.com/users/' . urlencode( $args['username'] ) . '.json';
 
 		$response = wp_remote_get( $url, array(

@@ -83,7 +83,7 @@ class WooDojo_Tab_Grouping_Table extends WP_List_Table {
      * @return string       The content of this column.
      */
 	public function column_title ( $item ) {
-		$edit_nonce = wp_create_nonce( 'woodojo-tab-grouping-edit-screen' );
+		$edit_nonce = wp_create_nonce( 'woodojo-edit-screen' );
 
 		$actions = array(
             'edit'      => sprintf('<a href="?page=%s&screen=%s&slug=%s&_wpnonce=' . $edit_nonce . '">' . __( 'Edit', 'woodojo' ) . '</a>',$_REQUEST['page'],'edit',$item['slug']),

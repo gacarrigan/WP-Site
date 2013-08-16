@@ -2,7 +2,7 @@
 /**
  * Module Name: WooDojo - Tab Grouping
  * Module Description: Create groups of tabs, with a custom tab order.
- * Module Version: 1.0.1
+ * Module Version: 1.0.2
  *
  * @package WooDojo
  * @subpackage Downloadable
