@@ -824,7 +824,6 @@ INSERT INTO `wp_options` VALUES (17831,'pa_colour_children','a:0:{}','yes');
 INSERT INTO `wp_options` VALUES (17833,'pa_size_children','a:0:{}','yes');
 INSERT INTO `wp_options` VALUES (17835,'pa_platform_children','a:0:{}','yes');
 INSERT INTO `wp_options` VALUES (17889,'_transient_woocommerce_cache_excluded_uris','a:6:{i:0;s:5:\"/cart\";i:1;s:9:\"/checkout\";i:2;s:11:\"/my-account\";i:3;s:5:\"p=120\";i:4;s:5:\"p=121\";i:5;s:5:\"p=123\";}','yes');
-INSERT INTO `wp_options` VALUES (19006,'_site_transient_update_core','O:8:\"stdClass\":3:{s:7:\"updates\";a:1:{i:0;O:8:\"stdClass\":9:{s:8:\"response\";s:7:\"upgrade\";s:8:\"download\";s:40:\"http://wordpress.org/wordpress-3.6.1.zip\";s:6:\"locale\";s:5:\"en_US\";s:8:\"packages\";O:8:\"stdClass\":4:{s:4:\"full\";s:40:\"http://wordpress.org/wordpress-3.6.1.zip\";s:10:\"no_content\";s:51:\"http://wordpress.org/wordpress-3.6.1-no-content.zip\";s:11:\"new_bundled\";s:52:\"http://wordpress.org/wordpress-3.6.1-new-bundled.zip\";s:7:\"partial\";s:50:\"http://wordpress.org/wordpress-3.6.1-partial-0.zip\";}s:7:\"current\";s:5:\"3.6.1\";s:11:\"php_version\";s:5:\"5.2.4\";s:13:\"mysql_version\";s:3:\"5.0\";s:11:\"new_bundled\";s:3:\"3.6\";s:15:\"partial_version\";s:3:\"3.6\";}}s:12:\"last_checked\";i:1378933429;s:15:\"version_checked\";s:3:\"3.6\";}','yes');
 INSERT INTO `wp_options` VALUES (19019,'can_compress_scripts','0','yes');
 INSERT INTO `wp_options` VALUES (19210,'_transient_wc_attribute_taxonomies','a:0:{}','yes');
 INSERT INTO `wp_options` VALUES (19215,'photocrati_auto_update_admin_update_list','','yes');
@@ -6334,4 +6333,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2013-09-11 23:03:00
+-- Dump completed on 2013-09-11 23:03:56
