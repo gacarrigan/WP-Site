@@ -174,6 +174,7 @@ if ( is_wpe_snapshot() ) {
         $snapshot_state['status']   = "Starting the staging snapshot process...";
         $snapshot_state['is_ready'] = false;
     }
+	$have_snapshot = (bool) $snapshot_state['have_snapshot'];
 }?>
 
 <div class="wrap">
@@ -197,7 +198,7 @@ if ( is_wpe_snapshot() ) {
 		<div class="span-30">
 			<p><b>You should <a href="http://eepurl.com/i3HPf" target="_blank">subscribe to our customer announcement list</a></b> to get updates on new features, system developments, and account and billing information.  You can of course unsubscribe at any time, and we use it only for infrequent but important announcements.</p>
 			<p>Your DNS should either be set to CNAME to <code><?= $site_info->name ?>.wpengine.com</code> or an A record to <code><?= $site_info->public_ip ?></code>.</p>
-			<p>Your SFTP access (<i>not FTP!</i>) is at hostname <code><?= $site_info->sftp_host ?></code> on port <code><?= $site_info->sftp_port ?></code>. Username and password starts out the same as you specified when you signed up for your blog (which was <code><?= $site_info->name ?></code>), but can be <a href="<?php echo get_option('wpe-install-userportal','https://my.wpengine.com'); ?>" target="_blank">changed here</a>.</p>
+			<p>Your SFTP access (<i>not FTP!</i>) is at hostname <code><?= $site_info->sftp_host ?></code> or IP at <code><?= $site_info->sftp_ip ?></code> on port <code><?= $site_info->sftp_port ?></code>. Username and password starts out the same as you specified when you signed up for your blog (which was <code><?= $site_info->name ?></code>), but can be <a href="<?php echo get_option('wpe-install-userportal','https://my.wpengine.com'); ?>" target="_blank">changed here</a>.</p>
 		</div><!--.span-30-->
       		<br class="clear"/>
         
@@ -518,10 +519,28 @@ if ( is_wpe_snapshot() ) {
 				<input type="text" class="text email" name="email" placeholder="<?php echo get_option('admin_email'); ?>" value="<?php echo get_option('admin_email'); ?>"/>
 			</p>
 
+<?php
+$staging_status = $plugin->get_staging_status();
+$production_version = get_bloginfo('version');
+$can_push_staging = is_staging_gte($production_version, $staging_status['version']);
+?>
+
+		<?php if($can_push_staging): ?>
 			<div class="submit form-actions">
 				<p><buttom id="submit-deploy" name="submit-deploy" value="Submit" class="btn btn-primary" >Submit</button></p>
 			</div>
-						
+                <?php else: ?>
+			<div class='alert-message alert-error'>
+				<br><blockquote>
+				<h3>Your Staging Site is Running an Old Version of WordPress (<?php echo $staging_status['version']; ?>)</h3>
+				<p>Your staging site is running an old version of WordPress, WordPress <?php echo $staging_status['version']; ?>. 
+                    Before you can deploy your staging site to your production site, you need to 
+                    <a target="_blank" href="<?php echo $staging_status['staging_url']; ?>/wp-admin/update-core.php">update WordPress</a> 
+                    to match your production version, <?php echo $production_version; ?>. Please follow the steps to update WordPress. 
+                    We recommend you also create a <a href="https://my.wpengine.com/installs/<?php echo PWP_NAME;?>/backup_points">backup point</a> before updating.</p>
+				</blockquote><br>
+			</div>
+		<?php endif; ?>						
 		</form>
 	<?php endif; ?>
 	</div><!--.wpe-content-wrapper-->
@@ -529,3 +548,6 @@ if ( is_wpe_snapshot() ) {
 </div><!--.wrap-->
 <hr/>
 <p>WP Engine Plugin v<?= WPE_PLUGIN_VERSION ?> | <a href="http://wpengine.zendesk.com" target="_blank">Support</a></p>
+
+
+
