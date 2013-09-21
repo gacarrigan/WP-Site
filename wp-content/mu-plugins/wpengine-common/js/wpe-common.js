@@ -104,6 +104,22 @@ jQuery(document).ready(function($) {
 			 */
 			function update() {
 				$.get('/wpe-deploy-status-'+wpe.account, function(resp) {
+					resp = $.parseJSON( resp );
+
+					// if we don't have a valid object, bail.
+					if ( typeof(resp) !== 'object' ) return;
+
+					// iterate the response and extract the text
+					var messages = [];
+					var n = 0;
+					$.each( resp, function( i, obj ) {
+						messages[n] = obj.text;
+						n++;
+					});
+	
+					resp = messages[0];
+
+					if( typeof(resp) !== 'string' ) return;
 					$.deployStarted = 1;
 					$.wpeDeploy.max = 238;	
 					$.wpeDeploy.current = $('#status pre').text();
