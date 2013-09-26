@@ -10,7 +10,7 @@ jQuery(document).ready(function($) {
 		if( check  === "true" ) {
 			e.preventDefault();
 			$('#stagingModal').modal().addClass('in');
-			$('button#staging-submit').live( 'click' ,function() {
+			$(document).on( 'click','button#staging-submit',function() {
 				$('form#staging').append("<input type='hidden' name='snapshot' value='true' />").submit();
 			});
 		}
@@ -47,7 +47,7 @@ jQuery(document).ready(function($) {
 				$(this).attr('onclick','wpe_upgrade_link("'+$(this).attr('href')+'");');
 		});
 		
-		$('input[type="submit"]').live('click',function(e) {
+		$(document).on('click','input[type="submit"]',function(e) {
 			if( $(this).attr('name') != 'plugin-search-input' ) { 
 				e.preventDefault();
 				$(this).parent().attr('id','form-to-submit'); 
@@ -294,7 +294,7 @@ function apprise(string, args, callback) {
 	$('.appriseInner').append(string);
 	$('.appriseOuter').css("left", ( $(window).width() - $('.appriseOuter').width() ) / 2+$(window).scrollLeft() + "px");
 	//add a cancel button
-    	$('.closeit a').live('click', function(e) { e.preventDefault(); $('.appriseOverlay,.appriseOuter').remove(); });
+    	$(document).on('click','.closeit a', function(e) { e.preventDefault(); $('.appriseOverlay,.appriseOuter').remove(); });
  	if(args) {
 		if( args['cancelable'] ) {
 			$('.appriseOuter').prepend('<div class="closeit"><a href="#">cancel</a></div>');
