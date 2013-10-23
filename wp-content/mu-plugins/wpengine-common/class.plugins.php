@@ -4,43 +4,29 @@
  */
 if( !class_exists("PluginsConfig") ) {
 	class PluginsConfig {
-		static $plugins = array( 'woocommerce/woocommerce.php' );
+		static $plugins = array( 
+			'woocommerce/woocommerce.php' 				=> "woocommerce", 
+			"easy-digital-downloads/easy-digital-downloads.php" 	=> "easy-digital-downloads"
+		);
+
 		var $skip = array();
 
 		public function __construct() {}
 		
 		public static function sniff() {
-			foreach( self::$plugins as $plugin ) {
+			foreach( self::$plugins as $plugin => $codename ) {
 				if( is_plugin_active($plugin) ) {	
-					PluginsConfig::config($plugin);		
+					PluginsConfig::notify($codename);		
 				}
 			}
 		}
-
-		public static function config($plugin) {
-			$inst = new PluginsConfig();
 		
-			// cleanup the plugin name
-			$plugin = explode("/",$plugin);
-			if( is_array( $plugin ) ) {	
-				//99% of plugins will be formatted directory/file.php
-				$plugin = $plugin[0];
-			} else {
-				//in the case where it's one file, strip the .php and use the slug
-				$plugin = str_replace( ".php", '', $plugin );
-			}
-
-			if( method_exists( $inst, $plugin) ) {
-				call_user_func_array(array($inst,$plugin), array());
-			}
-		}
-
-		public function woocommerce() {
+		public static function notify($codename) {
 			//not using our class cuz it's throwing errors. 
 			$uri = "https://api.wpengine.com/1.2/index.php";
 			$uri = add_query_arg( array( 
 				"method"=>"nginx-profile-add", 
-				"profile"=>"woocommerce", 
+				"profile"=>$codename, 
 				"location"=>"nginx-before-in-location",
 				"account_name"=>PWP_NAME,
 				"wpe_apikey"=>WPE_APIKEY 
@@ -51,7 +37,7 @@ if( !class_exists("PluginsConfig") ) {
 			if( @$r['error'] ) {
 				error_log("WPE API [error]: ".$r['error_msg']);
 			} elseif( @$r['success'] ) {
-				error_log("WPE API [success]: Woocommerce ".$r['data']);
+				error_log("WPE API [success]:  $codename ".$r['data']);
 			}
 		}
 

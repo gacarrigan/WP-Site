@@ -203,3 +203,5 @@ v2.0.46
 	- Added showing IP of SFTP host in WPE plugin page
 v2.0.47
 	- Added multiple status capability for staging status
+v2.0.48
+	- fixed status display during deploy staging to production

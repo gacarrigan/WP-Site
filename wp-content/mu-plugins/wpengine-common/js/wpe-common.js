@@ -103,38 +103,43 @@ jQuery(document).ready(function($) {
 			 * @note this will run until a "Deploy Complete" status is received.
 			 */
 			function update() {
-				$.get('/wpe-deploy-status-'+wpe.account, function(resp) {
-					resp = $.parseJSON( resp );
+				$.ajax({url:'/wpe-deploy-status-'+wpe.account})
+                                .done( function(resp) {
+					try{
+						resp = $.parseJSON( resp );
+					} catch(error){
+						setTimeout( function() { update() } , 500);
+					}
 
 					// if we don't have a valid object, bail.
 					if ( typeof(resp) !== 'object' ) return;
 
-					// iterate the response and extract the text
-					var messages = [];
-					var n = 0;
+					var last_status;
 					$.each( resp, function( i, obj ) {
-						messages[n] = obj.text;
-						n++;
+						if (undefined == last_status || obj.timestamp > last_status.timestamp){
+							last_status = obj;
+						}
 					});
-	
-					resp = messages[0];
 
-					if( typeof(resp) !== 'string' ) return;
-					$.deployStarted = 1;
-					$.wpeDeploy.max = 238;	
-					$.wpeDeploy.current = $('#status pre').text();
-					$.wpeDeploy.data = resp.split("\n");
-					$.wpeDeploy.currIndex = 0;
+					// check that this isn't an old status
+					if (undefined !== last_status ){
+						var now = new Date();
+						if (last_status.timestamp < (now.getTime()/1000 - 60)){
+							last_status = undefined;
+						}
+					} 
+	
+					if ( undefined !== last_status){
+						$.deployStarted = 1;
+						$.wpeDeploy.data = last_status.text.split("\n");
 					
-					//loop over the status file
-					while( $.wpeDeploy.currIndex < $.wpeDeploy.data.length ) {
-						setProgress($.wpeDeploy.data[$.wpeDeploy.currIndex]);
-						$.wpeDeploy.currIndex++;
-					}
-					
-					if( $.wpeDeploy.current.indexOf("Deploy Completed") !== -1 ) { 
-						$('.modal-body #progress').progressbar('option','value', 100);	
-						setTimeout( function() { $('#myModal,.modal-backdrop').removeClass('in',1000).remove() }, 5000);
+						setProgress(last_status);
+						if( last_status.text.indexOf("Deploy Completed") !== -1 ) { 
+							$('.modal-body #progress').progressbar('option','value', 100);	
+							setTimeout( function() { $('#myModal,.modal-backdrop').removeClass('in',1000).remove() }, 5000);
+						} else {
+							setTimeout( function() { update() } , 500);
+						}	
 					} else {
 						setTimeout( function() { update() } , 500);
 					}
@@ -146,13 +151,11 @@ jQuery(document).ready(function($) {
 			}
 
 			function setProgress(data) {
-				if( data !== "Beginning Deploy ..." && data !== "" && $.wpeDeploy.current.length > 1 && $.wpeDeploy.current.indexOf( data ) === -1 ) {	
-					$('#status pre').append( data + "\n");
-					value = ($('#status pre').text().length / $.wpeDeploy.max) * 100;
-					$('.progress-label').text(data);
-					$('.modal-body #progress').progressbar('option','value', value);
-					$('.progress-label').html(data);
-				} 
+					$('#status pre').text( data.text + "\n");
+					var one_line = $.wpeDeploy.data[$.wpeDeploy.data.length -1];
+					$('.progress-label').text(one_line);
+					$('.modal-body #progress').progressbar('option','value', data.progress);
+					$('.progress-label').html(one_line);
 			}
 		}
 })(jQuery);
