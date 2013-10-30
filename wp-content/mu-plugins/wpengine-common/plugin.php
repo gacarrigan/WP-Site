@@ -474,14 +474,6 @@ class WpeCommon extends WpePlugin_common {
 
 		// Disable Headway theme gzip -- it blocks us from being able to CDN-replace and isn't necessary anyway.
 		add_filter( 'headway_gzip', '__return_false' );
-		
-		// Emit debug message, maybe
-		if ( isset($_REQUEST['WPE_DEBUG']) ) {
-		    global $wp_object_cache;
-		    if ( isset( $wp_object_cache ) && is_object( $wp_object_cache ) && $wp_object_cache ) {
-			add_action( "wp_footer", array( $wp_object_cache, 'stats' ) );
-		    }
-		}
  	}
 	
 	//Some plugins need a custom site config, so communicate with our API when these are activated.
