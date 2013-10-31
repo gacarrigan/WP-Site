@@ -206,4 +206,7 @@ v2.0.47
 v2.0.48
 	- fixed status display during deploy staging to production
 v2.0.49
-	- Removed unused object-cache debugging functionality
+	- Disable core updates and nag emails in WordPress 3.7.x branch.
+v2.0.50
+	 - Disable core updates and nag emails in WordPress 3.7.x branch.
+

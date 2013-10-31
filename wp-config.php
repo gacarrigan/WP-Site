@@ -97,6 +97,8 @@ define('WPE_CDN_DISABLE_ALLOWED',false);
 define('WPE_BETA_TESTER',false);
 
 define('WPE_WHITELABEL','wpengine');
+
+define('WP_AUTO_UPDATE_CORE',false);
 define('WPLANG','');
 
 # WP Engine ID
