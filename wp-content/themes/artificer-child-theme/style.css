@@ -979,3 +979,109 @@ ul.nav li a {
 .type-page:after {
   display: none;
 }
+/* WOO COMMERCE */
+/* 7.2 Single Product */
+.single-product .images,
+.single-product .summary {
+  margin-bottom: 1.618em;
+}
+.single-product .product {
+  position: relative;
+}
+.single-product .product .onsale {
+  position: absolute;
+  top: -0.53em;
+  left: -0.53em;
+}
+.single-product .images img {
+  display: block;
+  width: auto;
+}
+.single-product .images .attachment-shop_single {
+  -webkit-box-sizing: border-box;
+  /* Safari/Chrome, other WebKit */
+
+  -moz-box-sizing: border-box;
+  /* Firefox, other Gecko */
+
+  box-sizing: border-box;
+  /* Opera/IE 8+ */
+
+  padding: .618em .618em 2.618em;
+  background: #fff;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.1);
+  -webkit-box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.1);
+  margin-bottom: 1em;
+}
+.single-product .images .thumbnails:after {
+  content: "\0020";
+  display: block;
+  height: 0;
+  overflow: hidden;
+  clear: both;
+}
+.single-product .images .thumbnails a {
+  display: block;
+  width: 30.75%;
+  margin-right: 3.8%;
+  float: left;
+}
+.single-product .images .thumbnails a.first {
+  clear: left;
+}
+.single-product .images .thumbnails a.last {
+  margin-right: 0;
+}
+.single-product table.variations a.reset_variations {
+  margin-top: .202em;
+  margin-left: .618em;
+}
+.single-product table.variations a.reset_variations:after {
+  font-family: 'WebSymbolsRegular';
+  display: inline-block;
+  font-size: .857em;
+  margin-left: .618em;
+  content: "V";
+}
+.single-product .product_meta {
+  font-size: .857em;
+}
+.single-product .woocommerce_tabs {
+  padding-top: 1.618em;
+}
+.single-product .woocommerce_tabs ul.tabs {
+  list-style: none;
+}
+.single-product .woocommerce_tabs ul.tabs li {
+  list-style: none;
+  display: inline-block;
+  margin-right: 1em;
+}
+.single-product .woocommerce_tabs ul.tabs li a:before {
+  font-family: 'WebSymbolsRegular';
+  display: inline-block;
+  font-size: .857em;
+  margin-right: .618em;
+  content: "p";
+}
+.single-product .woocommerce_tabs ul.tabs li.active a {
+  color: #52442f;
+}
+.single-product .woocommerce_tabs ul.tabs li. description_tab a:before {
+  content: "a";
+}
+.single-product .woocommerce_tabs ul.tabs li.reviews_tab a:before {
+  content: "R";
+}
+.single-product .woocommerce_tabs ul.tabs li.attributes_tab a:before {
+  content: "p";
+}
+.single-product .woocommerce_tabs ul.tabs li.related_tab a:before {
+  content: "K";
+}
+.single-product .woocommerce_tabs #related-products ul.products {
+  margin-bottom: 0;
+}
+.single-product .woocommerce_tabs #related-products ul.products li.product {
+  margin-bottom: 0;
+}

@@ -1116,6 +1116,7 @@ ul.order_notes {
 			p {
 				margin: 0;
 				padding: 0;
+				word-wrap: break-word;
 			}
 		}
 		p.meta {
@@ -2201,7 +2202,7 @@ img.help_tip {
 				cursor: pointer !important;
 			}
 		}
-		&:hover h3 .handlediv {
+		h3:hover .handlediv {
 			display: block;
 		}
 		table {
@@ -2695,11 +2696,6 @@ table.bar_chart {
 
 /* Chosen multiselect enhancement
 ----------------------------------*/
-#woocommerce_allowed_countries_chzn, #woocommerce_file_download_method_chzn {
-	.chzn-search {
-		display: none;
-	}
-}
 .chzn-container-single .chzn-single {
 	height: 24px;
   	line-height: 25px;

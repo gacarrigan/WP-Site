@@ -292,7 +292,7 @@ class WC_Product {
 
 		$file_paths = isset( $this->file_paths ) ? $this->file_paths : '';
 		$file_paths = maybe_unserialize( $file_paths );
-		$file_paths = apply_filters( 'woocommerce_file_download_paths', $file_paths, $this->id, null, null );
+		$file_paths = (array) apply_filters( 'woocommerce_file_download_paths', $file_paths, $this->id, null, null );
 
 		if ( ! $download_id && count( $file_paths ) == 1 ) {
 			// backwards compatibility for old-style download URLs and template files
@@ -747,9 +747,9 @@ class WC_Product {
 
 				} elseif ( $tax_rates !== $base_tax_rates ) {
 
-					$base_taxes			= $_tax->calc_tax( $price * $qty, $base_tax_rates, true, true );
-					$modded_taxes		= $_tax->calc_tax( $price * $qty - array_sum( $base_taxes ), $tax_rates, false );
-					$price      		= round( $price * $qty - array_sum( $base_taxes ) + array_sum( $modded_taxes ), 2 );
+					$base_taxes			= $_tax->calc_tax( $price * $qty, $base_tax_rates, true );
+					$modded_taxes		= $_tax->calc_tax( ( $price * $qty ) - array_sum( $base_taxes ), $tax_rates, false );
+					$price      		= round( ( $price * $qty ) - array_sum( $base_taxes ) + array_sum( $modded_taxes ), 2 );
 
 				} else {
 
@@ -1148,7 +1148,6 @@ class WC_Product {
 
 		return '';
 	}
-
 
 	/**
 	 * Returns product attributes.

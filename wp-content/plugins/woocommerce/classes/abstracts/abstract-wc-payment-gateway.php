@@ -34,7 +34,7 @@ abstract class WC_Payment_Gateway extends WC_Settings_API {
 	/** @var string Available for all counties or specific. */
 	var $availability;
 
-	/** @var bool True if the method is enabled. */
+	/** @var string True if the method is enabled. */
 	var $enabled;
 
 	/** @var string Icon for the gateway. */
@@ -127,7 +127,7 @@ abstract class WC_Payment_Gateway extends WC_Settings_API {
 	function get_icon() {
 		global $woocommerce;
 
-		$icon = $this->icon ? '<img src="' . $woocommerce->force_ssl( $this->icon ) . '" alt="' . $this->title . '" />' : '';
+		$icon = $this->icon ? '<img src="' . $woocommerce->force_ssl( $this->icon ) . '" alt="' . $this->get_title() . '" />' : '';
 
 		return apply_filters( 'woocommerce_gateway_icon', $icon, $this->id );
 	}
@@ -152,9 +152,10 @@ abstract class WC_Payment_Gateway extends WC_Settings_API {
 	 * Process the payment. Override this in your gateway.
 	 *
 	 * @access public
+	 * @param int $order_id Id of the order that's going to be processed
 	 * @return void
 	 */
-	function process_payment() {}
+	function process_payment( $order_id ) {}
 
 
 	/**

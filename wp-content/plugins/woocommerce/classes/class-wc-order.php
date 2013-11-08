@@ -315,7 +315,7 @@ class WC_Order {
 	 * Get the billing address in an array.
 	 *
 	 * @access public
-	 * @return array
+	 * @return string
 	 */
 	public function get_billing_address() {
 		if ( ! $this->billing_address ) {
@@ -551,7 +551,7 @@ class WC_Order {
 	 * @return float
 	 */
 	public function get_total_tax() {
-		return apply_filters( 'woocommerce_order_amount_total_tax', number_format( (double) $this->order_tax + (double) $this->order_shipping_tax, 2, '.', '' ) );
+		return apply_filters( 'woocommerce_order_amount_total_tax', number_format( (double) $this->order_tax + (double) $this->order_shipping_tax, 2, '.', '' ), $this );
 	}
 
 
@@ -562,7 +562,7 @@ class WC_Order {
 	 * @return float
 	 */
 	public function get_cart_discount() {
-		return apply_filters( 'woocommerce_order_amount_cart_discount', number_format( (double) $this->cart_discount, 2, '.', '' ) );
+		return apply_filters( 'woocommerce_order_amount_cart_discount', number_format( (double) $this->cart_discount, 2, '.', '' ), $this );
 	}
 
 
@@ -573,7 +573,7 @@ class WC_Order {
 	 * @return float
 	 */
 	public function get_order_discount() {
-		return apply_filters( 'woocommerce_order_amount_order_discount', number_format( (double) $this->order_discount, 2, '.', '' ) );
+		return apply_filters( 'woocommerce_order_amount_order_discount', number_format( (double) $this->order_discount, 2, '.', '' ), $this );
 	}
 
 
@@ -585,7 +585,7 @@ class WC_Order {
 	 */
 	public function get_total_discount() {
 		if ( $this->order_discount || $this->cart_discount )
-			return apply_filters( 'woocommerce_order_amount_total_discount', number_format( (double) $this->order_discount + (double) $this->cart_discount, 2, '.', '' ) );
+			return apply_filters( 'woocommerce_order_amount_total_discount', number_format( (double) $this->order_discount + (double) $this->cart_discount, 2, '.', '' ), $this );
 	}
 
 
@@ -596,7 +596,7 @@ class WC_Order {
 	 * @return float
 	 */
 	public function get_shipping() {
-		return apply_filters( 'woocommerce_order_amount_shipping', number_format( (double) $this->order_shipping, 2, '.', '' ) );
+		return apply_filters( 'woocommerce_order_amount_shipping', number_format( (double) $this->order_shipping, 2, '.', '' ), $this );
 	}
 
 
@@ -607,7 +607,7 @@ class WC_Order {
 	 * @return float
 	 */
 	public function get_shipping_tax() {
-		return apply_filters( 'woocommerce_order_amount_shipping_tax', number_format( (double) $this->order_shipping_tax, 2, '.', '' ) );
+		return apply_filters( 'woocommerce_order_amount_shipping_tax', number_format( (double) $this->order_shipping_tax, 2, '.', '' ), $this );
 	}
 
 
@@ -618,7 +618,7 @@ class WC_Order {
 	 * @return float
 	 */
 	public function get_total() {
-		return apply_filters( 'woocommerce_order_amount_total', number_format( (double) $this->order_total, 2, '.', '' ) );
+		return apply_filters( 'woocommerce_order_amount_total', number_format( (double) $this->order_total, 2, '.', '' ), $this );
 	}
 
 
@@ -639,7 +639,7 @@ class WC_Order {
 	 * @return string
 	 */
 	public function get_shipping_method() {
-		return apply_filters( 'woocommerce_order_shipping_method', ucwords( $this->shipping_method_title ) );
+		return apply_filters( 'woocommerce_order_shipping_method', ucwords( $this->shipping_method_title ), $this );
 	}
 
 
@@ -654,10 +654,10 @@ class WC_Order {
 	 */
 	public function get_item_subtotal( $item, $inc_tax = false, $round = true ) {
 		if ( $inc_tax )
-			$price = ( $item['line_subtotal'] + $item['line_subtotal_tax'] / $item['qty'] );
+			$price = ( $item['line_subtotal'] + $item['line_subtotal_tax'] ) / $item['qty'];
 		else
 			$price = ( $item['line_subtotal'] / $item['qty'] );
-		return apply_filters( 'woocommerce_order_amount_item_subtotal', ($round) ? number_format( $price, 2, '.', '') : $price );
+		return apply_filters( 'woocommerce_order_amount_item_subtotal', (($round) ? number_format( $price, 2, '.', '') : $price ), $this );
 	}
 
 
@@ -675,7 +675,7 @@ class WC_Order {
 			$price = $item['line_subtotal'] + $item['line_subtotal_tax'];
 		else
 			$price = $item['line_subtotal'];
-		return apply_filters( 'woocommerce_order_amount_line_subtotal', ($round) ? number_format( $price, 2, '.', '') : $price );
+		return apply_filters( 'woocommerce_order_amount_line_subtotal', ( ($round) ? number_format( $price, 2, '.', '') : $price ), $this );
 	}
 
 
@@ -690,10 +690,10 @@ class WC_Order {
 	 */
 	public function get_item_total( $item, $inc_tax = false, $round = true ) {
 		if ( $inc_tax )
-			$price = ( ( $item['line_total'] + $item['line_tax'] ) / $item['qty'] );
+			$price = ( $item['line_total'] + $item['line_tax'] ) / $item['qty'];
 		else
 			$price = $item['line_total'] / $item['qty'];
-		return apply_filters( 'woocommerce_order_amount_item_total', ($round) ? number_format( $price, 2, '.', '') : $price );
+		return apply_filters( 'woocommerce_order_amount_item_total', ( ($round) ? number_format( $price, 2, '.', '') : $price ), $this );
 	}
 
 
@@ -707,7 +707,7 @@ class WC_Order {
 	 */
 	public function get_item_tax( $item, $round = true ) {
 		$price = $item['line_tax'] / $item['qty'];
-		return apply_filters( 'woocommerce_order_amount_item_tax', ($round) ? number_format( $price, 2, '.', '') : $price );
+		return apply_filters( 'woocommerce_order_amount_item_tax', ( ($round) ? number_format( $price, 2, '.', '') : $price ), $this );
 	}
 
 
@@ -721,9 +721,9 @@ class WC_Order {
 	 */
 	public function get_line_total( $item, $inc_tax = false ) {
 		if ( $inc_tax )
-			return apply_filters( 'woocommerce_order_amount_line_total', number_format( $item['line_total'] + $item['line_tax'] , 2, '.', '') );
+			return apply_filters( 'woocommerce_order_amount_line_total', number_format( $item['line_total'] + $item['line_tax'] , 2, '.', ''), $this );
 		else
-			return apply_filters( 'woocommerce_order_amount_line_total', number_format( $item['line_total'] , 2, '.', '') );
+			return apply_filters( 'woocommerce_order_amount_line_total', number_format( $item['line_total'] , 2, '.', ''), $this );
 	}
 
 
@@ -735,7 +735,7 @@ class WC_Order {
 	 * @return float
 	 */
 	public function get_line_tax( $item ) {
-		return apply_filters( 'woocommerce_order_amount_line_tax', number_format( $item['line_tax'], 2, '.', '') );
+		return apply_filters( 'woocommerce_order_amount_line_tax', number_format( $item['line_tax'], 2, '.', ''), $this );
 	}
 
 	/** End Total Getters *******************************************************/
@@ -1048,7 +1048,7 @@ class WC_Order {
 			'image_size'			=> $image_size
 		) );
 
-		$return = apply_filters( 'woocommerce_email_order_items_table', ob_get_clean() );
+		$return = apply_filters( 'woocommerce_email_order_items_table', ob_get_clean(), $this );
 
 		return $return;
 	}
@@ -1070,35 +1070,37 @@ class WC_Order {
 	 * @return bool
 	 */
 	public function has_downloadable_item() {
-		$has_downloadable_item = false;
-
-		foreach($this->get_items() as $item) :
-
+		foreach ( $this->get_items() as $item ) {
 			$_product = $this->get_product_from_item( $item );
 
-			if ($_product->exists() && $_product->is_downloadable()) :
-				$has_downloadable_item = true;
-			endif;
+			if ( false !== $_product && $_product->exists() && $_product->is_downloadable() ) {
+				return true;
+			}
+		}
 
-		endforeach;
-
-		return $has_downloadable_item;
+		return false;
 	}
 
 
 	/**
 	 * Generates a URL so that a customer can checkout/pay for their (unpaid - pending) order via a link.
 	 *
-	 * @access public
 	 * @return string
 	 */
-	public function get_checkout_payment_url() {
+	public function get_checkout_payment_url( $on_checkout = false ) {
 
-		$payment_page = get_permalink(woocommerce_get_page_id('pay'));
+		$pay_url = get_permalink( woocommerce_get_page_id( 'pay' ) );
 
-		if (get_option('woocommerce_force_ssl_checkout')=='yes' || is_ssl()) $payment_page = str_replace('http:', 'https:', $payment_page);
+		if ( get_option( 'woocommerce_force_ssl_checkout' ) == 'yes' || is_ssl() )
+			$pay_url = str_replace( 'http:', 'https:', $pay_url );
 
-		return apply_filters('woocommerce_get_checkout_payment_url', add_query_arg('pay_for_order', 'true', add_query_arg('order', $this->order_key, add_query_arg('order_id', $this->id, $payment_page))));
+		if ( $on_checkout ) {
+			$pay_url = add_query_arg( 'order', $this->id, add_query_arg('key', $this->order_key, $pay_url ) );
+		} else {
+			$pay_url = add_query_arg( 'pay_for_order', 'true', add_query_arg('order', $this->order_key, add_query_arg( 'order_id', $this->id, $pay_url ) ) );
+		}
+
+		return apply_filters( 'woocommerce_get_checkout_payment_url', $pay_url, $this );
 	}
 
 
@@ -1208,7 +1210,7 @@ class WC_Order {
 
 			wp_set_object_terms( $this->id, array( $new_status->slug ), 'shop_order_status', false );
 
-			if ( $this->status != $new_status->slug ) {
+			if ( $this->id && $this->status != $new_status->slug ) {
 
 				// Status was changed
 				do_action( 'woocommerce_order_status_' . $new_status->slug, $this->id );
@@ -1278,6 +1280,8 @@ class WC_Order {
 	public function payment_complete() {
 		global $woocommerce;
 
+		do_action( 'woocommerce_pre_payment_complete', $this->id );
+
 		if ( ! empty( $woocommerce->session->order_awaiting_payment ) )
 			unset( $woocommerce->session->order_awaiting_payment );
 
@@ -1323,6 +1327,11 @@ class WC_Order {
 				$this->reduce_order_stock(); // Payment is complete so reduce stock levels
 
 			do_action( 'woocommerce_payment_complete', $this->id );
+
+		} else {
+
+			do_action( 'woocommerce_payment_complete_order_status_' . $this->status, $this->id );
+
 		}
 	}
 
@@ -1529,4 +1538,21 @@ class WC_Order {
 
 	}
 
+	/**
+	 * Checks if an order needs payment, based on status and order total
+	 *
+	 * @access public
+	 * @return bool
+	 */
+	public function needs_payment() {
+
+		$valid_order_statuses = apply_filters( 'woocommerce_valid_order_statuses_for_payment', array( 'pending', 'failed' ), $this );
+
+		if ( in_array( $this->status, $valid_order_statuses ) && $this->get_total() > 0 )
+			$needs_payment = true;
+		else
+			$needs_payment = false;
+
+		return apply_filters( 'woocommerce_order_needs_payment', $needs_payment, $this, $valid_order_statuses );
+	}
 }

@@ -345,7 +345,16 @@ class WC_Customer {
 	 * @return void
 	 */
 	public function get_taxable_address() {
+		global $woocommerce;
+
 		$tax_based_on = get_option( 'woocommerce_tax_based_on' );
+
+		// Check shipping method at this point to see if we need special handling
+		$chosen_method = empty( $woocommerce->session->chosen_shipping_method ) ? get_option('woocommerce_default_shipping_method') : $woocommerce->session->chosen_shipping_method;
+
+		if ( apply_filters( 'woocommerce_apply_base_tax_for_local_pickup', true ) == true && in_array( $chosen_method, apply_filters( 'woocommerce_local_pickup_methods', array( 'local_pickup' ) ) ) ) {
+			$tax_based_on = 'base';
+		}
 
 		if ( $tax_based_on == 'base' ) {
 
