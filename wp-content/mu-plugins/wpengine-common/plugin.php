@@ -609,7 +609,7 @@ class WpeCommon extends WpePlugin_common {
 		{	
 			$menudata = array(
 				'menu_title'	=> get_option("wpe-install-menu_title","WP Engine"),
-				'menu_icon'	=> get_option("wpe-install-menu_icon",WPE_PLUGIN_URL.'/images/favicon.png'),
+				'menu_icon'	=> get_option("wpe-install-menu_icon",WPE_PLUGIN_URL.'/images/favicon.ico'),
 				'menu_items'	=> get_option("wpe-install-menu_items",false),
 			);
 			wp_cache_set("$wl-menudata",$menudata,'wpengine');
@@ -628,13 +628,13 @@ class WpeCommon extends WpePlugin_common {
 
 	} else {
 	        // The main page
-        	add_menu_page( 'WP Engine', 'WP Engine', $capability, dirname( __FILE__ ), array( $this, 'wpe_admin_page' ), WPE_PLUGIN_URL . '/images/favicon.png', $position );
+        	add_menu_page( 'WP Engine', 'WP Engine', $capability, dirname( __FILE__ ), array( $this, 'wpe_admin_page' ), WPE_PLUGIN_URL . '/images/favicon.ico', $position );
 
 	        // Direct link to user portal
         	add_submenu_page( 'wpengine-common', 'User Portal', 'User Portal', $capability, 'wpe-user-portal', array( $this, 'redirect_to_user_portal' ) );
 
 	        // Direct link to Zendesk
-        	add_submenu_page( 'wpengine-common', 'Support System', 'Support System', $capability, 'wpe-support-portal', array( $this, 'redirect_to_zendesk' ) );
+        	add_submenu_page( 'wpengine-common', 'Support System', 'Support System', $capability, 'wpe-support-portal', array( $this, 'redirect_to_portal' ) );
 	}
     }
 
@@ -684,11 +684,19 @@ class WpeCommon extends WpePlugin_common {
 		exit;
 	}
 
-	public function redirect_to_zendesk() {
+	/**
+	 * Redirect to the Support section of the User Portal.
+	 * 
+	 * Mainly this is used for customers who need to submit a ticket. It redirects them to the 
+	 * appropriate location in the Customer Portal
+	 * 
+	 * @since 2.0.51
+	 */
+	public function redirect_to_portal() {
         	if ( empty( $_GET['page'] ) && $_GET['page'] )
         		return false;
 
-		wp_redirect( 'http://wpengine.zendesk.com' );
+		wp_redirect( 'https://my.wpengine.com/support?from=wp-admin' );
 		exit;
 	}
 

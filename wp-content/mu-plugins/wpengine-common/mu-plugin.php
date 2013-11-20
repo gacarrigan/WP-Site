@@ -4,7 +4,7 @@
   Plugin URI: http://wpengine.com/plugins
   Description: WP Engine-specific services and options
   Author: WP Engine
-  Version: 2.0.50
+  Version: 2.1.1
   Changelog: (see changelog.txt)
  */
 

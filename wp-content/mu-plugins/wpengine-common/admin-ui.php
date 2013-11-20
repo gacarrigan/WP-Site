@@ -145,7 +145,8 @@ if ( wpe_param( 'advanced' ) ) {
 
 // Fix file permissions
 if ( wpe_param( 'file-perms' ) ) {
-        $url = "https://api.wpengine.com/1.2/?method=file-permissions&account_name=" . PWP_NAME . "&wpe_apikey=" . WPE_APIKEY;
+	check_admin_referer( PWP_NAME . '-config' );
+	$url = "https://api.wpengine.com/1.2/?method=file-permissions&account_name=" . PWP_NAME . "&wpe_apikey=" . WPE_APIKEY;
 	$http = new WP_Http;
 	$msg  = $http->get( $url );
         if ( is_a( $msg, 'WP_Error' ) )
@@ -158,6 +159,7 @@ if ( wpe_param( 'file-perms' ) ) {
 
 // Process purging all caches
 if ( wpe_param( 'purge-all' ) ) {
+    check_admin_referer( PWP_NAME . '-config' );
     // check_admin_referer(PWP_NAME.'-config');		DO NOT CHECK because it's OK to just hit it from anywhere, and in fact we do.
     WpeCommon::purge_memcached();
     WpeCommon::clear_maxcdn_cache();
