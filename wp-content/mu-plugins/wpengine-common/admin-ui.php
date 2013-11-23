@@ -159,7 +159,7 @@ if ( wpe_param( 'file-perms' ) ) {
 
 // Process purging all caches
 if ( wpe_param( 'purge-all' ) ) {
-    check_admin_referer( PWP_NAME . '-config' );
+    check_admin_referer( );
     // check_admin_referer(PWP_NAME.'-config');		DO NOT CHECK because it's OK to just hit it from anywhere, and in fact we do.
     WpeCommon::purge_memcached();
     WpeCommon::clear_maxcdn_cache();
