@@ -293,7 +293,7 @@ class WpeCommon extends WpePlugin_common {
 		// Leave these for admins only by checking for the 'manage_options' capability
 		if ( $user->has_cap( 'manage_options' ) ) {
 		    $wp_admin_bar->add_menu( array( 'id'    => 'wpengine_adminbar_errors','parent' => 'wpengine_adminbar', 'title'  => 'Blog Error Log', 'href'   => $this->get_error_log_url() ) );
-		    $wp_admin_bar->add_menu( array( 'id'    => 'wpengine_adminbar_cache','parent' => 'wpengine_adminbar', 'title'  => 'Empty Caches', 'href'   => $this->get_plugin_admin_url('admin.php?page=wpengine-common&purge-all=1') ));
+		    $wp_admin_bar->add_menu( array( 'id'    => 'wpengine_adminbar_cache','parent' => 'wpengine_adminbar', 'title'  => 'Empty Caches', 'href'   => $this->get_plugin_admin_url('admin.php?page=wpengine-common&purge-all=1&_wpnonce='.wp_create_nonce(PWP_NAME . '-config') )) );
 		}
 	}
 
@@ -2189,4 +2189,3 @@ function preg_find( $pattern, $subject )
         return $match[0];
     return $match[1];       // return first group
 }
-
