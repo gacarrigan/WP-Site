@@ -1,4 +1,10 @@
 *** WooDojo Changelog ***
+
+2013.09.13 - version 1.5.4
+* /bundled/woodojo-social-widgets/widgets/widget-woodojo-twitter-profile.php - Twitter API 1.1 integration
+* /bundled/woodojo-custom-code/widgets/classes/settings.class.php - Adds logic to strip slashes in CSS on output in the textarea.
+* /bundled/woodojo-custom-code/widgets/classes/woodojo-custom-code.class.php - Adds logic to strip slashes in CSS on output.
+
 2013.06.13 - version 1.5.3
 * /bundled/woodojo-social-widgets/classes/settings.class.php - ADDED
 * /bundled/woodojo-social-widgets/classes/woodojo-social-widgets.class.php - ADDED
